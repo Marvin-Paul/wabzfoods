@@ -356,7 +356,7 @@ function setupEventListeners() {
         authMode = 'login';
         elements.authTitle.innerText = 'Sign In';
         elements.authEmail.placeholder = 'Email or Phone Number';
-        elements.authPhone.classList.add('hidden');
+        elements.authPhone.style.display = 'none';
         elements.tabLogin.classList.add('active');
         elements.tabRegister.classList.remove('active');
     });
@@ -365,26 +365,32 @@ function setupEventListeners() {
         authMode = 'register';
         elements.authTitle.innerText = 'Register';
         elements.authEmail.placeholder = 'Email address';
-        elements.authPhone.classList.remove('hidden');
+        elements.authPhone.style.display = 'block';
         elements.tabRegister.classList.add('active');
         elements.tabLogin.classList.remove('active');
     });
 
     elements.btnAuthSubmit.addEventListener('click', async () => {
-        const email = elements.authEmail.value.trim();
+        let email = elements.authEmail.value.trim();
         const password = elements.authPassword.value;
-        const phone = elements.authPhone.value.trim();
+        let phone = elements.authPhone.value.trim();
 
         console.log('[Auth] Initialization initiated:', { email, phone, authMode });
 
-        if (!email || !password) {
-            alert('Please fill in required fields.');
+        if (!password) {
+            alert('Please enter a password.');
             return;
         }
 
-        if (authMode === 'register' && !phone) {
-            alert('Please provide a phone number for verification.');
+        if (!email && !phone) {
+            alert('Please provide an Email address or Phone number.');
             return;
+        }
+
+        // Swap phone strings if inputted mistakenly into email templates
+        if (email && !email.includes('@') && !phone) {
+            phone = email;
+            email = '';
         }
 
         try {
