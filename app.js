@@ -1,6 +1,6 @@
 // Wabz Foods State Management & Logic
-import { NhostClient } from 'https://cdn.jsdelivr.net/npm/@nhost/nhost-js@latest/+esm';
-const nhost = new NhostClient({
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@nhost/nhost-js@latest/+esm';
+const nhost = createClient({
     subdomain: 'tzcvixwkdvoybwgmlcuz',
     region: 'eu-central-1'
 });
@@ -156,6 +156,10 @@ async function init() {
     renderMenu();
     setupEventListeners();
     startCarousel();
+    
+    if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+    }
 }
 
 function checkSession() {
@@ -202,7 +206,9 @@ async function fetchMenuItems() {
           }
         `;
 
-        const { data, error } = await nhost.graphql.request(GET_MENU_ITEMS);
+        const response = await nhost.graphql.request({ query: GET_MENU_ITEMS });
+        const data = response.data || response.body?.data;
+        const error = response.error || response.body?.errors;
         
         if (error) throw error;
         if (data && data.menu_items) {
@@ -410,10 +416,15 @@ function setupEventListeners() {
                         }
                     `;
                     
-                    const { data, error } = await nhost.graphql.request(GET_USER, {
-                        email: isEmail ? email : null,
-                        phone: !isEmail ? email : null
+                    const response = await nhost.graphql.request({
+                        query: GET_USER,
+                        variables: {
+                            email: isEmail ? email : null,
+                            phone: !isEmail ? email : null
+                        }
                     });
+                    const data = response.data || response.body?.data;
+                    const error = response.error || response.body?.errors;
 
                     if (!error && data && data.users && data.users[0]) {
                         user = data.users[0];
@@ -457,11 +468,16 @@ function setupEventListeners() {
                         }
                     `;
 
-                    const { data, error } = await nhost.graphql.request(REGISTER_MUTATION, {
-                        email,
-                        password,
-                        phone
+                    const response = await nhost.graphql.request({
+                        query: REGISTER_MUTATION,
+                        variables: {
+                            email,
+                            password,
+                            phone
+                        }
                     });
+                    const data = response.data || response.body?.data;
+                    const error = response.error || response.body?.errors;
 
                     if (!error && data && data.insert_users_one) {
                         newUser = data.insert_users_one;
@@ -808,8 +824,16 @@ function simulateTracking() {
     
     const interval = setInterval(() => {
         if (statusIndex < statuses.length) {
-            elements.trackingStatus.innerText = statuses[statusIndex];
+            const currentStatus = statuses[statusIndex];
+            elements.trackingStatus.innerText = currentStatus;
             statusIndex++;
+            
+            if (currentStatus === 'Arrived') {
+                alert('🔔 Wabz Foods: Your order is ready and has arrived!');
+                if ('Notification' in window && Notification.permission === 'granted') {
+                    new Notification('Wabz Foods', { body: 'Your order is ready and has arrived!' });
+                }
+            }
         } else {
             clearInterval(interval);
         }

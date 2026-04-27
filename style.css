@@ -606,6 +606,10 @@ footer {
     font-size: 0.875rem !important;
 }
 
+#auth-phone {
+    display: none;
+}
+
 .user-active-chip {
     background: var(--surface-elevated) !important;
     border: 1px solid var(--glass-border) !important;

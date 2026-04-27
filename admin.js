@@ -1,6 +1,6 @@
 // Wabz Foods Admin Control Logic
-import { NhostClient } from 'https://cdn.jsdelivr.net/npm/@nhost/nhost-js@latest/+esm';
-const nhost = new NhostClient({
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@nhost/nhost-js@latest/+esm';
+const nhost = createClient({
     subdomain: 'tzcvixwkdvoybwgmlcuz',
     region: 'eu-central-1'
 });
@@ -49,7 +49,8 @@ const elements = {
     formCategory: document.getElementById('menu-item-category'),
     formPrice: document.getElementById('menu-item-price'),
     formDesc: document.getElementById('menu-item-desc'),
-    formImage: document.getElementById('menu-item-image')
+    formImage: document.getElementById('menu-item-image'),
+    usersTableBody: document.getElementById('users-table-body')
 };
 
 // Initialize Data Hooks
@@ -62,14 +63,20 @@ async function init() {
 
 // Setup Navigation Clicks
 function setupNav() {
-    elements.navItems.forEach(item => {
+    const navs = document.querySelectorAll('.nav-item');
+    const views = document.querySelectorAll('.section-view');
+
+    navs.forEach(item => {
         item.addEventListener('click', () => {
-            elements.navItems.forEach(nav => nav.classList.remove('active'));
-            elements.views.forEach(view => view.classList.remove('active'));
+            navs.forEach(nav => nav.classList.remove('active'));
+            views.forEach(view => view.classList.remove('active'));
             
             item.classList.add('active');
             const target = item.getAttribute('data-target');
-            document.getElementById(`view-${target}`).classList.add('active');
+            const targetView = document.getElementById(`view-${target}`);
+            if (targetView) {
+                targetView.classList.add('active');
+            }
             elements.sectionTitle.innerText = target.charAt(0).toUpperCase() + target.slice(1);
         });
     });
@@ -117,7 +124,9 @@ async function fetchData() {
           }
         `;
 
-        const { data, error } = await nhost.graphql.request(ADMIN_QUERY);
+        const response = await nhost.graphql.request({ query: ADMIN_QUERY });
+        const data = response.data || response.body?.data;
+        const error = response.error || response.body?.errors;
         
         if (!error && data) {
             state.orders = data.orders || [];
@@ -156,6 +165,7 @@ function renderAll() {
     renderDashboard();
     renderKanban();
     renderMenuTable();
+    renderUsers();
 }
 
 function renderDashboard() {
@@ -179,6 +189,17 @@ function renderDashboard() {
             </tr>
         `;
     }).join('');
+}
+
+function renderUsers() {
+    if (!elements.usersTableBody) return;
+    elements.usersTableBody.innerHTML = state.users.map(user => `
+        <tr>
+            <td class="font-bold">#${user.id.slice(0, 8)}</td>
+            <td>${user.phone_number || '<span class="color-text-secondary">No Phone</span>'}</td>
+            <td>${user.email || '<span class="color-text-secondary">No Email</span>'}</td>
+        </tr>
+    `).join('');
 }
 
 function getStatusColor(status) {
@@ -249,10 +270,11 @@ function renderOrderCards(ordersList) {
                     <span class="order-amount">UGX ${parseFloat(order.total_amount).toLocaleString()}</span>
                 </div>
                 <div class="color-secondary text-sm font-bold mb-10">${clientContact}</div>
-                <div style="margin: 10px 0; padding: 10px; background: var(--surface-elevated); border-radius: var(--radius-sm);">
+                <div style="margin: 10px 0; padding: 12px; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--glass-border); border-radius: var(--radius-sm);">
                     ${itemsHtml}
                 </div>
-                <div class="order-items">${order.fulfillment.toUpperCase()} - ${order.location || 'No Address Provided'}</div>
+                <div class="order-items" style="margin-top: 8px; font-weight: 600; color: var(--text-primary);">🛍️ ${order.fulfillment.toUpperCase()}</div>
+                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px;">📍 ${order.location || 'No Address Provided'}</div>
                 <div class="order-footer">
                     <span class="order-time">${new Date(order.created_at).toLocaleTimeString()}</span>
                     <select class="status-shifter">
@@ -297,10 +319,14 @@ function setupCardClickActions() {
                         }
                     }
                 `;
-                const { error } = await nhost.graphql.request(UPDATE_ORDER_STATUS, {
-                    id: orderId,
-                    status: newStatus
+                const response = await nhost.graphql.request({
+                    query: UPDATE_ORDER_STATUS,
+                    variables: {
+                        id: orderId,
+                        status: newStatus
+                    }
                 });
+                const error = response.error || response.body?.errors;
 
                 if (!error) {
                     await fetchData();
