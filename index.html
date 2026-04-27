@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wabz Foods | Order Delicious Meals Online</title>
+    <meta name="description" content="Craving delicious box meals, crispy chicken, and mouth-watering burgers? Order now from Wabz Foods for delivery or pickup.">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍔</text></svg>">
+</head>
+<body>
+
+    <!-- Global Header -->
+    <header class="glass-panel">
+        <div class="container header-content">
+            <div class="logo" id="home-logo">
+                <span>WABZ</span><span class="yellow">FOODS</span>
+            </div>
+            <div class="header-actions">
+                <button class="btn-primary" id="signin-btn">Sign In</button>
+                <div class="cart-widget" id="cart-trigger">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
+                    <span class="cart-total">UGX 0</span>
+                    <span class="cart-count">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- App Prompt Ribbon -->
+    <div class="app-ribbon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
+        Download our App for exclusive deals! <strong>Free - In Google Play</strong>
+    </div>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero container">
+            <div class="hero-badge">Delivery Now Available</div>
+            <h1>Ready to Start<br><span class="gradient-text">Your Order?</span></h1>
+            <p>Experience the ultimate crunch and flavor. Freshly prepared box meals, buckets, and burgers delivered right to your door.</p>
+            <button class="btn-primary" id="hero-order-now">
+                <span>ORDER NOW</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+            </button>
+
+            <!-- Banner Carousel -->
+            <div class="carousel-container shadow-lg">
+                <div class="carousel-slide active slide-1">
+                    <div class="slide-content">
+                        <span class="card-badge">Limited Time</span>
+                        <h2>Mega Crunch Box</h2>
+                        <p>2 Pcs Chicken, regular fries, and a cold drink.</p>
+                    </div>
+                </div>
+                <div class="carousel-slide slide-2">
+                    <div class="slide-content">
+                        <span class="card-badge">Promo</span>
+                        <h2>Double Burger Deal</h2>
+                        <p>Two classic beef burgers for the price of one.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Menu Section -->
+        <section class="menu-section container" id="menu-container">
+            <div class="section-header">
+                <h2>Explore Our <span class="gradient-text-yellow">Menu</span></h2>
+                <div class="category-tabs" id="category-tabs">
+                    <!-- Tabs inserted by JS -->
+                </div>
+            </div>
+
+            <div class="menu-grid" id="menu-grid">
+                <!-- Menu items inserted by JS -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Global Footer -->
+    <footer>
+        <div class="container footer-grid">
+            <div class="footer-col">
+                <div class="logo mb-20">
+                    <span>WABZ</span><span class="yellow">FOODS</span>
+                </div>
+                <p class="color-text-secondary text-sm">The ultimate destination for delicious, quick, and satisfying meals.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Contact Us</h3>
+                <ul>
+                    <li><a href="tel:+256000000000">+256 000 000 000</a></li>
+                    <li><a href="mailto:info@wabzfoods.com">info@wabzfoods.com</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Legal</h3>
+                <ul>
+                    <li><a href="#" id="link-privacy">Privacy Policy</a></li>
+                    <li><a href="#" id="link-terms">Terms & Conditions</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Locations</h3>
+                <ul>
+                    <li><a href="#" id="link-locations">Store Directory</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom container">
+            &copy; 2026 Wabz Foods. All rights reserved. | <a href="admin.html" class="color-text-secondary">Admin Portal</a>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    
+    <!-- 0. Authentication Modal -->
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-lg" id="auth-title">Sign In</h3>
+                <button class="close-modal" id="close-auth">&times;</button>
+            </div>
+            <div class="modal-body flex-col gap-16">
+                <div class="flex rounded-md surface-bg p-4">
+                    <button id="tab-login" class="auth-tab active">Login</button>
+                    <button id="tab-register" class="auth-tab">Register</button>
+                </div>
+
+                <div id="auth-input-group" class="flex-col gap-12">
+                    <input type="text" id="auth-email" placeholder="Email or Phone Number" class="w-full p-12 rounded-md surface-bg glass-border-input">
+                    <input type="tel" id="auth-phone" placeholder="Phone Number" class="w-full p-12 rounded-md surface-bg glass-border-input hidden">
+                    <input type="password" id="auth-password" placeholder="Password" class="w-full p-12 rounded-md surface-bg glass-border-input">
+                    <button class="btn-primary w-full p-14" id="btn-auth-submit">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. Fulfillment Selection Modal -->
+    <div class="modal-overlay" id="fulfillment-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-lg">How would you like your order?</h3>
+            </div>
+            <div class="modal-body flex-col gap-16">
+                <button class="btn-primary w-full p-16 rounded-md" id="select-delivery">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-10"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+                    Delivery
+                </button>
+                <button class="btn-secondary w-full p-16 rounded-md" id="select-pickup">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-10"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    Pickup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Location Entry Modal -->
+    <div class="modal-overlay" id="location-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-lg" id="location-title">Enter Delivery Address</h3>
+                <button class="close-modal" id="close-location">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="delivery-input-group" class="flex-col gap-12">
+                    <input type="text" id="address-input" placeholder="Street address, Apartment, City" class="w-full p-12 rounded-md surface-bg glass-border-input">
+                    <button class="btn-primary" id="confirm-address">Confirm Address</button>
+                </div>
+                <div id="pickup-input-group" class="flex-col gap-12 hidden">
+                    <select id="store-select" class="w-full p-12 rounded-md surface-bg glass-border-input" title="Select Pickup Store" aria-label="Select Pickup Store">
+                        <option value="kampala-central">Kampala Central - Wabz Tower</option>
+                        <option value="nakawa">Nakawa Mall Branch</option>
+                        <option value="entebbe">Entebbe Airport Road</option>
+                    </select>
+                    <button class="btn-primary" id="confirm-store">Select Store</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Product Detail Modal -->
+    <div class="modal-overlay" id="product-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-lg" id="modal-product-name">Product Name</h3>
+                <button class="close-modal" id="close-product">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-product-body">
+                <!-- Customization options inserted by JS -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-primary w-full" id="add-to-cart-btn">Add to Cart - <span id="modal-product-price">UGX 0</span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Cart & Checkout Modal -->
+    <div class="modal-overlay" id="cart-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-lg">Your Cart</h3>
+                <button class="close-modal" id="close-cart">&times;</button>
+            </div>
+            <div class="modal-body" id="cart-items-container">
+                <!-- Cart items inserted by JS -->
+            </div>
+            <div class="modal-footer flex-col gap-16">
+                <div class="flex justify-between w-full text-lg">
+                    <span>Total:</span>
+                    <span id="cart-total-amount" class="gradient-text-yellow">UGX 0</span>
+                </div>
+                <button class="btn-primary w-full" id="proceed-to-checkout">Proceed to Payment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. Payment Modal -->
+    <div class="modal-overlay" id="payment-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-lg">Secure Payment</h3>
+                <button class="close-modal" id="close-payment">&times;</button>
+            </div>
+            <div class="modal-body flex-col gap-16">
+                <div id="payment-methods">
+                    <p class="mb-12 color-text-secondary">Select your preferred payment method:</p>
+                    <button class="btn-secondary w-full p-16 rounded-md mb-12 flex justify-between items-center" id="pay-momo">
+                        <span class="font-bold color-secondary">MTN MoMo / Airtel Money</span>
+                    </button>
+                    <button class="btn-secondary w-full p-16 rounded-md mb-12 flex justify-between items-center" id="pay-card">
+                        <span>Credit / Debit Card</span>
+                    </button>
+                    <button class="btn-secondary w-full p-16 rounded-md flex justify-between items-center" id="pay-cash">
+                        <span>Cash on Fulfillment</span>
+                    </button>
+                </div>
+
+                <!-- MoMo Input -->
+                <div id="momo-input-group" class="flex-col gap-12 hidden">
+                    <input type="tel" id="momo-number" placeholder="Enter Phone Number (e.g., 077...)" class="w-full p-12 rounded-md surface-bg glass-border-input">
+                    <button class="btn-primary" id="submit-momo">Pay Now</button>
+                </div>
+
+                <!-- Payment Status (Real-time simulation) -->
+                <div id="payment-status-container" class="text-center p-20 hidden">
+                    <div class="spinner"></div>
+                    <h4 id="payment-status-text" class="text-lg mb-10">Initiating Transaction...</h4>
+                    <p id="payment-status-subtext" class="color-text-secondary text-sm">Please check your phone for the prompt.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success/Tracking Modal -->
+    <div class="modal-overlay" id="tracking-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="text-lg">Order Confirmed!</h3>
+                <button class="close-modal" id="close-tracking">&times;</button>
+            </div>
+            <div class="modal-body text-center p-20">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--secondary-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mb-20"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                <h4 class="text-xl mb-10 gradient-text-yellow">Order #WFBZ-2026</h4>
+                <p class="color-text-secondary mb-20">Your food is being prepared with love.</p>
+                
+                <div class="surface-bg p-16 rounded-md text-center mb-20">
+                    <div class="flex justify-between mb-8">
+                        <span>Status:</span>
+                        <strong class="color-secondary" id="tracking-status">Preparing</strong>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>ETA:</span>
+                        <strong>25-35 Mins</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+    <script type="module" src="app.js"></script>
+</body>
+</html>
