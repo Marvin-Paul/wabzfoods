@@ -134,7 +134,7 @@ async function fetchData() {
             state.users = data.users || [];
         }
     } catch (err) {
-        console.warn("Failed fetching administrative context from Nhost, using local storage:", err);
+        // Local fallbacks bound efficiently
     }
 
     // LocalStorage Fallback and Merge
@@ -273,7 +273,7 @@ function renderOrderCards(ordersList) {
                 <div style="margin: 10px 0; padding: 12px; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--glass-border); border-radius: var(--radius-sm);">
                     ${itemsHtml}
                 </div>
-                <div class="order-items" style="margin-top: 8px; font-weight: 600; color: var(--text-primary);">🛍️ ${order.fulfillment.toUpperCase()}</div>
+                <div class="order-items" style="margin-top: 8px; font-weight: 600; color: var(--text-primary);">🛍️ ${(order.fulfillment || 'Order').toUpperCase()}</div>
                 <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px;">📍 ${order.location || 'No Address Provided'}</div>
                 <div class="order-footer">
                     <span class="order-time">${new Date(order.created_at).toLocaleTimeString()}</span>
