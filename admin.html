@@ -129,11 +129,26 @@
         }
 
         .metric-change {
-            font-size: 0.875rem;
-            color: #4CAF50;
+            font-size: 0.8rem;
+            color: var(--secondary-color);
             display: flex;
             align-items: center;
             gap: 4px;
+            opacity: 0.8;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
         }
 
         /* Section Views */
@@ -283,7 +298,7 @@
             border-radius: var(--radius-md);
             background: var(--surface-elevated);
             border: 1px solid var(--glass-border);
-            color: white;
+            color: var(--text-primary);
             font-size: 1rem;
         }
 
@@ -317,8 +332,73 @@
             padding: 4px 8px;
             border-radius: 4px;
             background: var(--surface-color);
-            color: white;
+            color: var(--text-primary);
             border: 1px solid var(--glass-border);
+        }
+
+        /* Responsive Admin */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .admin-sidebar {
+                position: static;
+                width: 100%;
+                height: auto;
+                padding: 15px 20px;
+                border-right: none;
+                border-bottom: 1px solid var(--glass-border);
+            }
+            .admin-logo {
+                margin-bottom: 15px;
+            }
+            .nav-links {
+                flex-direction: row;
+                overflow-x: auto;
+                gap: 8px;
+                padding-bottom: 5px;
+            }
+            .nav-item {
+                white-space: nowrap;
+                padding: 8px 12px;
+                font-size: 0.875rem;
+            }
+            .admin-main {
+                margin-left: 0;
+                max-width: 100%;
+                padding: 20px;
+            }
+            .admin-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+                margin-bottom: 20px;
+            }
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            .kanban-board {
+                grid-template-columns: 1fr;
+            }
+            .kanban-col {
+                min-height: auto;
+                margin-bottom: 20px;
+            }
+            .data-table-container {
+                overflow-x: auto;
+            }
+            th, td {
+                white-space: nowrap;
+            }
+        }
+        
+        .order-card {
+            cursor: pointer;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .order-card:hover {
+            border-color: var(--primary-color);
+            box-shadow: var(--shadow-md);
         }
     </style>
 </head>
@@ -364,21 +444,23 @@
                 <div class="metric-card">
                     <div class="metric-title">Total Revenue</div>
                     <div class="metric-value" id="metric-revenue">UGX 0</div>
-                    <div class="metric-change">⚡ Real-time update</div>
+                    <div class="metric-change">💰 Lifetime Revenue</div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-title">Total Orders</div>
                     <div class="metric-value" id="metric-orders">0</div>
-                    <div class="metric-change">📦 Lifetime orders</div>
+                    <div class="metric-change">📦 Processed Orders</div>
                 </div>
                 <div class="metric-card">
                     <div class="metric-title">Registered Users</div>
                     <div class="metric-value" id="metric-users">0</div>
-                    <div class="metric-change">👥 Consumer base</div>
+                    <div class="metric-change">👥 Customer Base</div>
                 </div>
             </div>
 
-            <h2 class="text-lg mb-20">Recent Activity</h2>
+            <div class="section-header">
+                <h2>Recent Activity</h2>
+            </div>
             <div class="data-table-container">
                 <table>
                     <thead>
@@ -398,8 +480,10 @@
         </div>
 
         <!-- VIEW: Registered Users -->
-        <div id="view-users" class="section-view">
-            <h2 class="text-lg mb-20">Registered User Profiles</h2>
+        <div id="view-users" class="section-view hidden">
+            <div class="section-header">
+                <h2>Registered User Profiles</h2>
+            </div>
             <div class="data-table-container">
                 <table>
                     <thead>
@@ -417,7 +501,7 @@
         </div>
 
         <!-- VIEW: Manage Orders -->
-        <div id="view-orders" class="section-view">
+        <div id="view-orders" class="section-view hidden">
             <div class="kanban-board">
                 <div class="kanban-col">
                     <div class="kanban-col-header">
@@ -462,9 +546,9 @@
         </div>
 
         <!-- VIEW: Menu Items -->
-        <div id="view-menu" class="section-view">
-            <div class="flex justify-between items-center mb-20">
-                <h2 class="text-lg">Menu Catalog</h2>
+        <div id="view-menu" class="section-view hidden">
+            <div class="section-header">
+                <h2>Menu Catalog</h2>
                 <button class="btn-primary" id="btn-add-menu-item">Add New Item</button>
             </div>
 
@@ -499,7 +583,10 @@
                         </div>
                         <div class="form-group">
                             <label for="menu-item-image">Image Path/URL</label>
-                            <input type="text" id="menu-item-image" placeholder="assets/box_meal.png or https://...">
+                            <div style="display: flex; gap: 12px; align-items: flex-start;">
+                                <input type="text" id="menu-item-image" placeholder="assets/box_meal.png or https://..." style="flex: 1;">
+                                <img id="image-preview" src="" alt="Preview" style="width: 50px; height: 50px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); display: none; background: var(--surface-elevated);">
+                            </div>
                         </div>
                         <div class="flex gap-12">
                             <button type="submit" class="btn-primary">Save Item</button>
@@ -527,6 +614,19 @@
             </div>
         </div>
 
+    </div>
+
+    <!-- Order Details Modal -->
+    <div class="modal-overlay" id="order-details-modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="text-lg" id="modal-order-title">Order Details</h3>
+                <button class="close-modal" id="close-order-modal">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-order-body" style="padding: 20px; font-size: 0.9rem;">
+                <!-- Populated by JS -->
+            </div>
+        </div>
     </div>
 
     <script type="module" src="admin.js"></script>

@@ -27,10 +27,18 @@
         </div>
     </header>
 
-    <!-- App Prompt Ribbon -->
-    <div class="app-ribbon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
-        Download our App for exclusive deals! <strong>Free - In Google Play</strong>
+    <!-- Professional Top Info Bar -->
+    <div class="top-bar">
+        <div class="container flex justify-between items-center w-full">
+            <div class="top-info-item flex items-center gap-8">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                <span>Open Daily: 09:00 AM - 11:00 PM</span>
+            </div>
+            <div class="top-info-item flex items-center gap-8">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                <span>Kampala, Uganda</span>
+            </div>
+        </div>
     </div>
 
     <main>
@@ -62,18 +70,106 @@
                 </div>
             </div>
         </section>
+        
+        <!-- Immersive Features Section -->
+        <section class="features-section container">
+            <div class="features-grid">
+                <!-- Fast Delivery -->
+                <div class="feature-card immersive-card" style="background-image: url('wabz_fast_delivery_icon_1777666889576.png');">
+                    <div class="card-overlay">
+                        <div class="card-content">
+                            <h3>Fast Delivery</h3>
+                            <p>Under 30 mins across Kampala</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quality Ingredients -->
+                <div class="feature-card immersive-card" style="background-image: url('wabz_fresh_chicken_icon_1777666908751.png');">
+                    <div class="card-overlay">
+                        <div class="card-content">
+                            <h3>Quality Ingredients</h3>
+                            <p>Farm-fresh local ingredients</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Master Chefs -->
+                <div class="feature-card immersive-card" style="background-image: url('wabz_chef_icon_1777666926462.png');">
+                    <div class="card-overlay">
+                        <div class="card-content">
+                            <h3>Master Chefs</h3>
+                            <p>Crafted by experienced experts</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Realistic Trust Banner -->
+            <div class="trust-banner mt-40">
+                <p class="text-xs color-text-secondary mb-10">TRUSTED BY CUSTOMERS ACROSS</p>
+                <div class="location-chips flex justify-center gap-12 flex-wrap">
+                    <span class="chip">📍 Nakasero</span>
+                    <span class="chip">📍 Kololo</span>
+                    <span class="chip">📍 Ntinda</span>
+                    <span class="chip">📍 Bugolobi</span>
+                    <span class="chip">📍 Munyonyo</span>
+                </div>
+            </div>
+        </section>
 
         <!-- Menu Section -->
         <section class="menu-section container" id="menu-container">
             <div class="section-header">
                 <h2>Explore Our <span class="gradient-text-yellow">Menu</span></h2>
-                <div class="category-tabs" id="category-tabs">
-                    <!-- Tabs inserted by JS -->
-                </div>
+                <p class="color-text-secondary text-sm">Fresh, local flavors crafted for Kampala — order delivery or pickup.</p>
             </div>
+            <div id="menu-grid"></div>
+        </section>
 
-            <div class="menu-grid" id="menu-grid">
-                <!-- Menu items inserted by JS -->
+        <!-- Testimonials Section -->
+        <section class="testimonials-section">
+            <div class="container">
+                <div class="text-center mb-40">
+                    <h2 class="text-xl">What Our <span class="gradient-text">Customers Say</span></h2>
+                </div>
+                <div class="testimonials-grid">
+                    <!-- Sarah M. -->
+                    <div class="testimonial-card">
+                        <div class="flex items-center gap-12 mb-16">
+                            <img src="testimonial_sarah_avatar_1777667558964.png" alt="Sarah M." class="customer-avatar">
+                            <div class="customer-info">
+                                <strong>Sarah M.</strong>
+                                <span>Verified Buyer</span>
+                            </div>
+                        </div>
+                        <div class="stars">⭐⭐⭐⭐⭐</div>
+                        <p>"The Mega Crunch Box is actually the best chicken I've had in Kampala. Delivery was super fast!"</p>
+                    </div>
+
+                    <!-- James K. -->
+                    <div class="testimonial-card">
+                        <div class="flex items-center gap-12 mb-16">
+                            <img src="testimonial_james_avatar_1777667580437.png" alt="James K." class="customer-avatar">
+                            <div class="customer-info">
+                                <strong>James K.</strong>
+                                <span>Verified Buyer</span>
+                            </div>
+                        </div>
+                        <div class="stars">⭐⭐⭐⭐⭐</div>
+                        <p>"Easy to order, and the food arrived steaming hot. The burgers are massive and juicy."</p>
+                    </div>
+                </div>
+
+                <!-- Review CTA -->
+                <div class="text-center mt-40">
+                    <button class="review-btn-premium" id="open-review-modal">
+                        <div class="btn-shine"></div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                        <span>Share Your Experience</span>
+                    </button>
+                    <p class="text-xs color-text-secondary mt-12">Your feedback helps us serve you better</p>
+                </div>
             </div>
         </section>
     </main>
@@ -221,8 +317,14 @@
     <div class="modal-overlay" id="payment-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="text-lg">Secure Payment</h3>
-                <button class="close-modal" id="close-payment">&times;</button>
+                <div class="flex-col">
+                    <h3 class="text-lg flex items-center gap-8">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 2px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        Secure Payment
+                    </h3>
+                    <p class="text-xs color-text-secondary" style="margin-top: -2px; font-weight: 400;">SSL Encrypted & Protected</p>
+                </div>
+                <button class="close-modal" id="close-payment" aria-label="Close Payment Modal">&times;</button>
             </div>
             <div class="modal-body flex-col gap-16">
                 <div id="payment-methods">
@@ -276,6 +378,33 @@
                         <strong>25-35 Mins</strong>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Review Modal -->
+    <div class="modal-overlay" id="review-modal">
+        <div class="modal-content review-modal-content">
+            <div class="modal-header">
+                <h3 class="text-lg">Share Your Experience</h3>
+                <button class="close-modal" id="close-review">&times;</button>
+            </div>
+            <div class="modal-body p-24">
+                <div class="rating-selector mb-24">
+                    <p class="text-sm color-text-secondary mb-12 text-center">Tap a star to rate</p>
+                    <div class="stars-input flex justify-center gap-8">
+                        <span class="star-item" data-value="1">★</span>
+                        <span class="star-item" data-value="2">★</span>
+                        <span class="star-item" data-value="3">★</span>
+                        <span class="star-item" data-value="4">★</span>
+                        <span class="star-item" data-value="5">★</span>
+                    </div>
+                </div>
+                <div class="input-group mb-20">
+                    <label class="text-xs mb-8 block color-text-secondary uppercase tracking-wider">Your Feedback</label>
+                    <textarea id="review-text" placeholder="Tell us what you loved about your meal..." class="w-full p-16 rounded-md surface-bg glass-border-input" rows="4"></textarea>
+                </div>
+                <button class="btn-primary w-full" id="submit-review">Submit Review</button>
             </div>
         </div>
     </div>

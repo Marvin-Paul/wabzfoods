@@ -50,34 +50,56 @@ const elements = {
     formPrice: document.getElementById('menu-item-price'),
     formDesc: document.getElementById('menu-item-desc'),
     formImage: document.getElementById('menu-item-image'),
-    usersTableBody: document.getElementById('users-table-body')
+    imagePreview: document.getElementById('image-preview'),
+    usersTableBody: document.getElementById('users-table-body'),
+    orderDetailsModal: document.getElementById('order-details-modal'),
+    closeOrderModal: document.getElementById('close-order-modal'),
+    modalOrderBody: document.getElementById('modal-order-body'),
+    modalOrderTitle: document.getElementById('modal-order-title'),
+    btnCloseTracking: document.getElementById('btn-close-tracking'),
+    trackingModal: document.getElementById('tracking-modal')
 };
 
 // Initialize Data Hooks
 async function init() {
     setupNav();
+    setupEventListeners();
     await fetchData();
     renderAll();
-    setupEventListeners();
 }
 
 // Setup Navigation Clicks
 function setupNav() {
-    const navs = document.querySelectorAll('.nav-item');
-    const views = document.querySelectorAll('.section-view');
-
-    navs.forEach(item => {
+    elements.navItems.forEach(item => {
         item.addEventListener('click', () => {
-            navs.forEach(nav => nav.classList.remove('active'));
-            views.forEach(view => view.classList.remove('active'));
-            
-            item.classList.add('active');
             const target = item.getAttribute('data-target');
             const targetView = document.getElementById(`view-${target}`);
+            
             if (targetView) {
+                // Update UI state
+                elements.navItems.forEach(nav => nav.classList.remove('active'));
+                elements.views.forEach(view => {
+                    view.classList.remove('active');
+                    // Ensure the view is hidden if it's not the target
+                    view.classList.add('hidden');
+                });
+                
+                item.classList.add('active');
+                targetView.classList.remove('hidden');
                 targetView.classList.add('active');
+                
+                // Update Title
+                let title = target.charAt(0).toUpperCase() + target.slice(1);
+                if (target === 'menu') title = 'Menu Catalog';
+                if (target === 'orders') title = 'Manage Orders';
+                if (target === 'users') title = 'Registered Users';
+                elements.sectionTitle.innerText = title;
+                
+                // Auto-scroll to top of view on mobile
+                if (window.innerWidth <= 768) {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
             }
-            elements.sectionTitle.innerText = target.charAt(0).toUpperCase() + target.slice(1);
         });
     });
 }
@@ -141,6 +163,7 @@ async function fetchData() {
     try {
         const localOrders = JSON.parse(localStorage.getItem('wabz_mock_orders') || '[]');
         const localUsers = JSON.parse(localStorage.getItem('wabz_mock_users') || '[]');
+        const localMenu = JSON.parse(localStorage.getItem('wabz_mock_menu') || '[]');
         
         // Merge users
         localUsers.forEach(lu => {
@@ -151,8 +174,21 @@ async function fetchData() {
         
         // Merge orders
         localOrders.forEach(lo => {
-            if (!state.orders.some(o => o.id === lo.id)) {
-                state.orders.unshift(lo); // Add to top
+            const index = state.orders.findIndex(o => o.id === lo.id);
+            if (index > -1) {
+                state.orders[index] = lo; // Override stale Nhost data with updated local state
+            } else {
+                state.orders.unshift(lo); // Add new local orders to top
+            }
+        });
+
+        // Merge menu items
+        localMenu.forEach(lm => {
+            const index = state.menuItems.findIndex(m => m.id === lm.id);
+            if (index > -1) {
+                state.menuItems[index] = lm;
+            } else {
+                state.menuItems.push(lm);
             }
         });
     } catch (e) {
@@ -273,7 +309,10 @@ function renderOrderCards(ordersList) {
                 <div style="margin: 10px 0; padding: 12px; background: rgba(0, 0, 0, 0.3); border: 1px solid var(--glass-border); border-radius: var(--radius-sm);">
                     ${itemsHtml}
                 </div>
-                <div class="order-items" style="margin-top: 8px; font-weight: 600; color: var(--text-primary);">🛍️ ${(order.fulfillment || 'Order').toUpperCase()}</div>
+                <div class="order-items order-details-trigger" style="margin-top: 8px; font-weight: 600; color: var(--text-primary); cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                    🛍️ ${(order.fulfillment || 'Order').toUpperCase()}
+                    <small style="font-weight: 400; color: var(--primary-color);">(View Details)</small>
+                </div>
                 <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px;">📍 ${order.location || 'No Address Provided'}</div>
                 <div class="order-footer">
                     <span class="order-time">${new Date(order.created_at).toLocaleTimeString()}</span>
@@ -296,6 +335,10 @@ function setupCardClickActions() {
             const card = e.target.closest('.order-card');
             const orderId = card.getAttribute('data-id');
             const newStatus = e.target.value;
+            
+            // Professional feedback: Disable dropdown during processing
+            e.target.disabled = true;
+            e.target.style.opacity = '0.5';
 
             if (orderId && orderId.startsWith('local_order_')) {
                 try {
@@ -309,34 +352,133 @@ function setupCardClickActions() {
                     }
                 } catch (err) {
                     console.error("Failed updating local order state:", err);
+                    e.target.disabled = false;
                 }
             } else {
-                const UPDATE_ORDER_STATUS = `
-                    mutation UpdateOrderStatus($id: String!, $status: String!) {
-                        update_orders_by_pk(pk_columns: {id: $id}, _set: {status: $status}) {
-                            id
-                            status
+                let error = null;
+                try {
+                    const UPDATE_ORDER_STATUS = `
+                        mutation UpdateOrderStatus($id: String!, $status: String!) {
+                            update_orders_by_pk(pk_columns: {id: $id}, _set: {status: $status}) {
+                                id
+                                status
+                            }
                         }
+                    `;
+                    const response = await nhost.graphql.request({
+                        query: UPDATE_ORDER_STATUS,
+                        variables: {
+                            id: orderId,
+                            status: newStatus
+                        }
+                    });
+                    error = response.error || response.body?.errors;
+                } catch(err) {
+                    error = err;
+                }
+                
+                if (error) {
+                    console.warn("Nhost order update failed. Using local storage fallback.");
+                    try {
+                        const localOrders = JSON.parse(localStorage.getItem('wabz_mock_orders') || '[]');
+                        const orderIndex = localOrders.findIndex(o => o.id === orderId);
+                        if (orderIndex !== -1) {
+                            localOrders[orderIndex].status = newStatus;
+                        } else {
+                            const existingOrder = state.orders.find(o => o.id === orderId);
+                            if (existingOrder) {
+                                existingOrder.status = newStatus;
+                                localOrders.push(existingOrder);
+                            }
+                        }
+                        localStorage.setItem('wabz_mock_orders', JSON.stringify(localOrders));
+                        error = null;
+                    } catch(localErr) {
+                        error = localErr;
                     }
-                `;
-                const response = await nhost.graphql.request({
-                    query: UPDATE_ORDER_STATUS,
-                    variables: {
-                        id: orderId,
-                        status: newStatus
-                    }
-                });
-                const error = response.error || response.body?.errors;
+                }
 
                 if (!error) {
                     await fetchData();
                     renderAll();
                 } else {
                     alert("Failed updating status. Please try again.");
+                    e.target.value = card.getAttribute('data-status'); // Revert UI
+                    e.target.disabled = false;
                 }
             }
         });
     });
+
+    // Detailed View Trigger: Open modal when clicking on "🛍️ ORDER (View Details)"
+    document.querySelectorAll('.order-details-trigger').forEach(trigger => {
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation(); 
+            const card = trigger.closest('.order-card');
+            const orderId = card.getAttribute('data-id');
+            const order = state.orders.find(o => o.id === orderId);
+            if (order) showOrderDetails(order);
+        });
+    });
+}
+
+function showOrderDetails(order) {
+    const client = state.users.find(u => u.id === order.user_id);
+    const clientName = client ? `${client.phone_number} ${client.email ? `(${client.email})` : ''}` : 'Guest User';
+    
+    const itemsHtml = (order.order_items || []).map(item => {
+        const menuItem = state.menuItems.find(mi => mi.id === item.menu_item_id);
+        const name = menuItem ? menuItem.name : 'Item ' + item.menu_item_id;
+        const mods = item.modifiers ? Object.entries(item.modifiers).map(([k, v]) => `<div><small style="color: var(--text-secondary)">- ${k}: ${v}</small></div>`).join('') : '';
+        return `
+            <div style="padding: 12px 0; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <strong style="color: var(--secondary-color);">${item.quantity}x</strong> <span style="font-weight: 600;">${name}</span>
+                    ${mods}
+                </div>
+                <div style="font-weight: bold; color: var(--text-primary);">UGX ${parseFloat(item.price).toLocaleString()}</div>
+            </div>
+        `;
+    }).join('');
+
+    elements.modalOrderTitle.innerText = `Order Detail: #${order.id.slice(0, 8).toUpperCase()}`;
+    elements.modalOrderBody.innerHTML = `
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div style="background: var(--surface-elevated); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--glass-border);">
+                    <div style="color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 4px;">Customer</div>
+                    <div style="font-weight: 600; overflow-wrap: break-word;">${clientName}</div>
+                </div>
+                <div style="background: var(--surface-elevated); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--glass-border);">
+                    <div style="color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 4px;">Placed On</div>
+                    <div style="font-weight: 600;">${new Date(order.created_at).toLocaleString()}</div>
+                </div>
+                <div style="background: var(--surface-elevated); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--glass-border);">
+                    <div style="color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 4px;">Fulfillment</div>
+                    <div style="font-weight: 600; text-transform: capitalize;">${order.fulfillment}</div>
+                    <div style="font-size: 0.8rem; margin-top: 4px; color: var(--text-secondary);">📍 ${order.location}</div>
+                </div>
+                <div style="background: var(--surface-elevated); padding: 12px; border-radius: var(--radius-sm); border: 1px solid var(--glass-border);">
+                    <div style="color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase; margin-bottom: 4px;">Payment</div>
+                    <div style="font-weight: 600;">${order.payment_method}</div>
+                    <div style="font-size: 0.8rem; margin-top: 4px; color: ${order.payment_status === 'Paid' ? '#4CAF50' : '#F44336'}; font-weight: bold;">
+                        ${order.payment_status.toUpperCase()}
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h4 style="margin-bottom: 12px; color: var(--secondary-color); border-bottom: 2px solid var(--primary-color); display: inline-block;">Items Ordered</h4>
+                <div style="background: var(--surface-elevated); border-radius: var(--radius-sm); border: 1px solid var(--glass-border); padding: 0 15px;">
+                    ${itemsHtml || '<div style="padding: 15px; color: var(--text-secondary);">No item data available.</div>'}
+                </div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 20px; background: var(--surface-color); border-radius: var(--radius-md); border: 1px solid var(--primary-color);">
+                <span style="font-size: 1.1rem; font-weight: bold;">Grand Total:</span>
+                <span style="font-size: 1.4rem; font-weight: 800; color: var(--primary-color);">UGX ${parseFloat(order.total_amount).toLocaleString()}</span>
+            </div>
+        </div>
+    `;
+    elements.orderDetailsModal.classList.add('active');
 }
 
 function renderMenuTable() {
@@ -370,9 +512,17 @@ function setupMenuTableActions() {
                 elements.formDesc.value = item.description;
                 elements.formImage.value = item.image;
                 
+                if (item.image) {
+                    elements.imagePreview.src = item.image;
+                    elements.imagePreview.style.display = 'block';
+                } else {
+                    elements.imagePreview.style.display = 'none';
+                }
+                
                 elements.menuFormTitle.innerText = 'Edit Menu Item';
-                elements.menuFormContainer.style.display = 'block';
-                elements.menuFormContainer.scrollIntoView({ behavior: 'smooth' });
+                elements.menuFormContainer.classList.remove('hidden');
+                elements.menuFormContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                setTimeout(() => elements.formName.focus(), 100);
             }
         });
     });
@@ -389,9 +539,22 @@ function setupMenuTableActions() {
                         }
                     }
                 `;
-                const { error } = await nhost.graphql.request(DELETE_MENU_ITEM, { id });
+                
+                let err = null;
+                try {
+                    const resp = await nhost.graphql.request(DELETE_MENU_ITEM, { id });
+                    err = resp.error || resp.body?.errors;
+                } catch(e) { err = e; }
 
-                if (!error) {
+                if (err) {
+                    console.warn("Nhost delete failed, falling back to local storage.");
+                    const localMenu = JSON.parse(localStorage.getItem('wabz_mock_menu') || '[]');
+                    const filtered = localMenu.filter(i => i.id !== id);
+                    localStorage.setItem('wabz_mock_menu', JSON.stringify(filtered));
+                    err = null;
+                }
+
+                if (!err) {
                     await fetchData();
                     renderAll();
                 } else {
@@ -406,12 +569,39 @@ function setupEventListeners() {
     elements.btnAddMenuItem.addEventListener('click', () => {
         elements.menuItemForm.reset();
         elements.formId.value = '';
+        elements.imagePreview.src = '';
+        elements.imagePreview.style.display = 'none';
         elements.menuFormTitle.innerText = 'Add New Menu Item';
-        elements.menuFormContainer.style.display = 'block';
+        elements.menuFormContainer.classList.remove('hidden');
+        elements.menuFormContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(() => elements.formName.focus(), 100);
     });
 
+    elements.formImage.addEventListener('input', (e) => {
+        const val = e.target.value.trim();
+        if (val) {
+            elements.imagePreview.src = val;
+            elements.imagePreview.style.display = 'block';
+        } else {
+            elements.imagePreview.style.display = 'none';
+        }
+    });
+
+    if (elements.btnCloseTracking) {
+        elements.btnCloseTracking.addEventListener('click', () => {
+            elements.trackingModal.classList.remove('active');
+        });
+    }
+    
+    if (elements.closeOrderModal) {
+        elements.closeOrderModal.addEventListener('click', () => {
+            elements.orderDetailsModal.classList.remove('active');
+        });
+    }
+
     elements.btnCancelMenu.addEventListener('click', () => {
-        elements.menuFormContainer.style.display = 'none';
+        elements.menuFormContainer.classList.add('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 
     elements.menuItemForm.addEventListener('submit', async (e) => {
@@ -428,35 +618,60 @@ function setupEventListeners() {
         };
 
         let error = null;
-        if (elements.formId.value) {
-            // Update
-            const UPDATE_ITEM = `
-                mutation UpdateItem($id: String!, $set: menu_items_set_input!) {
-                    update_menu_items_by_pk(pk_columns: {id: $id}, _set: $set) {
-                        id
+        try {
+            if (elements.formId.value) {
+                // Update
+                const UPDATE_ITEM = `
+                    mutation UpdateItem($id: String!, $set: menu_items_set_input!) {
+                        update_menu_items_by_pk(pk_columns: {id: $id}, _set: $set) {
+                            id
+                        }
                     }
-                }
-            `;
-            const resp = await nhost.graphql.request(UPDATE_ITEM, { id: elements.formId.value, set: payload });
-            error = resp.error;
-        } else {
-            // Insert
-            const newId = 'custom_' + Date.now();
-            const INSERT_ITEM = `
-                mutation InsertItem($object: menu_items_insert_input!) {
-                    insert_menu_items_one(object: $object) {
-                        id
+                `;
+                const resp = await nhost.graphql.request(UPDATE_ITEM, { id: elements.formId.value, set: payload });
+                error = resp.error || resp.body?.errors;
+            } else {
+                // Insert
+                const newId = 'custom_' + Date.now();
+                const INSERT_ITEM = `
+                    mutation InsertItem($object: menu_items_insert_input!) {
+                        insert_menu_items_one(object: $object) {
+                            id
+                        }
                     }
+                `;
+                const resp = await nhost.graphql.request(INSERT_ITEM, { 
+                    object: { ...payload, id: newId } 
+                });
+                error = resp.error || resp.body?.errors;
+            }
+        } catch(e) {
+            error = e;
+        }
+
+        if (error) {
+            console.warn("Nhost save failed. Using local storage fallback.");
+            try {
+                const localMenu = JSON.parse(localStorage.getItem('wabz_mock_menu') || '[]');
+                const saveId = elements.formId.value || 'custom_' + Date.now();
+                const completeItem = { ...payload, id: saveId };
+                
+                const itemIndex = localMenu.findIndex(i => i.id === saveId);
+                if (itemIndex > -1) {
+                    localMenu[itemIndex] = completeItem;
+                } else {
+                    localMenu.push(completeItem);
                 }
-            `;
-            const resp = await nhost.graphql.request(INSERT_ITEM, { 
-                object: { ...payload, id: newId } 
-            });
-            error = resp.error;
+                localStorage.setItem('wabz_mock_menu', JSON.stringify(localMenu));
+                error = null;
+            } catch(localErr) {
+                error = localErr;
+            }
         }
 
         if (!error) {
-            elements.menuFormContainer.style.display = 'none';
+            elements.menuFormContainer.classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             await fetchData();
             renderAll();
         } else {

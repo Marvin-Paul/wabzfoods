@@ -13,24 +13,102 @@ const state = {
     currentCategory: 'limited-time',
     user: null,
     menuItems: [
+        // ── BREAKFAST ──
         {
-            id: 'lt1',
-            category: 'limited-time',
-            name: 'Mega Crunch Box',
-            description: '2 Pcs crispy chicken, regular fries, and a refreshing cold drink.',
-            price: 15000,
+            id: 'bf1',
+            category: 'breakfast',
+            name: 'Katogo Special',
+            description: 'Matooke cooked with offals (matumbo), groundnut sauce & fresh tomatoes — a Kampala morning classic.',
+            price: 8000,
             image: 'assets/box_meal.png',
-            badge: 'Best Seller',
+            badge: 'Fan Favourite',
             modifiers: [
-                { name: 'Choose Flavor', options: ['Original', 'Spicy'] },
-                { name: 'Upgrade Drink', options: ['Regular', 'Large (+UGX 2,000)'] }
+                { name: 'Protein Add-on', options: ['Offals (Matumbo)', 'Beef', 'Groundnut Only'] }
             ]
         },
         {
-            id: 'p1',
-            category: 'promo',
+            id: 'bf2',
+            category: 'breakfast',
+            name: 'Chapati & Beans',
+            description: 'Soft, layered chapati served with rich, spiced beans — the go-to Kampala street breakfast.',
+            price: 5000,
+            image: 'assets/box_meal.png',
+            badge: 'Street Classic',
+            modifiers: [
+                { name: 'Extras', options: ['Extra Chapati (+UGX 1,500)', 'Plain'] }
+            ]
+        },
+        {
+            id: 'bf3',
+            category: 'breakfast',
+            name: 'Full Breakfast Plate',
+            description: 'Scrambled eggs, sausages, toast, baked beans, and a fresh juice — the Wabz way to start the day.',
+            price: 15000,
+            image: 'assets/box_meal.png',
+            badge: 'Premium',
+            modifiers: [
+                { name: 'Eggs', options: ['Scrambled', 'Fried', 'Boiled'] },
+                { name: 'Drink', options: ['Fresh Juice', 'Tea', 'Coffee'] }
+            ]
+        },
+        // ── LUNCH ──
+        {
+            id: 'lu1',
+            category: 'lunch',
+            name: 'Wabz Big Box',
+            description: 'Burger, 1 Pc Crispy Chicken, seasoned fries, and a cold drink — the midday power combo.',
+            price: 22000,
+            image: 'assets/box_meal.png',
+            badge: 'Best Seller',
+            modifiers: [
+                { name: 'Burger Type', options: ['Beef', 'Chicken'] },
+                { name: 'Drink', options: ['Coke', 'Fanta', 'Sprite', 'Water'] }
+            ]
+        },
+        {
+            id: 'lu2',
+            category: 'lunch',
+            name: 'Rice & Stew Plate',
+            description: 'Steamed white rice with rich beef stew, coleslaw salad, and fried plantain (matoke).',
+            price: 12000,
+            image: 'assets/sharing_bucket.png',
+            badge: 'Local Fave',
+            modifiers: [
+                { name: 'Protein', options: ['Beef', 'Chicken', 'Fish'] }
+            ]
+        },
+        {
+            id: 'lu3',
+            category: 'lunch',
+            name: 'Mega Crunch Box',
+            description: '2 Pcs crispy fried chicken, seasoned fries, and a refreshing cold drink.',
+            price: 15000,
+            image: 'assets/box_meal.png',
+            badge: 'Hot Pick',
+            modifiers: [
+                { name: 'Flavor', options: ['Original', 'Spicy'] },
+                { name: 'Upgrade Drink', options: ['Regular', 'Large (+UGX 2,000)'] }
+            ]
+        },
+        // ── DINNER ──
+        {
+            id: 'di1',
+            category: 'dinner',
+            name: 'Family Feast Bucket',
+            description: '10 Pcs Chicken, 2 Large Fries, and a 2L Drink — feeds the whole family.',
+            price: 65000,
+            image: 'assets/sharing_bucket.png',
+            badge: 'Family Size',
+            modifiers: [
+                { name: 'Flavor', options: ['Original', 'Spicy', 'Mixed'] },
+                { name: 'Drink', options: ['Coke 2L', 'Fanta 2L', 'Sprite 2L'] }
+            ]
+        },
+        {
+            id: 'di2',
+            category: 'dinner',
             name: 'Double Burger Deal',
-            description: 'Two classic beef burgers stacked with cheese and fresh lettuce.',
+            description: 'Two classic beef burgers stacked with cheddar cheese, fresh lettuce, and special sauce.',
             price: 25000,
             image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=500&q=80',
             badge: '2-for-1',
@@ -39,53 +117,128 @@ const state = {
             ]
         },
         {
-            id: 'bm1',
-            category: 'box-meals',
-            name: 'Wabz Big Box',
-            description: 'Burger, 1 Pc Chicken, fries, and a drink.',
-            price: 22000,
-            image: 'assets/box_meal.png',
-            badge: 'Classic',
+            id: 'di3',
+            category: 'dinner',
+            name: 'Grilled Tilapia Dinner',
+            description: 'Whole grilled Nile tilapia with steamed rice, sukuma wiki, and a side of kachumbari salad.',
+            price: 28000,
+            image: 'assets/sharing_bucket.png',
+            badge: 'Local Special',
             modifiers: [
-                { name: 'Burger Type', options: ['Beef', 'Chicken'] },
-                { name: 'Drink', options: ['Coke', 'Fanta', 'Sprite'] }
+                { name: 'Sides', options: ['Rice + Sukuma', 'Chips + Salad'] }
+            ]
+        },
+        // ── LOCAL FOOD ──
+        {
+            id: 'lf1',
+            category: 'local',
+            name: 'Matooke & G-Nut Sauce',
+            description: 'Steamed Matooke (green banana) served with rich groundnut (peanut) sauce and beef.',
+            price: 10000,
+            image: 'assets/box_meal.png',
+            badge: 'Ugandan Classic',
+            modifiers: [
+                { name: 'Protein', options: ['Beef', 'Chicken', 'Vegetable Only'] }
             ]
         },
         {
-            id: 'cp1',
-            category: 'chicken-pieces',
+            id: 'lf2',
+            category: 'local',
+            name: 'Rolex (Rolled Eggs)',
+            description: 'The iconic Kampala street food — eggs & vegetables rolled in a fresh chapati. Served hot.',
+            price: 4000,
+            image: 'assets/box_meal.png',
+            badge: 'Kampala Icon',
+            modifiers: [
+                { name: 'Eggs', options: ['1 Egg', '2 Eggs (+UGX 1,500)'] },
+                { name: 'Add Extras', options: ['Tomato + Cabbage', 'Plain'] }
+            ]
+        },
+        {
+            id: 'lf3',
+            category: 'local',
+            name: 'Posho & Beans',
+            description: 'Smooth maize posho served with slow-cooked beans — a comforting, filling Ugandan staple.',
+            price: 6000,
+            image: 'assets/box_meal.png',
+            badge: 'Staple',
+            modifiers: [
+                { name: 'Extras', options: ['Add Greens (+UGX 1,000)', 'Plain'] }
+            ]
+        },
+        // ── JUNK FOOD ──
+        {
+            id: 'jk1',
+            category: 'junk',
+            name: 'Cheese Master Burger',
+            description: 'Premium beef patty, double cheddar, crispy bacon, and our special Wabz sauce on a toasted bun.',
+            price: 12000,
+            image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=500&q=80',
+            badge: 'New',
+            modifiers: [
+                { name: 'Add-ons', options: ['Bacon (+UGX 3,000)', 'Jalapeños (+UGX 1,000)', 'None'] }
+            ]
+        },
+        {
+            id: 'jk2',
+            category: 'junk',
             name: '5 Pc Chicken Bucket',
-            description: '5 Pieces of our signature crispy fried chicken.',
+            description: '5 pieces of our signature crispy fried chicken. Choose your heat level.',
             price: 30000,
             image: 'assets/sharing_bucket.png',
-            badge: 'Hot',
+            badge: 'Hot 🔥',
             modifiers: [
                 { name: 'Flavor', options: ['Original', 'Spicy', 'Mixed'] }
             ]
         },
         {
-            id: 's1',
-            category: 'sharing',
-            name: 'Family Feast',
-            description: '10 Pcs Chicken, 2 Large Fries, and 2L Drink.',
-            price: 65000,
-            image: 'assets/sharing_bucket.png',
-            badge: 'Family Size',
+            id: 'jk3',
+            category: 'junk',
+            name: 'Loaded Fries',
+            description: 'Crispy fries piled high with cheese sauce, bacon bits, jalapeños, and sour cream.',
+            price: 9000,
+            image: 'assets/box_meal.png',
+            badge: 'Loaded',
             modifiers: [
-                { name: 'Flavor', options: ['Original', 'Spicy', 'Mixed'] },
-                { name: 'Drink', options: ['Coke 2L', 'Fanta 2L'] }
+                { name: 'Size', options: ['Regular', 'Large (+UGX 2,000)'] },
+                { name: 'Sauce', options: ['Cheese', 'BBQ', 'Spicy Mayo'] }
+            ]
+        },
+        // ── DRINKS ──
+        {
+            id: 'dr1',
+            category: 'drinks',
+            name: 'Fresh Passion Juice',
+            description: 'Freshly blended passion fruit juice — sweet, tangy, and chilled. No added sugar.',
+            price: 4000,
+            image: 'assets/box_meal.png',
+            badge: 'Fresh',
+            modifiers: [
+                { name: 'Size', options: ['Small (300ml)', 'Large (500ml) (+UGX 2,000)'] }
             ]
         },
         {
-            id: 'b1',
-            category: 'burgers',
-            name: 'Cheese Master',
-            description: 'Premium beef patty, cheddar cheese, and special sauce.',
-            price: 12000,
-            image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=500&q=80',
-            badge: 'New',
+            id: 'dr2',
+            category: 'drinks',
+            name: 'Sodas & Water',
+            description: 'Coke, Fanta Orange, Fanta Pineapple, Sprite, or Mineral Water — ice cold.',
+            price: 2500,
+            image: 'assets/box_meal.png',
+            badge: 'Cold',
             modifiers: [
-                { name: 'Add-ons', options: ['Bacon (+UGX 3,000)', 'None'] }
+                { name: 'Choose', options: ['Coke', 'Fanta Orange', 'Fanta Pineapple', 'Sprite', 'Water'] }
+            ]
+        },
+        {
+            id: 'dr3',
+            category: 'drinks',
+            name: 'Milkshake',
+            description: 'Thick, creamy milkshake blended fresh. Choose from chocolate, vanilla, or strawberry.',
+            price: 8000,
+            image: 'assets/box_meal.png',
+            badge: 'Creamy',
+            modifiers: [
+                { name: 'Flavor', options: ['Chocolate', 'Vanilla', 'Strawberry'] }
             ]
         }
     ]
@@ -145,22 +298,24 @@ const elements = {
     paymentStatusContainer: document.getElementById('payment-status-container'),
     paymentStatusText: document.getElementById('payment-status-text'),
     paymentStatusSubtext: document.getElementById('payment-status-subtext'),
-    trackingStatus: document.getElementById('tracking-status')
+    trackingStatus: document.getElementById('tracking-status'),
+    
+    reviewModal: document.getElementById('review-modal'),
+    btnOpenReview: document.getElementById('open-review-modal'),
+    btnCloseReview: document.getElementById('close-review'),
+    btnSubmitReview: document.getElementById('submit-review')
 };
 
 // Initialize App
 async function init() {
     await fetchMenuItems();
     checkSession();
-    renderCategoryTabs();
     renderMenu();
     setupEventListeners();
     startCarousel();
-    
-    if ('Notification' in window && Notification.permission === 'default') {
-        Notification.requestPermission();
-    }
 }
+
+
 
 function checkSession() {
     const savedUser = localStorage.getItem('wabz_user');
@@ -231,58 +386,58 @@ function startCarousel() {
     }, 5000);
 }
 
-// Render Category Tabs
-function renderCategoryTabs() {
-    const categories = [
-        { id: 'limited-time', name: 'Limited Time' },
-        { id: 'promo', name: 'Promo' },
-        { id: 'box-meals', name: 'Box Meals' },
-        { id: 'chicken-pieces', name: 'Chicken Pieces' },
-        { id: 'sharing', name: 'Sharing' },
-        { id: 'burgers', name: 'Burgers' }
-    ];
-    
-    elements.categoryTabs.innerHTML = categories.map(cat => `
-        <div class="tab ${state.currentCategory === cat.id ? 'active' : ''}" data-id="${cat.id}">
-            ${cat.name}
-        </div>
-    `).join('');
-    
-    // Add Click Listeners
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.addEventListener('click', (e) => {
-            document.querySelector('.tab.active').classList.remove('active');
-            e.target.classList.add('active');
-            state.currentCategory = e.target.dataset.id;
-            renderMenu();
-        });
-    });
-}
-
 // Render Menu
 function renderMenu() {
-    const filteredItems = state.menuItems.filter(item => item.category === state.currentCategory);
-    
-    elements.menuGrid.innerHTML = filteredItems.map(item => `
-        <div class="menu-card">
-            <div class="card-img" style="background-image: url('${item.image}')">
-                ${item.badge ? `<span class="card-badge">${item.badge}</span>` : ''}
+    const categories = [
+        { key: 'breakfast', label: '🌅 Breakfast',    emoji: '🌅' },
+        { key: 'lunch',     label: '☀️ Lunch',        emoji: '☀️' },
+        { key: 'dinner',    label: '🌙 Dinner',       emoji: '🌙' },
+        { key: 'local',     label: '🇺🇬 Local Food',  emoji: '🇺🇬' },
+        { key: 'junk',      label: '🍔 Junk Food',    emoji: '🍔' },
+        { key: 'drinks',    label: '🥤 Drinks',       emoji: '🥤' },
+    ];
+
+    const container = elements.menuGrid;
+    container.innerHTML = '';
+
+    categories.forEach(cat => {
+        const items = state.menuItems.filter(item => item.category === cat.key);
+        if (items.length === 0) return;
+
+        const section = document.createElement('div');
+        section.className = 'menu-category-section';
+        section.innerHTML = `
+            <div class="menu-category-header">
+                <span class="menu-category-emoji">${cat.emoji}</span>
+                <h3 class="menu-category-title">${cat.label}</h3>
+                <span class="menu-category-count">${items.length} items</span>
             </div>
-            <div class="card-body">
-                <h3 class="card-title">${item.name}</h3>
-                <p class="card-desc">${item.description}</p>
-                <div class="card-footer">
-                    <span class="card-price">UGX ${item.price.toLocaleString()}</span>
-                    <button class="btn-primary open-product" data-id="${item.id}" style="padding: 8px 16px;">Select</button>
-                </div>
+            <div class="menu-grid-inner">
+                ${items.map(item => `
+                    <div class="menu-card">
+                        <div class="card-img" style="background-image: url('${item.image}')">
+                            ${item.badge ? `<span class="card-badge">${item.badge}</span>` : ''}
+                        </div>
+                        <div class="card-body">
+                            <h3 class="card-title">${item.name}</h3>
+                            <p class="card-desc">${item.description}</p>
+                            <div class="card-footer">
+                                <span class="card-price">UGX ${item.price.toLocaleString()}</span>
+                                <button class="btn-primary open-product" data-id="${item.id}" style="padding: 8px 16px;">Order</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
             </div>
-        </div>
-    `).join('');
-    
-    // Add Click Listeners for "Select"
+        `;
+        container.appendChild(section);
+    });
+
+    // Attach click listeners for all Order buttons
     document.querySelectorAll('.open-product').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            openProductModal(e.target.dataset.id);
+            const id = e.target.closest('[data-id]').dataset.id;
+            openProductModal(id);
         });
     });
 }
@@ -561,6 +716,48 @@ function setupEventListeners() {
         }
         simulatePayment('MoMo');
     });
+
+    // Review Modal Listeners
+    if (elements.btnOpenReview) {
+        elements.btnOpenReview.addEventListener('click', () => showModal(elements.reviewModal));
+    }
+    if (elements.btnCloseReview) {
+        elements.btnCloseReview.addEventListener('click', () => hideModal(elements.reviewModal));
+    }
+
+    // Star Selection Logic
+    const starItems = document.querySelectorAll('.star-item');
+    starItems.forEach(star => {
+        star.addEventListener('click', (e) => {
+            const val = parseInt(e.target.dataset.value);
+            state.currentRating = val;
+            starItems.forEach((s, idx) => {
+                if (idx < val) s.classList.add('active');
+                else s.classList.remove('active');
+            });
+        });
+    });
+
+    if (elements.btnSubmitReview) {
+        elements.btnSubmitReview.addEventListener('click', () => {
+            if (!state.currentRating) {
+                alert('Please select a star rating.');
+                return;
+            }
+            const text = document.getElementById('review-text').value;
+            if (text.length < 5) {
+                alert('Please share a little more about your experience.');
+                return;
+            }
+            
+            alert('Thank you for your feedback! Your review has been submitted for moderation.');
+            hideModal(elements.reviewModal);
+            // Reset for next time
+            state.currentRating = 0;
+            starItems.forEach(s => s.classList.remove('active'));
+            document.getElementById('review-text').value = '';
+        });
+    }
 }
 
 function scrollToMenu() {
@@ -812,32 +1009,59 @@ async function simulatePayment(method) {
             elements.momoInputGroup.style.display = 'none';
             elements.paymentStatusContainer.style.display = 'none';
             
-            // Simulate Order Tracking
-            simulateTracking();
+            // Start Live Order Tracking
+            simulateTracking(orderId);
         }, 2000);
     }, 3000);
 }
 
-function simulateTracking() {
-    const statuses = ['Preparing', 'Out for Delivery', 'Arrived'];
-    let statusIndex = 0;
+function simulateTracking(orderId) {
+    if (!orderId) return;
     
-    const interval = setInterval(() => {
-        if (statusIndex < statuses.length) {
-            const currentStatus = statuses[statusIndex];
+    const trackingTitle = document.querySelector('#tracking-modal h4');
+    if (trackingTitle) {
+        trackingTitle.innerText = `Order #${orderId.replace('local_order_', '').slice(0, 8).toUpperCase()}`;
+    }
+    
+    elements.trackingStatus.innerText = 'Pending';
+    
+    const interval = setInterval(async () => {
+        let currentStatus = null;
+        
+        // 1. Check Nhost (if backend is active)
+        if (!orderId.startsWith('local_')) {
+            try {
+                const GET_ORDER_STATUS = `query { orders_by_pk(id: "${orderId}") { status } }`;
+                const resp = await nhost.graphql.request({ query: GET_ORDER_STATUS });
+                if (resp.data && resp.data.orders_by_pk) {
+                    currentStatus = resp.data.orders_by_pk.status;
+                }
+            } catch(e) {}
+        }
+        
+        // 2. Check LocalStorage fallback
+        if (!currentStatus) {
+            const localOrders = JSON.parse(localStorage.getItem('wabz_mock_orders') || '[]');
+            const order = localOrders.find(o => o.id === orderId);
+            if (order) {
+                currentStatus = order.status;
+            }
+        }
+        
+        if (currentStatus) {
+            const prevStatus = elements.trackingStatus.innerText;
             elements.trackingStatus.innerText = currentStatus;
-            statusIndex++;
             
-            if (currentStatus === 'Arrived') {
-                alert('🔔 Wabz Foods: Your order is ready and has arrived!');
+            if (currentStatus !== prevStatus && (currentStatus === 'Completed' || currentStatus === 'Cancelled')) {
+                clearInterval(interval);
+                const msg = currentStatus === 'Completed' ? 'Your food is ready and has arrived! Enjoy!' : 'Your order was cancelled.';
+                setTimeout(() => alert(`🔔 Wabz Foods: ${msg}`), 500);
                 if ('Notification' in window && Notification.permission === 'granted') {
-                    new Notification('Wabz Foods', { body: 'Your order is ready and has arrived!' });
+                    new Notification('Wabz Foods', { body: msg });
                 }
             }
-        } else {
-            clearInterval(interval);
         }
-    }, 10000); // Update every 10 seconds
+    }, 2000); // Check every 2 seconds for a highly responsive live feel
 }
 
 // Run
