@@ -1208,3 +1208,340 @@ footer {
     color: var(--text-secondary);
     opacity: 0.7;
 }
+
+/* Extracted from inline styles */
+.feature-bg-delivery {
+    background-image: url('wabz_fast_delivery_icon_1777666889576.png');
+}
+
+.feature-bg-quality {
+    background-image: url('wabz_fresh_chicken_icon_1777666908751.png');
+}
+
+.feature-bg-chefs {
+    background-image: url('wabz_chef_icon_1777666926462.png');
+}
+
+.icon-align-bottom {
+    margin-bottom: 2px;
+}
+
+.subtitle-tight {
+    margin-top: -2px;
+    font-weight: 400;
+}
+
+/* Trust Banner & Marquee Additions */
+.marquee-container { overflow: hidden; white-space: nowrap; position: relative; width: 100%; max-width: 100%; padding: 10px 0; }
+.marquee-container::before, .marquee-container::after { content: ""; position: absolute; top: 0; bottom: 0; width: 50px; z-index: 2; pointer-events: none; }
+.marquee-container::before { left: 0; background: linear-gradient(to right, var(--bg-color), transparent); }
+.marquee-container::after { right: 0; background: linear-gradient(to left, var(--bg-color), transparent); }
+.marquee-content { display: inline-flex; gap: 12px; animation: scrollMarquee 20s linear infinite; padding-left: 12px; }
+.marquee-container:hover .marquee-content { animation-play-state: paused; }
+@keyframes scrollMarquee { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-50% - 6px)); } }
+.location-chips .chip { padding: 8px 18px !important; border-radius: var(--radius-full) !important; font-size: 0.85rem !important; cursor: pointer !important; user-select: none !important; font-weight: 500 !important; }
+.location-chips .chip:hover { background: var(--surface-color) !important; color: var(--text-primary) !important; transform: translateY(-2px) !important; box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important; }
+.location-chips .chip.active { background: rgba(255, 213, 79, 0.2) !important; border-color: var(--secondary-color) !important; color: var(--secondary-color) !important; box-shadow: 0 0 15px rgba(255, 213, 79, 0.2) !important; transform: translateY(-2px) !important; }
+
+/* Toast Notifications */
+.toast-container { position: fixed; bottom: 20px; right: 20px; z-index: 10000; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+.toast { background: var(--surface-elevated); color: var(--text-primary); padding: 14px 20px; border-radius: var(--radius-md); box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-left: 4px solid var(--secondary-color); transform: translateX(120%); opacity: 0; transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55); pointer-events: auto; }
+.toast.show { transform: translateX(0); opacity: 1; }
+.toast-content { display: flex; align-items: center; gap: 12px; font-size: 0.9rem; font-weight: 500; }
+.toast-error { border-left-color: #ff4d4d; }
+.toast-success { border-left-color: #2ecc71; }
+
+/* ============================================================
+   PROFESSIONAL UI UPGRADE — Wabz Foods
+   Preserves all existing color tokens, enhances everything else
+   ============================================================ */
+
+/* Smooth scroll for the whole page */
+html { scroll-behavior: smooth; }
+
+/* Scroll-aware header elevation */
+header {
+    transition: box-shadow 0.3s ease, background 0.3s ease;
+}
+header.scrolled {
+    box-shadow: 0 4px 30px rgba(0,0,0,0.12);
+    background: rgba(253, 235, 208, 0.98) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+/* Hero Section — tighter, more dramatic */
+.hero {
+    padding: 80px 0 50px;
+    gap: 0;
+}
+.hero-badge {
+    animation: fadeInDown 0.6s ease both;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+.hero h1 {
+    animation: fadeInUp 0.7s ease 0.1s both;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    margin-bottom: 18px;
+}
+.hero p {
+    animation: fadeInUp 0.7s ease 0.2s both;
+    font-size: 1.1rem;
+    max-width: 520px;
+    line-height: 1.7;
+    margin-bottom: 32px;
+}
+.hero .btn-primary {
+    animation: fadeInUp 0.7s ease 0.3s both;
+    padding: 14px 32px;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+}
+
+/* Carousel — polished overlay */
+.carousel-container {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    margin-top: 48px;
+}
+.carousel-slide::before {
+    background: linear-gradient(
+        135deg,
+        rgba(229, 57, 53, 0.6) 0%,
+        rgba(255, 193, 7, 0.3) 50%,
+        transparent 100%
+    );
+}
+.slide-content h2 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    color: #fff;
+}
+.slide-content p { color: rgba(255,255,255,0.9); text-shadow: 0 1px 4px rgba(0,0,0,0.4); }
+
+/* Features Section */
+.feature-card {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    position: relative;
+    min-height: 180px;
+    transition: transform 0.35s cubic-bezier(0.22,1,0.36,1), box-shadow 0.35s ease;
+}
+.feature-card:hover {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: var(--shadow-lg);
+}
+.card-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(30,30,36,0.85) 0%, rgba(30,30,36,0.2) 100%);
+    display: flex; align-items: flex-end; padding: 24px;
+    transition: background 0.3s ease;
+}
+.feature-card:hover .card-overlay {
+    background: linear-gradient(to top, rgba(229,57,53,0.85) 0%, rgba(229,57,53,0.25) 100%);
+}
+.card-content h3 {
+    color: #fff; font-weight: 700; font-size: 1.15rem; margin-bottom: 4px;
+}
+.card-content p {
+    color: rgba(255,255,255,0.8); font-size: 0.85rem;
+}
+
+/* Menu Cards — elevated */
+.menu-card {
+    border-radius: var(--radius-lg);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s ease, border-color 0.2s ease;
+}
+.menu-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.12), 0 0 0 1.5px var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+.card-img {
+    height: 210px;
+    transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.menu-card:hover .card-img { transform: scale(1.04); }
+
+.card-badge {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+}
+.card-desc {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+}
+.card-price {
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+/* Order button inside card */
+.open-product {
+    padding: 9px 20px !important;
+    font-size: 0.875rem !important;
+    letter-spacing: 0.03em;
+    font-weight: 700 !important;
+    border-radius: var(--radius-full) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease !important;
+}
+.open-product:hover {
+    transform: scale(1.05) !important;
+}
+
+/* Category Header — cleaner divider */
+.menu-category-header {
+    padding-bottom: 14px;
+    border-bottom: 2px solid var(--glass-border);
+    margin-bottom: 28px;
+}
+.menu-category-emoji { font-size: 1.8rem; }
+.menu-category-title {
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+.menu-category-count {
+    font-size: 0.75rem;
+    padding: 5px 14px;
+    background: var(--secondary-gradient);
+    color: var(--text-dark);
+    border: none;
+    font-weight: 700;
+}
+
+/* Section Headers */
+.section-header { margin-bottom: 48px; }
+.section-header h2 {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+}
+.section-header p { margin-top: 10px; font-size: 1rem; }
+
+/* Modal — spring animation */
+.modal-content {
+    border-radius: 24px;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+.modal-overlay.active .modal-content {
+    transform: scale(1) translateY(0);
+    transition: transform 0.38s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease;
+}
+.modal-overlay .modal-content {
+    transform: scale(0.92) translateY(16px);
+}
+.modal-header { padding: 24px 24px 18px; }
+.modal-header h3 { font-weight: 700; font-size: 1.15rem; letter-spacing: -0.01em; }
+.modal-body { padding: 20px 24px; }
+.modal-footer { padding: 16px 24px 24px; }
+
+/* Testimonial Cards */
+.testimonial-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: var(--radius-lg);
+}
+.testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+}
+
+/* Trust Banner — bigger chips */
+.location-chips .chip {
+    padding: 10px 20px !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    background: var(--surface-elevated) !important;
+    border: 1.5px solid var(--glass-border) !important;
+    border-radius: var(--radius-full) !important;
+    transition: all 0.25s ease !important;
+    letter-spacing: 0.02em;
+}
+
+/* Footer */
+footer {
+    background: var(--text-dark);
+    padding: 70px 0 32px;
+    margin-top: 80px;
+    border-top: none;
+}
+footer .footer-col h3 { color: var(--secondary-color); }
+footer .footer-col ul li a { color: rgba(255,255,255,0.6); }
+footer .footer-col ul li a:hover { color: var(--secondary-color); }
+footer p.color-text-secondary { color: rgba(255,255,255,0.5) !important; }
+.footer-bottom {
+    color: rgba(255,255,255,0.4);
+    border-top-color: rgba(255,255,255,0.1);
+}
+
+/* Logo — premium */
+.logo {
+    font-size: 1.6rem;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+    gap: 0;
+}
+
+/* Top-bar tweaks */
+.top-bar {
+    font-size: 0.8rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+/* Cart Widget */
+.cart-widget {
+    font-weight: 600;
+    border-radius: var(--radius-full);
+    transition: all 0.25s ease;
+}
+.cart-widget:hover {
+    transform: scale(1.03);
+}
+
+/* Buttons — refined active state */
+.btn-primary:active, .btn-secondary:active {
+    transform: scale(0.97) translateY(0) !important;
+}
+
+/* ---- Fade animations ---- */
+@keyframes fadeInDown {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+/* Scroll-reveal cards */
+.menu-card, .testimonial-card, .feature-card {
+    animation: fadeInUp 0.5s ease both;
+}

@@ -13,12 +13,12 @@ const state = {
     currentCategory: 'limited-time',
     user: null,
     menuItems: [
-        // ── BREAKFAST ──
+        // ΓöÇΓöÇ BREAKFAST ΓöÇΓöÇ
         {
             id: 'bf1',
             category: 'breakfast',
             name: 'Katogo Special',
-            description: 'Matooke cooked with offals (matumbo), groundnut sauce & fresh tomatoes — a Kampala morning classic.',
+            description: 'Matooke cooked with offals (matumbo), groundnut sauce & fresh tomatoes ΓÇö a Kampala morning classic.',
             price: 8000,
             image: 'assets/box_meal.png',
             badge: 'Fan Favourite',
@@ -30,7 +30,7 @@ const state = {
             id: 'bf2',
             category: 'breakfast',
             name: 'Chapati & Beans',
-            description: 'Soft, layered chapati served with rich, spiced beans — the go-to Kampala street breakfast.',
+            description: 'Soft, layered chapati served with rich, spiced beans ΓÇö the go-to Kampala street breakfast.',
             price: 5000,
             image: 'assets/box_meal.png',
             badge: 'Street Classic',
@@ -42,7 +42,7 @@ const state = {
             id: 'bf3',
             category: 'breakfast',
             name: 'Full Breakfast Plate',
-            description: 'Scrambled eggs, sausages, toast, baked beans, and a fresh juice — the Wabz way to start the day.',
+            description: 'Scrambled eggs, sausages, toast, baked beans, and a fresh juice ΓÇö the Wabz way to start the day.',
             price: 15000,
             image: 'assets/box_meal.png',
             badge: 'Premium',
@@ -51,12 +51,12 @@ const state = {
                 { name: 'Drink', options: ['Fresh Juice', 'Tea', 'Coffee'] }
             ]
         },
-        // ── LUNCH ──
+        // ΓöÇΓöÇ LUNCH ΓöÇΓöÇ
         {
             id: 'lu1',
             category: 'lunch',
             name: 'Wabz Big Box',
-            description: 'Burger, 1 Pc Crispy Chicken, seasoned fries, and a cold drink — the midday power combo.',
+            description: 'Burger, 1 Pc Crispy Chicken, seasoned fries, and a cold drink ΓÇö the midday power combo.',
             price: 22000,
             image: 'assets/box_meal.png',
             badge: 'Best Seller',
@@ -90,12 +90,12 @@ const state = {
                 { name: 'Upgrade Drink', options: ['Regular', 'Large (+UGX 2,000)'] }
             ]
         },
-        // ── DINNER ──
+        // ΓöÇΓöÇ DINNER ΓöÇΓöÇ
         {
             id: 'di1',
             category: 'dinner',
             name: 'Family Feast Bucket',
-            description: '10 Pcs Chicken, 2 Large Fries, and a 2L Drink — feeds the whole family.',
+            description: '10 Pcs Chicken, 2 Large Fries, and a 2L Drink ΓÇö feeds the whole family.',
             price: 65000,
             image: 'assets/sharing_bucket.png',
             badge: 'Family Size',
@@ -128,7 +128,7 @@ const state = {
                 { name: 'Sides', options: ['Rice + Sukuma', 'Chips + Salad'] }
             ]
         },
-        // ── LOCAL FOOD ──
+        // ΓöÇΓöÇ LOCAL FOOD ΓöÇΓöÇ
         {
             id: 'lf1',
             category: 'local',
@@ -145,7 +145,7 @@ const state = {
             id: 'lf2',
             category: 'local',
             name: 'Rolex (Rolled Eggs)',
-            description: 'The iconic Kampala street food — eggs & vegetables rolled in a fresh chapati. Served hot.',
+            description: 'The iconic Kampala street food ΓÇö eggs & vegetables rolled in a fresh chapati. Served hot.',
             price: 4000,
             image: 'assets/box_meal.png',
             badge: 'Kampala Icon',
@@ -158,7 +158,7 @@ const state = {
             id: 'lf3',
             category: 'local',
             name: 'Posho & Beans',
-            description: 'Smooth maize posho served with slow-cooked beans — a comforting, filling Ugandan staple.',
+            description: 'Smooth maize posho served with slow-cooked beans ΓÇö a comforting, filling Ugandan staple.',
             price: 6000,
             image: 'assets/box_meal.png',
             badge: 'Staple',
@@ -166,7 +166,7 @@ const state = {
                 { name: 'Extras', options: ['Add Greens (+UGX 1,000)', 'Plain'] }
             ]
         },
-        // ── JUNK FOOD ──
+        // ΓöÇΓöÇ JUNK FOOD ΓöÇΓöÇ
         {
             id: 'jk1',
             category: 'junk',
@@ -176,7 +176,7 @@ const state = {
             image: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=500&q=80',
             badge: 'New',
             modifiers: [
-                { name: 'Add-ons', options: ['Bacon (+UGX 3,000)', 'Jalapeños (+UGX 1,000)', 'None'] }
+                { name: 'Add-ons', options: ['Bacon (+UGX 3,000)', 'Jalape├▒os (+UGX 1,000)', 'None'] }
             ]
         },
         {
@@ -186,7 +186,7 @@ const state = {
             description: '5 pieces of our signature crispy fried chicken. Choose your heat level.',
             price: 30000,
             image: 'assets/sharing_bucket.png',
-            badge: 'Hot 🔥',
+            badge: 'Hot ≡ƒöÑ',
             modifiers: [
                 { name: 'Flavor', options: ['Original', 'Spicy', 'Mixed'] }
             ]
@@ -195,7 +195,7 @@ const state = {
             id: 'jk3',
             category: 'junk',
             name: 'Loaded Fries',
-            description: 'Crispy fries piled high with cheese sauce, bacon bits, jalapeños, and sour cream.',
+            description: 'Crispy fries piled high with cheese sauce, bacon bits, jalape├▒os, and sour cream.',
             price: 9000,
             image: 'assets/box_meal.png',
             badge: 'Loaded',
@@ -204,12 +204,12 @@ const state = {
                 { name: 'Sauce', options: ['Cheese', 'BBQ', 'Spicy Mayo'] }
             ]
         },
-        // ── DRINKS ──
+        // ΓöÇΓöÇ DRINKS ΓöÇΓöÇ
         {
             id: 'dr1',
             category: 'drinks',
             name: 'Fresh Passion Juice',
-            description: 'Freshly blended passion fruit juice — sweet, tangy, and chilled. No added sugar.',
+            description: 'Freshly blended passion fruit juice ΓÇö sweet, tangy, and chilled. No added sugar.',
             price: 4000,
             image: 'assets/box_meal.png',
             badge: 'Fresh',
@@ -221,7 +221,7 @@ const state = {
             id: 'dr2',
             category: 'drinks',
             name: 'Sodas & Water',
-            description: 'Coke, Fanta Orange, Fanta Pineapple, Sprite, or Mineral Water — ice cold.',
+            description: 'Coke, Fanta Orange, Fanta Pineapple, Sprite, or Mineral Water ΓÇö ice cold.',
             price: 2500,
             image: 'assets/box_meal.png',
             badge: 'Cold',
@@ -366,11 +366,26 @@ async function fetchMenuItems() {
         const error = response.error || response.body?.errors;
         
         if (error) throw error;
-        if (data && data.menu_items) {
+        if (data && data.menu_items && data.menu_items.length > 0) {
             state.menuItems = data.menu_items;
         }
     } catch (error) {
         console.error('Error fetching menu items from Nhost:', error);
+    }
+    
+    // Merge with Local Storage
+    try {
+        const localMenu = JSON.parse(localStorage.getItem('wabz_mock_menu') || '[]');
+        localMenu.forEach(lm => {
+            const index = state.menuItems.findIndex(m => m.id === lm.id);
+            if (index > -1) {
+                state.menuItems[index] = lm;
+            } else {
+                state.menuItems.push(lm);
+            }
+        });
+    } catch (e) {
+        console.error('Local storage menu retrieval error:', e);
     }
 }
 
@@ -389,12 +404,12 @@ function startCarousel() {
 // Render Menu
 function renderMenu() {
     const categories = [
-        { key: 'breakfast', label: '🌅 Breakfast',    emoji: '🌅' },
-        { key: 'lunch',     label: '☀️ Lunch',        emoji: '☀️' },
-        { key: 'dinner',    label: '🌙 Dinner',       emoji: '🌙' },
-        { key: 'local',     label: '🇺🇬 Local Food',  emoji: '🇺🇬' },
-        { key: 'junk',      label: '🍔 Junk Food',    emoji: '🍔' },
-        { key: 'drinks',    label: '🥤 Drinks',       emoji: '🥤' },
+        { key: 'breakfast', label: 'Breakfast',  emoji: '&#127749;' },
+        { key: 'lunch',     label: 'Lunch',      emoji: '&#9728;&#65039;' },
+        { key: 'dinner',    label: 'Dinner',     emoji: '&#127769;' },
+        { key: 'local',     label: 'Local Food', emoji: '&#127482;&#127468;' },
+        { key: 'junk',      label: 'Junk Food',  emoji: '&#127828;' },
+        { key: 'drinks',    label: 'Drinks',     emoji: '&#129384;' },
     ];
 
     const container = elements.menuGrid;
@@ -457,6 +472,28 @@ function setupEventListeners() {
     elements.btnOrderNow.addEventListener('click', () => {
         showModal(elements.fulfillmentModal);
     });
+
+    // Location Chips Interactive Setting
+    const locationChips = document.querySelectorAll('.location-chips .chip');
+    locationChips.forEach(chip => {
+        chip.addEventListener('click', (e) => {
+            const locName = e.currentTarget.getAttribute('data-location');
+            if (locName) {
+                state.fulfillment = 'delivery';
+                state.location = locName;
+                elements.addressInput.value = locName;
+                
+                // Visual Update
+                locationChips.forEach(c => c.classList.remove('active'));
+                document.querySelectorAll(`.location-chips .chip[data-location="${locName}"]`).forEach(c => {
+                    c.classList.add('active');
+                });
+                
+                showToast(`Delivery location set to ${locName}. Explore our menu!`);
+                document.getElementById('menu-container').scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
     
     // Fulfillment Selection
     elements.btnSelectDelivery.addEventListener('click', () => {
@@ -480,7 +517,7 @@ function setupEventListeners() {
     // Location Confirmation
     elements.btnConfirmAddress.addEventListener('click', () => {
         if (elements.addressInput.value.trim() === '') {
-            alert('Please enter your address');
+            showToast('Please enter your address');
             return;
         }
         state.location = elements.addressInput.value;
@@ -539,12 +576,12 @@ function setupEventListeners() {
         console.log('[Auth] Initialization initiated:', { email, phone, authMode });
 
         if (!password) {
-            alert('Please enter a password.');
+            showToast('Please enter a password.');
             return;
         }
 
         if (!email && !phone) {
-            alert('Please provide an Email address or Phone number.');
+            showToast('Please provide an Email address or Phone number.');
             return;
         }
 
@@ -598,12 +635,12 @@ function setupEventListeners() {
 
                 if (!user || user.password_hash !== password) {
                     console.error('[Auth] Login failure: Mismatched strings.');
-                    alert('Invalid credentials provided.');
+                    showToast('Invalid credentials provided.');
                     return;
                 }
 
                 console.log('[Auth] Successful authentication state.');
-                alert(`Welcome back to Wabz Foods!`);
+                showToast(`Welcome back to Wabz Foods!`);
                 state.user = user;
                 localStorage.setItem('wabz_user', JSON.stringify(user));
                 updateAuthUI();
@@ -647,7 +684,7 @@ function setupEventListeners() {
                     console.log('[Auth] Committing account variables locally.');
                     const localUsers = JSON.parse(localStorage.getItem('wabz_mock_users') || '[]');
                     if (localUsers.some(u => u.email === email || u.phone_number === phone)) {
-                        alert('User with this email or phone already exists.');
+                        showToast('User with this email or phone already exists.');
                         return;
                     }
                     newUser = {
@@ -660,7 +697,7 @@ function setupEventListeners() {
                     localStorage.setItem('wabz_mock_users', JSON.stringify(localUsers));
                 }
                 
-                alert('Registration successful! Welcome to Wabz Foods.');
+                showToast('Registration successful! Welcome to Wabz Foods.');
                 state.user = newUser;
                 localStorage.setItem('wabz_user', JSON.stringify(newUser));
                 updateAuthUI();
@@ -668,7 +705,7 @@ function setupEventListeners() {
             }
         } catch (e) {
             console.error('[Auth] General failure state:', e);
-            alert(`Authentication operation failed: ${e.message || e.details || JSON.stringify(e)}`);
+            showToast(`Authentication operation failed: ${e.message || e.details || JSON.stringify(e)}`);
         }
     });
 
@@ -687,7 +724,7 @@ function setupEventListeners() {
     // Checkout
     elements.btnProceedCheckout.addEventListener('click', () => {
         if (state.cart.length === 0) {
-            alert('Your cart is empty!');
+            showToast('Your cart is empty!');
             return;
         }
         hideModal(elements.cartModal);
@@ -711,7 +748,7 @@ function setupEventListeners() {
     elements.submitMomo.addEventListener('click', () => {
         const phone = document.getElementById('momo-number').value;
         if (phone.trim() === '') {
-            alert('Please enter your phone number');
+            showToast('Please enter your phone number');
             return;
         }
         simulatePayment('MoMo');
@@ -741,16 +778,42 @@ function setupEventListeners() {
     if (elements.btnSubmitReview) {
         elements.btnSubmitReview.addEventListener('click', () => {
             if (!state.currentRating) {
-                alert('Please select a star rating.');
+                showToast('Please select a star rating.');
                 return;
             }
             const text = document.getElementById('review-text').value;
             if (text.length < 5) {
-                alert('Please share a little more about your experience.');
+                showToast('Please share a little more about your experience.');
                 return;
             }
             
-            alert('Thank you for your feedback! Your review has been submitted for moderation.');
+            // Save to Local Storage for Admin access
+            try {
+                const reviews = JSON.parse(localStorage.getItem('wabz_mock_reviews') || '[]');
+                let authorName = "Anonymous Customer";
+                
+                // Try to get user from Nhost session or local storage
+                try {
+                    const sessionData = JSON.parse(localStorage.getItem('nhostRefreshToken') || '{}');
+                    // Check if there is a known wabz_user
+                    const localUser = JSON.parse(localStorage.getItem('wabz_user'));
+                    if (localUser && localUser.displayName) authorName = localUser.displayName;
+                } catch(e) {}
+                
+                reviews.unshift({
+                    id: 'rev_' + Date.now(),
+                    rating: state.currentRating,
+                    text: text,
+                    author: authorName,
+                    date: new Date().toISOString()
+                });
+                
+                localStorage.setItem('wabz_mock_reviews', JSON.stringify(reviews));
+            } catch (err) {
+                console.error("Failed to save review", err);
+            }
+            
+            showToast('Thank you for your feedback! Your review has been submitted for moderation.');
             hideModal(elements.reviewModal);
             // Reset for next time
             state.currentRating = 0;
@@ -808,20 +871,47 @@ function openProductModal(productId) {
 }
 
 function addToCart(product, modifiers) {
-    state.cart.push({
-        ...product,
-        selectedModifiers: modifiers,
-        cartId: Date.now()
-    });
+    const modifiersString = JSON.stringify(modifiers);
+    
+    // Check if identical item already exists
+    const existingItemIndex = state.cart.findIndex(item => 
+        item.id === product.id && JSON.stringify(item.selectedModifiers) === modifiersString
+    );
+
+    if (existingItemIndex > -1) {
+        state.cart[existingItemIndex].quantity += 1;
+    } else {
+        state.cart.push({
+            ...product,
+            selectedModifiers: modifiers,
+            quantity: 1,
+            cartId: Date.now()
+        });
+    }
+    
     updateCartUI();
+    showToast(`Added ${product.name} to cart`);
 }
 
 function updateCartUI() {
-    elements.cartCount.innerText = state.cart.length;
-    const total = state.cart.reduce((sum, item) => sum + item.price, 0);
+    const totalItems = state.cart.reduce((sum, item) => sum + item.quantity, 0);
+    elements.cartCount.innerText = totalItems;
+    const total = state.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
     elements.cartTotal.innerText = `UGX ${total.toLocaleString()}`;
     elements.cartTotalAmount.innerText = `UGX ${total.toLocaleString()}`;
 }
+
+window.updateCartQuantity = function(cartId, change) {
+    const itemIndex = state.cart.findIndex(item => item.cartId === cartId);
+    if (itemIndex > -1) {
+        state.cart[itemIndex].quantity += change;
+        if (state.cart[itemIndex].quantity <= 0) {
+            state.cart = state.cart.filter(item => item.cartId !== cartId);
+        }
+        updateCartUI();
+        renderCart();
+    }
+};
 
 function renderCart() {
     if (state.cart.length === 0) {
@@ -831,16 +921,21 @@ function renderCart() {
     
     elements.cartItemsContainer.innerHTML = state.cart.map(item => `
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--glass-border);">
-            <div>
+            <div style="flex: 1;">
                 <h4 style="font-weight: 600;">${item.name}</h4>
                 <p style="font-size: 0.75rem; color: var(--text-secondary);">
                     ${Object.entries(item.selectedModifiers).map(([k, v]) => `${k}: ${v}`).join(', ')}
                 </p>
+                <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px;">
+                    <button class="qty-btn" onclick="updateCartQuantity(${item.cartId}, -1)" style="background: var(--surface-color); border: 1px solid var(--glass-border); color: var(--text-primary); width: 24px; height: 24px; border-radius: 4px; cursor: pointer;">-</button>
+                    <span style="font-size: 0.9rem; font-weight: 600;">${item.quantity}</span>
+                    <button class="qty-btn" onclick="updateCartQuantity(${item.cartId}, 1)" style="background: var(--surface-color); border: 1px solid var(--glass-border); color: var(--text-primary); width: 24px; height: 24px; border-radius: 4px; cursor: pointer;">+</button>
+                </div>
             </div>
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <span style="font-weight: 700; color: var(--secondary-color);">UGX ${item.price.toLocaleString()}</span>
+            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+                <span style="font-weight: 700; color: var(--secondary-color);">UGX ${(item.price * item.quantity).toLocaleString()}</span>
                 <button class="remove-item" data-id="${item.cartId}" style="background: none; border: none; color: var(--primary-color); cursor: pointer;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                 </button>
             </div>
         </div>
@@ -1055,7 +1150,7 @@ function simulateTracking(orderId) {
             if (currentStatus !== prevStatus && (currentStatus === 'Completed' || currentStatus === 'Cancelled')) {
                 clearInterval(interval);
                 const msg = currentStatus === 'Completed' ? 'Your food is ready and has arrived! Enjoy!' : 'Your order was cancelled.';
-                setTimeout(() => alert(`🔔 Wabz Foods: ${msg}`), 500);
+                setTimeout(() => showToast(`🔔 Wabz Foods: ${msg}`), 500);
                 if ('Notification' in window && Notification.permission === 'granted') {
                     new Notification('Wabz Foods', { body: msg });
                 }
@@ -1066,3 +1161,28 @@ function simulateTracking(orderId) {
 
 // Run
 init();
+
+// Scroll-aware header shadow
+window.addEventListener('scroll', () => {
+    const header = document.querySelector('header');
+    if (header) {
+        header.classList.toggle('scrolled', window.scrollY > 20);
+    }
+}, { passive: true });
+
+function showToast(message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+    
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    const icon = type === 'error' ? '&#9888;' : '&#10003;';
+    toast.innerHTML = `<div class="toast-content"><span class="toast-icon">${icon}</span><span class="toast-message">${message}</span></div>`;
+    
+    container.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add('show'));
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 3500);
+}

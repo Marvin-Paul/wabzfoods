@@ -381,7 +381,7 @@
                 grid-template-columns: 1fr;
             }
             .kanban-col {
-                min-height: auto;
+                min-height: 0;
                 margin-bottom: 20px;
             }
             .data-table-container {
@@ -400,10 +400,198 @@
             border-color: var(--primary-color);
             box-shadow: var(--shadow-md);
         }
+
+        /* Form redesign classes */
+        .admin-form-extended {
+            max-width: 800px;
+            border-top: 4px solid var(--primary-color);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .form-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 16px;
+        }
+
+        .btn-close-icon {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .form-grid-2-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .image-preview-box {
+            width: 100%;
+            height: 200px;
+            border-radius: var(--radius-md);
+            border: 2px dashed var(--glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: var(--surface-elevated);
+            position: relative;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        
+        .image-preview-box:hover,
+        .image-preview-box.dragover {
+            border-color: var(--primary-color);
+        }
+
+        .image-preview-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .image-placeholder-content {
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-footer-actions {
+            justify-content: flex-end;
+            border-top: 1px solid var(--glass-border);
+            padding-top: 20px;
+        }
+
+        .btn-save-item {
+            padding: 10px 24px;
+        }
+
+        .modal-content-wide {
+            max-width: 600px;
+        }
+
+        .modal-body-padded {
+            padding: 20px;
+            font-size: 0.9rem;
+        }
+
+        /* Admin Auth Wall */
+        .admin-auth-wall {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: var(--bg-color);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .auth-card {
+            background: var(--surface-color);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-logo-center {
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .auth-title {
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .auth-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            font-size: 0.9rem;
+        }
+
+        .auth-error {
+            color: #ff4d4d;
+            font-size: 0.85rem;
+            margin-bottom: 16px;
+            display: none;
+            text-align: center;
+        }
+
+        .auth-submit {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .auth-link {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
     </style>
 </head>
 <body>
 
+    <!-- Admin Auth Wall -->
+    <div id="admin-auth-wall" class="admin-auth-wall">
+        <div class="auth-card">
+            <div class="admin-logo auth-logo-center">
+                <span>WABZ</span><span class="yellow">FOODS</span><span class="admin-badge">ADMIN</span>
+            </div>
+            <h2 class="auth-title">Admin Login</h2>
+            <p class="auth-subtitle">Sign in to access the dashboard</p>
+            
+            <form id="admin-login-form">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="admin-email" required placeholder="admin@wabzfoods.com" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="admin-password" required placeholder="••••••••" class="form-input">
+                </div>
+                <div id="admin-login-error" class="auth-error"></div>
+                <button type="submit" class="btn-primary auth-submit">Sign In securely</button>
+            </form>
+            <div class="auth-footer">
+                <a href="index.html" class="auth-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                    Return to Storefront
+                </a>
+            </div>
+        </div>
+    </div>
     <!-- Admin Sidebar Navigation -->
     <div class="admin-sidebar">
         <div class="admin-logo">
@@ -425,6 +613,10 @@
             <li class="nav-item" data-target="users">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-10"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                 Registered Users
+            </li>
+            <li class="nav-item" data-target="feedback">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-10"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                Customer Feedback
             </li>
         </ul>
     </div>
@@ -500,6 +692,16 @@
             </div>
         </div>
 
+        <!-- VIEW: Customer Feedback -->
+        <div id="view-feedback" class="section-view hidden">
+            <div class="section-header">
+                <h2>Customer Feedback & Reviews</h2>
+            </div>
+            <div id="feedback-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+                <!-- Rendered by JS -->
+            </div>
+        </div>
+
         <!-- VIEW: Manage Orders -->
         <div id="view-orders" class="section-view hidden">
             <div class="kanban-board">
@@ -554,43 +756,63 @@
 
             <!-- Create/Edit Menu Item Form -->
             <div id="menu-form-container" class="hidden mb-20">
-                <div class="admin-form">
-                    <h3 class="text-lg mb-20" id="menu-form-title">Add New Menu Item</h3>
+                <div class="admin-form admin-form-extended">
+                    <div class="form-header-row">
+                        <div>
+                            <h3 class="text-xl font-bold" id="menu-form-title">Add New Menu Item</h3>
+                            <p class="color-text-secondary text-sm">Enter the details of the menu item below.</p>
+                        </div>
+                        <button type="button" class="close-modal btn-close-icon" id="btn-close-menu-icon">&times;</button>
+                    </div>
                     <form id="menu-item-form">
                         <input type="hidden" id="menu-item-id">
-                        <div class="form-group">
-                            <label for="menu-item-name">Name</label>
-                            <input type="text" id="menu-item-name" required placeholder="e.g. Loaded Fries">
-                        </div>
-                        <div class="form-group">
-                            <label for="menu-item-category">Category</label>
-                            <select id="menu-item-category" required>
-                                <option value="limited-time">Limited Time</option>
-                                <option value="promo">Promo Deals</option>
-                                <option value="box-meals">Box Meals</option>
-                                <option value="chicken-pieces">Chicken Pieces</option>
-                                <option value="sharing">Sharing Buckets</option>
-                                <option value="burgers">Burgers</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="menu-item-price">Price (UGX)</label>
-                            <input type="number" id="menu-item-price" required placeholder="12000">
-                        </div>
-                        <div class="form-group">
-                            <label for="menu-item-desc">Description</label>
-                            <textarea id="menu-item-desc" required placeholder="Describe the ingredients or size."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label for="menu-item-image">Image Path/URL</label>
-                            <div style="display: flex; gap: 12px; align-items: flex-start;">
-                                <input type="text" id="menu-item-image" placeholder="assets/box_meal.png or https://..." style="flex: 1;">
-                                <img id="image-preview" src="" alt="Preview" style="width: 50px; height: 50px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--glass-border); display: none; background: var(--surface-elevated);">
+                        
+                        <div class="form-grid-2-col">
+                            <div class="form-group">
+                                <label for="menu-item-name">Item Name</label>
+                                <input type="text" id="menu-item-name" required placeholder="e.g. Katogo Special">
+                            </div>
+                            <div class="form-group">
+                                <label for="menu-item-category">Category</label>
+                                <select id="menu-item-category" required>
+                                    <option value="breakfast">🌅 Breakfast</option>
+                                    <option value="lunch">☀️ Lunch</option>
+                                    <option value="dinner">🌙 Dinner</option>
+                                    <option value="local">🇺🇬 Local Food</option>
+                                    <option value="junk">🍔 Junk Food</option>
+                                    <option value="drinks">🥤 Drinks</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="menu-item-price">Price (UGX)</label>
+                                <input type="number" id="menu-item-price" required placeholder="e.g. 15000">
+                            </div>
+                            <div class="form-group">
+                                <label for="menu-item-image">Image Path/URL</label>
+                                <input type="text" id="menu-item-image" placeholder="assets/box_meal.png or https://...">
                             </div>
                         </div>
-                        <div class="flex gap-12">
-                            <button type="submit" class="btn-primary">Save Item</button>
+
+                        <div class="form-group">
+                            <label for="menu-item-desc">Description</label>
+                            <textarea id="menu-item-desc" required placeholder="Describe the ingredients, size, and flavor profile."></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Image Preview</label>
+                            <input type="file" id="menu-item-image-file" accept="image/*" class="hidden">
+                            <div class="image-preview-box" id="image-upload-area">
+                                <img id="image-preview" src="" alt="Preview" class="image-preview-img">
+                                <div id="image-placeholder-text" class="image-placeholder-content">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                                    <span>Click to upload or drag an image</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-12 mt-20 form-footer-actions">
                             <button type="button" class="btn-secondary" id="btn-cancel-menu">Cancel</button>
+                            <button type="submit" class="btn-primary btn-save-item">Save Item</button>
                         </div>
                     </form>
                 </div>
@@ -618,12 +840,12 @@
 
     <!-- Order Details Modal -->
     <div class="modal-overlay" id="order-details-modal">
-        <div class="modal-content" style="max-width: 600px;">
+        <div class="modal-content modal-content-wide">
             <div class="modal-header">
                 <h3 class="text-lg" id="modal-order-title">Order Details</h3>
                 <button class="close-modal" id="close-order-modal">&times;</button>
             </div>
-            <div class="modal-body" id="modal-order-body" style="padding: 20px; font-size: 0.9rem;">
+            <div class="modal-body modal-body-padded" id="modal-order-body">
                 <!-- Populated by JS -->
             </div>
         </div>
