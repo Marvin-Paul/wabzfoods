@@ -306,8 +306,35 @@ const elements = {
     btnSubmitReview: document.getElementById('submit-review')
 };
 
+// =====================================================
+// SPLASH SCREEN — Controller
+// =====================================================
+function initSplash() {
+    const splash = document.getElementById('wabz-splash');
+    if (!splash) return Promise.resolve();
+
+    // Lock scroll while splash is showing
+    document.body.classList.add('splash-active');
+
+    return new Promise(resolve => {
+        // The CSS progress bar animation takes ~3.2s (0.6s delay + 2.6s fill).
+        // We wait for that to finish, then fade the splash out.
+        setTimeout(() => {
+            splash.classList.add('splash-exit');
+
+            // Remove it from the DOM after the CSS transition completes (0.7s)
+            setTimeout(() => {
+                splash.remove();
+                document.body.classList.remove('splash-active');
+                resolve();
+            }, 720);
+        }, 3300);
+    });
+}
+
 // Initialize App
 async function init() {
+    await initSplash();         // Wait for splash to finish before showing the page
     await fetchMenuItems();
     checkSession();
     renderMenu();
