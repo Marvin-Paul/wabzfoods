@@ -21,6 +21,11 @@ export default function Register() {
   const [showOtp, setShowOtp] = useState(false);
   const [otpCode, setOtpCode] = useState("");
 
+  const isLocal =
+    typeof window !== "undefined" &&
+    (window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -31,7 +36,16 @@ export default function Register() {
     setLoading(true);
     try {
       await base44.auth.register({ email, password });
-      setShowOtp(true);
+      // In local dev, skip OTP — auto-verify with any 6-digit code
+      if (isLocal) {
+        const result = await base44.auth.verifyOtp({ email, otpCode: "000000" });
+        if (result?.access_token) {
+          base44.auth.setToken(result.access_token);
+        }
+        window.location.href = "/";
+      } else {
+        setShowOtp(true);
+      }
     } catch (err) {
       setError(err.message || "Registration failed");
     } finally {

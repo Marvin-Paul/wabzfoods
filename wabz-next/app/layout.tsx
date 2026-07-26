@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { CartProvider } from "@/components/CartContext";
 import { ToastProvider } from "@/components/ui/use-toast";
 import Navbar from "@/components/Navbar";
+import CartDrawer from "@/components/CartDrawer";
 import Footer from "@/components/Footer";
 import "./globals.css";
 
@@ -21,6 +22,7 @@ export default function RootLayout({
         <CartProvider>
           <ToastProvider>
             <Navbar />
+            <CartDrawer />
             <main className="flex-1">{children}</main>
             <Footer />
           </ToastProvider>

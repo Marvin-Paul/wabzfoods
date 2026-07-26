@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { base44 } from "@/lib/base44Client";
 import { Image } from "@/components/ui/image";
+import { useToast } from "@/components/ui/use-toast";
 import { X } from "lucide-react";
 
 const EMPTY = {
@@ -10,16 +11,19 @@ const EMPTY = {
   price: "",
   image_url: "",
   available: true,
+  featured: false,
+  subcategory: "",
 };
 
 export default function ProductForm({ product, onClose }) {
+  const { toast } = useToast();
   const [form, setForm] = useState(EMPTY);
   const [saving, setSaving] = useState(false);
   const isEdit = !!product;
 
   useEffect(() => {
     if (product) {
-      setForm({ ...product, price: String(product.price ?? "") });
+      setForm({ ...product, subcategory: product.subcategory || "", price: String(product.price ?? "") });
     }
   }, [product]);
 
@@ -35,6 +39,8 @@ export default function ProductForm({ product, onClose }) {
       price: Number(form.price),
       image_url: form.image_url,
       available: !!form.available,
+      featured: !!form.featured,
+      subcategory: form.subcategory,
     };
     try {
       if (isEdit) {
@@ -44,7 +50,10 @@ export default function ProductForm({ product, onClose }) {
       }
       onClose();
     } catch (err) {
-      alert("Could not save: " + (err.message || err));
+      toast({
+        title: "Error",
+        description: "Could not save: " + (err.message || err),
+      });
     } finally {
       setSaving(false);
     }
@@ -92,15 +101,30 @@ export default function ProductForm({ product, onClose }) {
               </select>
             </div>
             <div>
-              <label className="text-xs uppercase tracking-wider text-carbon/60">Price (UGX)</label>
-              <input
-                required
-                type="number"
-                value={form.price}
-                onChange={(e) => set("price", e.target.value)}
-                className="mt-1 w-full px-3 py-2.5 bg-card border border-carbon/15 rounded-lg focus:outline-none focus:border-persimmon"
-              />
+              <label className="text-xs uppercase tracking-wider text-carbon/60">Subcategory</label>
+              <select
+                value={form.subcategory}
+                onChange={(e) => set("subcategory", e.target.value)}
+                className="mt-1 w-full px-3 py-2.5 bg-card border border-carbon/15 rounded-lg focus:outline-none focus:border-persimmon text-carbon/70 text-sm"
+              >
+                <option value="">— Auto-detect —</option>
+                <option value="grilled">Grilled</option>
+                <option value="fried">Fried</option>
+                <option value="stews">Stews</option>
+                <option value="sides">Sides</option>
+                <option value="local">Local Classics</option>
+              </select>
             </div>
+          </div>
+          <div>
+            <label className="text-xs uppercase tracking-wider text-carbon/60">Price (UGX)</label>
+            <input
+              required
+              type="number"
+              value={form.price}
+              onChange={(e) => set("price", e.target.value)}
+              className="mt-1 w-full px-3 py-2.5 bg-card border border-carbon/15 rounded-lg focus:outline-none focus:border-persimmon"
+            />
           </div>
           <div>
             <label className="text-xs uppercase tracking-wider text-carbon/60">Image URL</label>
@@ -116,15 +140,28 @@ export default function ProductForm({ product, onClose }) {
               </div>
             )}
           </div>
-          <label className="flex items-center gap-2 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={form.available}
-              onChange={(e) => set("available", e.target.checked)}
-              className="w-4 h-4 accent-persimmon"
-            />
-            <span className="text-sm text-carbon/70">Available on menu</span>
-          </label>
+          <div className="flex gap-6">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={form.available}
+                onChange={(e) => set("available", e.target.checked)}
+                className="w-4 h-4 accent-persimmon"
+              />
+              <span className="text-sm text-carbon/70">Available on menu</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={form.featured}
+                onChange={(e) => set("featured", e.target.checked)}
+                className="w-4 h-4 accent-persimmon"
+              />
+              <span className="text-sm text-carbon/70">
+                <span className="text-persimmon">Featured</span> (Chef&apos;s Pick)
+              </span>
+            </label>
+          </div>
 
           <div className="flex gap-3 pt-2">
             <button

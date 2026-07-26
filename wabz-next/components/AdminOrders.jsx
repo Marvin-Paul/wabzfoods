@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { base44 } from "@/lib/base44Client";
 
 const STATUSES = ["pending", "preparing", "ready", "out_for_delivery", "delivered", "cancelled"];
 
