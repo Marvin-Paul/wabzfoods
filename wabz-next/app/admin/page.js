@@ -270,15 +270,15 @@ export default function AdminPage() {
             </Link>
           </div>
 
-          {/* Tabs */}
-          <nav className="flex gap-1 -mb-px">
+          {/* Tabs - responsive: scrollable on mobile */}
+          <nav className="flex gap-1 -mb-px overflow-x-auto scrollbar-hide -mx-5 px-5 md:mx-0 md:px-0">
             {TABS.map((tab) => {
               const Icon = tab.icon;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-3 text-sm font-medium transition-all duration-200 border-b-2 ${
+                  className={`flex items-center gap-2 px-3 md:px-4 py-3 text-xs md:text-sm font-medium whitespace-nowrap transition-all duration-200 border-b-2 ${
                     activeTab === tab.id
                       ? "border-persimmon text-persimmon"
                       : "border-transparent text-stone-400 hover:text-stone-700 hover:border-stone-300"
@@ -306,7 +306,7 @@ export default function AdminPage() {
             ) : (
               <>
                 {/* Stats Grid */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-10">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mb-10">
                   {[
                     {
                       label: "Total Dishes",
@@ -341,12 +341,11 @@ export default function AdminPage() {
                     return (
                       <div
                         key={stat.label}
-                        className="bg-white rounded-xl border border-stone-200 p-5 hover:shadow-md hover:shadow-stone-900/5 transition-shadow"
+                        className="bg-white rounded-xl border border-stone-200 p-4 md:p-5 hover:shadow-md hover:shadow-stone-900/5 transition-shadow"
                       >
                         <div className={`w-10 h-10 rounded-lg ${stat.bg} flex items-center justify-center mb-3`}>
                           <Icon size={20} className={stat.color} />
-                        </div>
-                        <p className="text-2xl font-bold text-stone-900 tabular-nums">
+                        </div>                          <p className="text-xl md:text-2xl font-bold text-stone-900 tabular-nums">
                           {stat.value}
                         </p>
                         <p className="text-xs text-stone-500 mt-1">{stat.label}</p>
@@ -356,7 +355,7 @@ export default function AdminPage() {
                 </div>
 
                 {/* Quick Actions */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
                   <div className="bg-white rounded-xl border border-stone-200 p-6">
                     <div className="flex items-center gap-3 mb-4">
                       <div className="w-10 h-10 rounded-lg bg-persimmon/10 flex items-center justify-center">
