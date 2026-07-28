@@ -72,7 +72,7 @@ let users = [
   {
     id: "local_user_admin",
     email: "admin@wabzfoods.com",
-    password_hash: "admin123",
+    password_hash: "uPbHQ_TV4@*DLzGE+^6G",
     name: "Admin",
     phone_number: "+256700123456",
     role: "admin",
