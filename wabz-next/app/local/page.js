@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import { base44 } from "@/lib/base44Client";
+import { listLocalProducts } from "@/lib/supabase-data";
 import { useCart } from "@/components/CartContext";
 import { ArrowLeft, Heart, Clock, Flame, Utensils, Search, X, Star } from "lucide-react";
 
@@ -68,8 +68,7 @@ export default function LocalPage() {
   const { addItem, setOpen } = useCart();
 
   useEffect(() => {
-    base44.entities.Product.list()
-      .then((all) => all.filter((p) => p.category === "local"))
+    listLocalProducts()
       .then(setProducts)
       .finally(() => setLoading(false));
   }, []);

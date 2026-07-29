@@ -194,7 +194,7 @@ function EmptyStateContent({ query, filter, onClear, onBrowse, onSearch }) {
   );
 }
 
-import { base44 } from "@/lib/base44Client";
+import { listProducts, getSettings } from "@/lib/supabase-data";
 import { Image } from "@/components/ui/image";
 import MenuItemCard from "@/components/MenuItemCard";
 import { useCart } from "@/components/CartContext";
@@ -440,11 +440,11 @@ export default function Home() {
 
   useEffect(() => {
     Promise.all([
-      base44.entities.Product.list(),
-      base44.apiClient.get("/api/settings").catch(() => ({ data: null })),
-    ]).then(([products, settingsRes]) => {
+      listProducts(),
+      getSettings(),
+    ]).then(([products, settings]) => {
       setProducts(products);
-      if (settingsRes?.data) setSettings(settingsRes.data);
+      setSettings(settings);
     }).finally(() => setLoading(false));
   }, []);
 

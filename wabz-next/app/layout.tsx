@@ -4,11 +4,16 @@ import { ToastProvider } from "@/components/ui/use-toast";
 import Navbar from "@/components/Navbar";
 import CartDrawer from "@/components/CartDrawer";
 import Footer from "@/components/Footer";
+import WhatsAppChatWidget from "@/components/WhatsAppChatWidget";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Wabz Foods",
   description: "Order Ugandan and fast food online",
+  icons: {
+    icon: { url: "/wabzfoodz-favicon.png", sizes: "64x64", type: "image/png" },
+    apple: { url: "/wabzfoodz-icon-192.png", sizes: "192x192" },
+  },
 };
 
 export default function RootLayout({
@@ -24,6 +29,7 @@ export default function RootLayout({
             <Navbar />
             <CartDrawer />
             <main className="flex-1">{children}</main>
+            <WhatsAppChatWidget />
             <Footer />
           </ToastProvider>
         </CartProvider>

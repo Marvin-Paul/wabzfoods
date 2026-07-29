@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { base44 } from "@/lib/base44Client";
+import { supabase } from "@/lib/supabaseClient";
 
 /* ── Tiny helper to interpolate a hex colour with white for opacity variants ── */
 function hexWithOpacity(hex, opacity) {
@@ -18,19 +18,21 @@ export default function Footer() {
   const [accentSecondary, setAccentSecondary] = useState("#fbbf24");
 
   useEffect(() => {
-    base44.apiClient
-      .get("/api/settings")
-      .then((r) => {
-        if (r.data) {
-          if (r.data.footer_accent) setAccent(r.data.footer_accent);
-          if (r.data.footer_accent_secondary) setAccentSecondary(r.data.footer_accent_secondary);
+    // Try fetching site settings from Supabase (table may not exist yet)
+    const fetchSettings = async () => {
+      try {
+        const { data } = await supabase.from('site_settings').select('*').single();
+        if (data) {
+          if (data.footer_accent) setAccent(data.footer_accent);
+          if (data.footer_accent_secondary) setAccentSecondary(data.footer_accent_secondary);
         }
-      })
-      .catch(() => {});
+      } catch {
+        // Table not created yet — use defaults
+      }
+    };
+    fetchSettings();
   }, []);
 
-  const grad = `linear-gradient(to right, ${accent}, ${accentSecondary}, ${accent})`;
-  const gradHover = `linear-gradient(to right, ${accentSecondary}, ${accent}, ${accentSecondary})`;
   const gradDuo = `linear-gradient(to right, ${accent}, ${accentSecondary})`;
   const gradDuoHover = `linear-gradient(to right, ${accentSecondary}, ${accent})`;
 
@@ -39,20 +41,12 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-5 md:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           <div>
-            <Link
-              href="/"
-              className="font-display text-xl font-light transition-all duration-500 animate-shimmer"
-              style={{
-                backgroundImage: grad,
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-                backgroundSize: "200% auto",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.backgroundImage = gradHover)}
-              onMouseLeave={(e) => (e.currentTarget.style.backgroundImage = grad)}
-            >
-              Wabz Foods
+            <Link href="/" className="inline-block">
+              <img
+                src="/wabzfoodz-logo-sm.png"
+                alt="Wabz Foods Logo"
+                className="h-10 w-auto object-contain brightness-0 invert"
+              />
             </Link>
             <p className="mt-3 text-sm text-parchment/60 max-w-xs leading-relaxed">
               From{" "}

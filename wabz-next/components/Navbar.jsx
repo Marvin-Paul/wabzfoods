@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Menu, X, ShoppingCart, User, LogOut } from "lucide-react";
 import { useCart } from "@/components/CartContext";
-import { base44 } from "@/lib/base44Client";
+import { supabase } from "@/lib/supabaseClient";
 
 /* ── Generate a unique HSL color from any string (email, name) ── */
 function getAvatarColor(str) {
@@ -21,8 +21,6 @@ function getAvatarColor(str) {
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState(null);
-  const [accent, setAccent] = useState("#e34234");
-  const [accentSecondary, setAccentSecondary] = useState("#fbbf24");
   const [avatarOpen, setAvatarOpen] = useState(false);
   const avatarRef = React.useRef(null);
   const { setOpen: setCartOpen, count } = useCart();
@@ -46,30 +44,27 @@ export default function Navbar() {
     };
   }, [avatarOpen]);
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
     setAvatarOpen(false);
-    base44.auth.logout("/");
+    await supabase.auth.signOut();
+    window.location.href = "/";
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("base44_access_token");
-    const hasToken = !!token;
+    const getSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        setUser(session.user);
+      }
+    };
+    getSession();
 
-    // Fetch accent colors (always runs)
-    base44.apiClient
-      .get("/api/settings")
-      .then((r) => {
-        if (r.data) {
-          if (r.data.footer_accent) setAccent(r.data.footer_accent);
-          if (r.data.footer_accent_secondary) setAccentSecondary(r.data.footer_accent_secondary);
-        }
-      })
-      .catch(() => {});
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
 
-    if (hasToken) {
-      // Fetch user info
-      base44.auth.me().then(setUser).catch(() => {});
-    }
+    return () => subscription?.unsubscribe();
   }, []);
 
   const links = [
@@ -82,24 +77,12 @@ export default function Navbar() {
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-stone-200/60">
       <div className="max-w-7xl mx-auto px-5 md:px-8">
         <div className="flex items-center justify-between h-16">
-          <Link
-            href="/"
-            className="font-display text-xl font-semibold tracking-tight transition-all duration-500 animate-shimmer"
-            style={{
-              backgroundImage: `linear-gradient(to right, ${accent}, ${accentSecondary}, ${accent})`,
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-              backgroundSize: "200% auto",
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.backgroundImage = `linear-gradient(to right, ${accentSecondary}, ${accent}, ${accentSecondary})`)
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.backgroundImage = `linear-gradient(to right, ${accent}, ${accentSecondary}, ${accent})`)
-            }
-          >
-            Wabz Foods
+          <Link href="/" className="shrink-0">
+            <img
+              src="/wabzfoodz-logo-sm.png"
+              alt="Wabz Foods Logo"
+              className="h-9 w-auto object-contain"
+            />
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">

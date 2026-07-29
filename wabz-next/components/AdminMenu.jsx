@@ -3,17 +3,12 @@ import { base44 } from "@/lib/base44Client";
 import { Image } from "@/components/ui/image";
 import { useToast } from "@/components/ui/use-toast";
 import ProductForm from "./ProductForm";
-import { Plus, Pencil, Trash2, Flame, Database, Loader2 } from "lucide-react";
-import {
-  FEATURED_FAST_ITEMS as FAST_SEED,
-  FEATURED_LOCAL_ITEMS as LOCAL_SEED,
-} from "@/lib/featured-data";
+import { Plus, Pencil, Trash2, Flame } from "lucide-react";
 
 export default function AdminMenu() {
   const { toast } = useToast();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [seeding, setSeeding] = useState(false);
   const [editing, setEditing] = useState(null);
   const [showForm, setShowForm] = useState(false);
 
@@ -22,34 +17,6 @@ export default function AdminMenu() {
   useEffect(() => {
     load().finally(() => setLoading(false));
   }, []);
-
-  const seedDatabase = async () => {
-    if (!confirm("Create all featured dishes in the database? This will NOT overwrite existing dishes with the same name.")) return;
-    setSeeding(true);
-    const allSeedItems = [...FAST_SEED, ...LOCAL_SEED];
-    const existing = await base44.entities.Product.list();
-    const existingNames = new Set(existing.map((p) => p.name.toLowerCase()));
-    let created = 0;
-    let skipped = 0;
-    for (const item of allSeedItems) {
-      if (existingNames.has(item.name.toLowerCase())) {
-        skipped++;
-        continue;
-      }
-      try {
-        await base44.entities.Product.create(item);
-        created++;
-      } catch {
-        // skip individual failures
-      }
-    }
-    setSeeding(false);
-    await load();
-    toast({
-      title: "Seeding complete",
-      description: `Created ${created} new dish${created !== 1 ? "es" : ""}, skipped ${skipped} existing.`,
-    });
-  };
 
   const toggleAvailable = async (p) => {
     await base44.entities.Product.update(p.id, { available: !p.available });
@@ -73,18 +40,6 @@ export default function AdminMenu() {
       <div className="flex items-center justify-between mb-6">
         <p className="text-sm text-carbon/60">{products.length} dishes on the menu</p>
         <div className="flex items-center gap-3">
-          <button
-            onClick={seedDatabase}
-            disabled={seeding}
-            className="flex items-center gap-1.5 text-xs px-3 py-2 rounded-lg border border-carbon/15 text-carbon/60 hover:text-carbon hover:border-carbon/40 transition-colors disabled:opacity-40"
-          >
-            {seeding ? (
-              <Loader2 size={14} className="animate-spin" />
-            ) : (
-              <Database size={14} />
-            )}
-            Seed Featured Items
-          </button>
           <button
             onClick={() => { setEditing(null); setShowForm(true); }}
             className="flex items-center gap-2 bg-persimmon text-parchment px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-carbon transition-colors"

@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { base44 } from "@/lib/base44Client";
 import AdminMenu from "@/components/AdminMenu";
 import AdminOrders from "@/components/AdminOrders";
@@ -11,6 +10,8 @@ import {
   UtensilsCrossed,
   ClipboardList,
   Settings,
+  Users,
+  MessageSquareText,
   ArrowLeft,
   Flame,
   TrendingUp,
@@ -24,49 +25,26 @@ import {
   UserPlus,
   Mail,
   UserCheck,
+  Star,
+  Trash2,
 } from "lucide-react";
 
 const TABS = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "menu", label: "Menu", icon: UtensilsCrossed },
   { id: "orders", label: "Orders", icon: ClipboardList },
+  { id: "users", label: "Users", icon: Users },
+  { id: "feedback", label: "Feedback", icon: MessageSquareText },
   { id: "settings", label: "Settings", icon: Settings },
 ];
 
 export default function AdminPage() {
-  const router = useRouter();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  /* ── Auth guard: only admin users can access this page ── */
-  const [authLoading, setAuthLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const token = localStorage.getItem("base44_access_token");
-        if (!token) {
-          router.replace("/login?redirect=/admin");
-          return;
-        }
-        const user = await base44.auth.me();
-        if (user?.role !== "admin") {
-          // Authenticated but not admin — show access denied
-          setIsAdmin(false);
-          setAuthLoading(false);
-        } else {
-          setIsAdmin(true);
-          setAuthLoading(false);
-        }
-      } catch {
-        router.replace("/login?redirect=/admin");
-      }
-    };
-    checkAuth();
-  }, [router]);
 
   const [settings, setSettings] = useState({
     name: "",
@@ -129,8 +107,14 @@ export default function AdminPage() {
 
   useEffect(() => {
     Promise.all([
-      base44.entities.Product.list().then(setProducts).catch(() => {}),
+      base44.entities.Product.list(true).then(setProducts).catch(() => {}),
       base44.entities.Order.list("-created_date", 100).then(setOrders).catch(() => {}),
+      base44.apiClient.get("/api/users").then((r) => {
+        if (r.data) setUsers(r.data);
+      }).catch(() => {}),
+      base44.apiClient.get("/api/reviews").then((r) => {
+        if (r.data) setReviews(r.data);
+      }).catch(() => {}),
       base44.apiClient.get("/api/settings").then((r) => {
         if (r.data) setSettings((prev) => ({ ...prev, ...r.data }));
       }).catch(() => {}),
@@ -204,42 +188,6 @@ export default function AdminPage() {
   const inProgressOrders = orders.filter((o) =>
     ["preparing", "ready"].includes(o.status)
   ).length;
-
-  /* ── Show a loading spinner while checking auth ── */
-  if (authLoading) {
-    return (
-      <div className="min-h-screen bg-stone-50 flex items-center justify-center">
-        <Loader2 size={32} className="animate-spin text-stone-400" />
-      </div>
-    );
-  }
-
-  /* ── Show access denied if not admin ── */
-  if (!isAdmin) {
-    return (
-      <div className="min-h-screen bg-stone-50 flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto px-6">
-          <div className="w-16 h-16 rounded-2xl bg-red-50 flex items-center justify-center mx-auto mb-5">
-            <Shield size={28} className="text-red-500" />
-          </div>
-          <h1 className="font-display text-2xl font-semibold text-stone-900 mb-2">
-            Access Denied
-          </h1>
-          <p className="text-sm text-stone-500 mb-6 leading-relaxed">
-            You don&apos;t have permission to access the admin panel.
-            Only restaurant administrators can manage this section.
-          </p>
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-stone-900 text-white text-sm font-semibold rounded-xl hover:bg-stone-800 transition-colors shadow-lg shadow-stone-900/10"
-          >
-            <ArrowLeft size={16} />
-            Back to Home
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-stone-50">
@@ -488,6 +436,113 @@ export default function AdminPage() {
         )}
 
         {/* ════════════════════════════════════════════
+            USERS TAB
+        ════════════════════════════════════════════ */}
+        {activeTab === "users" && (
+          <div>
+            <div className="mb-6">
+              <h2 className="font-display text-2xl font-semibold text-stone-900">
+                Registered Users
+              </h2>
+              <p className="text-sm text-stone-500 mt-1">
+                View all registered customer accounts.
+              </p>
+            </div>
+
+            {loading ? (
+              <div className="flex items-center justify-center py-16">
+                <Loader2 size={24} className="animate-spin text-stone-400" />
+              </div>
+            ) : users.length === 0 ? (
+              <p className="text-stone-400 text-sm py-12 text-center bg-white rounded-xl border border-stone-200">
+                No registered users yet.
+              </p>
+            ) : (
+              <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-stone-200 bg-stone-50">
+                      <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider text-stone-500">ID</th>
+                      <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider text-stone-500">Phone Number</th>
+                      <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider text-stone-500">Email Address</th>
+                      <th className="text-left px-5 py-3 text-xs font-semibold uppercase tracking-wider text-stone-500">Registered</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {users.map((u) => (
+                      <tr key={u.id} className="border-b border-stone-100 hover:bg-stone-50 transition-colors">
+                        <td className="px-5 py-4 text-sm font-medium text-stone-900">#{u.id}</td>
+                        <td className="px-5 py-4 text-sm text-stone-700">{u.phone_number || "—"}</td>
+                        <td className="px-5 py-4 text-sm text-stone-700">{u.email || "—"}</td>
+                        <td className="px-5 py-4 text-sm text-stone-500">
+                          {u.created_at ? new Date(u.created_at).toLocaleDateString() : "—"}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ════════════════════════════════════════════
+            FEEDBACK TAB
+        ════════════════════════════════════════════ */}
+        {activeTab === "feedback" && (
+          <div>
+            <div className="mb-6">
+              <h2 className="font-display text-2xl font-semibold text-stone-900">
+                Customer Feedback
+              </h2>
+              <p className="text-sm text-stone-500 mt-1">
+                Reviews and ratings left by customers.
+              </p>
+            </div>
+
+            {loading ? (
+              <div className="flex items-center justify-center py-16">
+                <Loader2 size={24} className="animate-spin text-stone-400" />
+              </div>
+            ) : reviews.length === 0 ? (
+              <p className="text-stone-400 text-sm py-12 text-center bg-white rounded-xl border border-stone-200">
+                No reviews yet.
+              </p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                {reviews.map((r) => (
+                  <div key={r.id} className="bg-white rounded-xl border border-stone-200 p-5 hover:shadow-md hover:shadow-stone-900/5 transition-shadow">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-full bg-stone-100 flex items-center justify-center text-xs font-bold text-stone-600 uppercase">
+                          {r.author?.split(" ").map(n => n[0]).join("").slice(0, 2) || "??"}
+                        </div>
+                        <div>
+                          <p className="text-sm font-semibold text-stone-900">{r.author}</p>
+                          <p className="text-[10px] text-stone-400">
+                            {r.date ? new Date(r.date).toLocaleDateString() : ""}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-0.5">
+                        {[1, 2, 3, 4, 5].map((s) => (
+                          <Star
+                            key={s}
+                            size={14}
+                            className={s <= (r.rating || 0) ? "text-amber-400 fill-amber-400" : "text-stone-200"}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-sm text-stone-600 leading-relaxed">&ldquo;{r.text}&rdquo;</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ════════════════════════════════════════════
             SETTINGS TAB
         ════════════════════════════════════════════ */}
         {activeTab === "settings" && (
@@ -707,6 +762,34 @@ export default function AdminPage() {
                     </div>
                   </div>
                 </div>
+
+                {/* Save Button */}
+                <div className="flex items-center justify-end gap-3 pt-2">
+                  {settingsError && (
+                    <span className="text-xs text-red-600 flex items-center gap-1">
+                      <AlertCircle size={12} />
+                      {settingsError}
+                    </span>
+                  )}
+                  {settingsSaved && (
+                    <span className="text-xs text-emerald-600 flex items-center gap-1">
+                      <CheckCircle2 size={12} />
+                      Settings saved!
+                    </span>
+                  )}
+                  <button
+                    type="submit"
+                    disabled={settingsSaving}
+                    className="inline-flex items-center gap-2 px-6 py-2.5 bg-stone-900 text-white text-sm font-semibold rounded-xl hover:bg-persimmon disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                  >
+                    {settingsSaving ? (
+                      <Loader2 size={15} className="animate-spin" />
+                    ) : (
+                      <Save size={15} />
+                    )}
+                    Save Settings
+                  </button>
+                </div>
               </form>
             )}
 
@@ -776,7 +859,7 @@ function MakeAdminForm() {
           {promoting ? (
             <>
               <Loader2 size={15} className="animate-spin" />
-              Promoting…
+              Promoting&hellip;
             </>
           ) : (
             <>

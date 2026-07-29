@@ -4,464 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wabz Foods | Order Delicious Meals Online</title>
-    <meta name="description" content="Craving delicious box meals, crispy chicken, and mouth-watering burgers? Order now from Wabz Foods for delivery or pickup.">
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍔</text></svg>">
+    <meta http-equiv="refresh" content="0; url=/">
+    <link rel="icon" type="image/png" sizes="64x64" href="assets/images/logo/wabzfoodz-favicon.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="assets/images/logo/wabzfoodz-icon-192.png">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #fafafa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: #171717;
+        }
+        .redirect-card {
+            text-align: center;
+            max-width: 400px;
+            padding: 40px;
+        }
+        .redirect-card img { height: 60px; margin-bottom: 20px; }
+        .redirect-card h1 { font-size: 24px; font-weight: 600; margin-bottom: 8px; }
+        .redirect-card p { color: #707070; margin-bottom: 24px; }
+        .redirect-card a {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #3ecf8e;
+            color: #171717;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: background 0.15s;
+        }
+        .redirect-card a:hover { background: #24b47e; }
+        .spinner {
+            width: 32px; height: 32px;
+            border: 3px solid #dfdfdf;
+            border-top-color: #3ecf8e;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            margin: 0 auto 20px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
 </head>
 <body>
-
-    <!-- =============================================
-         WABZ FOODS — Splash Screen Loader
-         ============================================= -->
-    <div id="wabz-splash">
-        <!-- Floating food particles in background -->
-        <div class="splash-particles">
-            <span class="particle p1">🍔</span>
-            <span class="particle p2">🍟</span>
-            <span class="particle p3">🍗</span>
-            <span class="particle p4">🥤</span>
-            <span class="particle p5">🍕</span>
-            <span class="particle p6">🌮</span>
-            <span class="particle p7">🥗</span>
-            <span class="particle p8">🍜</span>
-        </div>
-
-        <!-- Central Logo Block -->
-        <div class="splash-center">
-            <div class="splash-logo-ring">
-                <div class="splash-ring-outer"></div>
-                <div class="splash-ring-inner"></div>
-                <div class="splash-logo-icon">🍔</div>
-            </div>
-
-            <div class="splash-brand">
-                <span class="splash-brand-wabz">WABZ</span><span class="splash-brand-foods">FOODS</span>
-            </div>
-
-            <p class="splash-tagline">Kampala's Favourite Meals</p>
-
-            <!-- Progress bar -->
-            <div class="splash-progress-track">
-                <div class="splash-progress-bar"></div>
-            </div>
-            <p class="splash-loading-text">Preparing your experience…</p>
-        </div>
+    <div class="redirect-card">
+        <div class="spinner"></div>
+        <img src="/wabzfoodz-logo-sm.png" alt="Wabz Foods">
+        <h1>Welcome to Wabz Foods</h1>
+        <p>The new experience is loading...</p>
+        <a href="/">Enter Store</a>
     </div>
-
-    <!-- Global Header -->
-    <header class="glass-panel">
-        <div class="container header-content">
-            <div class="logo" id="home-logo">
-                <span>WABZ</span><span class="yellow">FOODS</span>
-            </div>
-            <div class="header-actions">
-                <button class="btn-primary" id="signin-btn">Sign In</button>
-                <div class="cart-widget" id="cart-trigger">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>
-                    <span class="cart-total">UGX 0</span>
-                    <span class="cart-count">0</span>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <!-- Professional Top Info Bar -->
-    <div class="top-bar">
-        <div class="container flex justify-between items-center w-full">
-            <div class="top-info-item flex items-center gap-8">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                <span>Open Daily: 09:00 AM - 11:00 PM</span>
-            </div>
-            <div class="top-info-item flex items-center gap-8">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                <span>Kampala, Uganda</span>
-            </div>
-        </div>
-    </div>
-
-    <main>
-        <!-- Hero Section -->
-        <section class="hero container">
-            <div class="hero-badge">Delivery Now Available</div>
-            <h1>Ready to Start<br><span class="gradient-text">Your Order?</span></h1>
-            <p>Experience the ultimate crunch and flavor. Freshly prepared box meals, buckets, and burgers delivered right to your door.</p>
-            <button class="btn-primary" id="hero-order-now">
-                <span>ORDER NOW</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-            </button>
-
-            <!-- Banner Carousel -->
-            <div class="carousel-container shadow-lg">
-                <div class="carousel-slide active slide-1">
-                    <div class="slide-content">
-                        <span class="card-badge">Limited Time</span>
-                        <h2>Mega Crunch Box</h2>
-                        <p>2 Pcs Chicken, regular fries, and a cold drink.</p>
-                    </div>
-                </div>
-                <div class="carousel-slide slide-2">
-                    <div class="slide-content">
-                        <span class="card-badge">Promo</span>
-                        <h2>Double Burger Deal</h2>
-                        <p>Two classic beef burgers for the price of one.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-        
-        <!-- Immersive Features Section -->
-        <section class="features-section container">
-            <div class="features-grid">
-                <!-- Fast Delivery -->
-                <div class="feature-card immersive-card feature-bg-delivery">
-                    <div class="card-overlay">
-                        <div class="card-content">
-                            <h3>Fast Delivery</h3>
-                            <p>Under 30 mins across Kampala</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Quality Ingredients -->
-                <div class="feature-card immersive-card feature-bg-quality">
-                    <div class="card-overlay">
-                        <div class="card-content">
-                            <h3>Quality Ingredients</h3>
-                            <p>Farm-fresh local ingredients</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Master Chefs -->
-                <div class="feature-card immersive-card feature-bg-chefs">
-                    <div class="card-overlay">
-                        <div class="card-content">
-                            <h3>Master Chefs</h3>
-                            <p>Crafted by experienced experts</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Realistic Trust Banner -->
-            <div class="trust-banner mt-40">
-                <p class="text-xs color-text-secondary mb-10">TRUSTED BY CUSTOMERS ACROSS</p>
-                <div class="marquee-container">
-                    <div class="location-chips marquee-content">
-                        <!-- Group 1 -->
-                        <span class="chip" data-location="Nakasero">📍 Nakasero</span>
-                        <span class="chip" data-location="Kololo">📍 Kololo</span>
-                        <span class="chip" data-location="Ntinda">📍 Ntinda</span>
-                        <span class="chip" data-location="Bugolobi">📍 Bugolobi</span>
-                        <span class="chip" data-location="Munyonyo">📍 Munyonyo</span>
-                        <!-- Group 2 for seamless loop -->
-                        <span class="chip" data-location="Nakasero">📍 Nakasero</span>
-                        <span class="chip" data-location="Kololo">📍 Kololo</span>
-                        <span class="chip" data-location="Ntinda">📍 Ntinda</span>
-                        <span class="chip" data-location="Bugolobi">📍 Bugolobi</span>
-                        <span class="chip" data-location="Munyonyo">📍 Munyonyo</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Menu Section -->
-        <section class="menu-section container" id="menu-container">
-            <div class="section-header">
-                <h2>Explore Our <span class="gradient-text-yellow">Menu</span></h2>
-                <p class="color-text-secondary text-sm">Fresh, local flavors crafted for Kampala — order delivery or pickup.</p>
-            </div>
-            <div id="menu-grid"></div>
-        </section>
-
-        <!-- Testimonials Section -->
-        <section class="testimonials-section">
-            <div class="container">
-                <div class="text-center mb-40">
-                    <h2 class="text-xl">What Our <span class="gradient-text">Customers Say</span></h2>
-                </div>
-                <div class="testimonials-grid">
-                    <!-- Sarah M. -->
-                    <div class="testimonial-card">
-                        <div class="flex items-center gap-12 mb-16">
-                            <img src="testimonial_sarah_avatar_1777667558964.png" alt="Sarah M." class="customer-avatar">
-                            <div class="customer-info">
-                                <strong>Sarah M.</strong>
-                                <span>Verified Buyer</span>
-                            </div>
-                        </div>
-                        <div class="stars">⭐⭐⭐⭐⭐</div>
-                        <p>"The Mega Crunch Box is actually the best chicken I've had in Kampala. Delivery was super fast!"</p>
-                    </div>
-
-                    <!-- James K. -->
-                    <div class="testimonial-card">
-                        <div class="flex items-center gap-12 mb-16">
-                            <img src="testimonial_james_avatar_1777667580437.png" alt="James K." class="customer-avatar">
-                            <div class="customer-info">
-                                <strong>James K.</strong>
-                                <span>Verified Buyer</span>
-                            </div>
-                        </div>
-                        <div class="stars">⭐⭐⭐⭐⭐</div>
-                        <p>"Easy to order, and the food arrived steaming hot. The burgers are massive and juicy."</p>
-                    </div>
-                </div>
-
-                <!-- Review CTA -->
-                <div class="text-center mt-40">
-                    <button class="review-btn-premium" id="open-review-modal">
-                        <div class="btn-shine"></div>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                        <span>Share Your Experience</span>
-                    </button>
-                    <p class="text-xs color-text-secondary mt-12">Your feedback helps us serve you better</p>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Global Footer -->
-    <footer>
-        <div class="container footer-grid">
-            <div class="footer-col">
-                <div class="logo mb-20" style="color: #fff;">
-                    <span style="color: var(--primary-color);">WABZ</span><span style="color: var(--secondary-color);">FOODS</span>
-                </div>
-                <p style="color: rgba(255,255,255,0.55); font-size: 0.9rem; line-height: 1.7;">The ultimate destination for delicious, quick, and satisfying meals in Kampala.</p>
-            </div>
-            <div class="footer-col">
-                <h3>Contact Us</h3>
-                <ul>
-                    <li><a href="tel:+256000000000" style="color: rgba(255,255,255,0.6);">+256 000 000 000</a></li>
-                    <li><a href="mailto:info@wabzfoods.com" style="color: rgba(255,255,255,0.6);">info@wabzfoods.com</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h3>Legal</h3>
-                <ul>
-                    <li><a href="privacy.html" id="link-privacy" style="color: rgba(255,255,255,0.6);">Privacy Policy</a></li>
-                    <li><a href="terms.html" id="link-terms" style="color: rgba(255,255,255,0.6);">Terms &amp; Conditions</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h3>Locations</h3>
-                <ul>
-                    <li><a href="#" id="link-locations" style="color: rgba(255,255,255,0.6);">Store Directory</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom container">
-            &copy; 2026 Wabz Foods. All rights reserved. | <a href="admin.html" style="color: rgba(255,255,255,0.4);">Admin Portal</a>
-        </div>
-    </footer>
-
-    <!-- Modals -->
-    
-    <!-- 0. Authentication Modal -->
-    <div class="modal-overlay" id="auth-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="text-lg" id="auth-title">Sign In</h3>
-                <button class="close-modal" id="close-auth">&times;</button>
-            </div>
-            <div class="modal-body flex-col gap-16">
-                <div class="flex rounded-md surface-bg p-4">
-                    <button id="tab-login" class="auth-tab active">Login</button>
-                    <button id="tab-register" class="auth-tab">Register</button>
-                </div>
-
-                <div id="auth-input-group" class="flex-col gap-12">
-                    <input type="text" id="auth-email" placeholder="Email or Phone Number" class="w-full p-12 rounded-md surface-bg glass-border-input">
-                    <input type="tel" id="auth-phone" placeholder="Phone Number" class="w-full p-12 rounded-md surface-bg glass-border-input">
-                    <input type="password" id="auth-password" placeholder="Password" class="w-full p-12 rounded-md surface-bg glass-border-input">
-                    <button class="btn-primary w-full p-14" id="btn-auth-submit">Confirm</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 1. Fulfillment Selection Modal -->
-    <div class="modal-overlay" id="fulfillment-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="text-lg">How would you like your order?</h3>
-            </div>
-            <div class="modal-body flex-col gap-16">
-                <button class="btn-primary w-full p-16 rounded-md" id="select-delivery">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-10"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
-                    Delivery
-                </button>
-                <button class="btn-secondary w-full p-16 rounded-md" id="select-pickup">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-10"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                    Pickup
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 2. Location Entry Modal -->
-    <div class="modal-overlay" id="location-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="text-lg" id="location-title">Enter Delivery Address</h3>
-                <button class="close-modal" id="close-location">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div id="delivery-input-group" class="flex-col gap-12">
-                    <input type="text" id="address-input" placeholder="Street address, Apartment, City" class="w-full p-12 rounded-md surface-bg glass-border-input">
-                    <button class="btn-primary" id="confirm-address">Confirm Address</button>
-                </div>
-                <div id="pickup-input-group" class="flex-col gap-12 hidden">
-                    <select id="store-select" class="w-full p-12 rounded-md surface-bg glass-border-input" title="Select Pickup Store" aria-label="Select Pickup Store">
-                        <option value="kampala-central">Kampala Central - Wabz Tower</option>
-                        <option value="nakawa">Nakawa Mall Branch</option>
-                        <option value="entebbe">Entebbe Airport Road</option>
-                    </select>
-                    <button class="btn-primary" id="confirm-store">Select Store</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 3. Product Detail Modal -->
-    <div class="modal-overlay" id="product-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="text-lg" id="modal-product-name">Product Name</h3>
-                <button class="close-modal" id="close-product">&times;</button>
-            </div>
-            <div class="modal-body" id="modal-product-body">
-                <!-- Customization options inserted by JS -->
-            </div>
-            <div class="modal-footer">
-                <button class="btn-primary w-full" id="add-to-cart-btn">Add to Cart - <span id="modal-product-price">UGX 0</span></button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 4. Cart & Checkout Modal -->
-    <div class="modal-overlay" id="cart-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="text-lg">Your Cart</h3>
-                <button class="close-modal" id="close-cart">&times;</button>
-            </div>
-            <div class="modal-body" id="cart-items-container">
-                <!-- Cart items inserted by JS -->
-            </div>
-            <div class="modal-footer flex-col gap-16">
-                <div class="flex justify-between w-full text-lg">
-                    <span>Total:</span>
-                    <span id="cart-total-amount" class="gradient-text-yellow">UGX 0</span>
-                </div>
-                <button class="btn-primary w-full" id="proceed-to-checkout">Proceed to Payment</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 5. Payment Modal -->
-    <div class="modal-overlay" id="payment-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="flex-col">
-                    <h3 class="text-lg flex items-center gap-8">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon-align-bottom"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                        Secure Payment
-                    </h3>
-                    <p class="text-xs color-text-secondary subtitle-tight">SSL Encrypted & Protected</p>
-                </div>
-                <button class="close-modal" id="close-payment" aria-label="Close Payment Modal">&times;</button>
-            </div>
-            <div class="modal-body flex-col gap-16">
-                <div id="payment-methods">
-                    <p class="mb-12 color-text-secondary">Select your preferred payment method:</p>
-                    <button class="btn-secondary w-full p-16 rounded-md mb-12 flex justify-between items-center" id="pay-momo">
-                        <span class="font-bold color-secondary">MTN MoMo / Airtel Money</span>
-                    </button>
-                    <button class="btn-secondary w-full p-16 rounded-md mb-12 flex justify-between items-center" id="pay-card">
-                        <span>Credit / Debit Card</span>
-                    </button>
-                    <button class="btn-secondary w-full p-16 rounded-md flex justify-between items-center" id="pay-cash">
-                        <span>Cash on Fulfillment</span>
-                    </button>
-                </div>
-
-                <!-- MoMo Input -->
-                <div id="momo-input-group" class="flex-col gap-12 hidden">
-                    <input type="tel" id="momo-number" placeholder="Enter Phone Number (e.g., 077...)" class="w-full p-12 rounded-md surface-bg glass-border-input">
-                    <button class="btn-primary" id="submit-momo">Pay Now</button>
-                </div>
-
-                <!-- Payment Status (Real-time simulation) -->
-                <div id="payment-status-container" class="text-center p-20 hidden">
-                    <div class="spinner"></div>
-                    <h4 id="payment-status-text" class="text-lg mb-10">Initiating Transaction...</h4>
-                    <p id="payment-status-subtext" class="color-text-secondary text-sm">Please check your phone for the prompt.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Success/Tracking Modal -->
-    <div class="modal-overlay" id="tracking-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="text-lg">Order Confirmed!</h3>
-                <button class="close-modal" id="close-tracking">&times;</button>
-            </div>
-            <div class="modal-body text-center p-20">
-                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--secondary-color)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mb-20"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                <h4 class="text-xl mb-10 gradient-text-yellow">Order #WFBZ-2026</h4>
-                <p class="color-text-secondary mb-20">Your food is being prepared with love.</p>
-                
-                <div class="surface-bg p-16 rounded-md text-center mb-20">
-                    <div class="flex justify-between mb-8">
-                        <span>Status:</span>
-                        <strong class="color-secondary" id="tracking-status">Preparing</strong>
-                    </div>
-                    <div class="flex justify-between">
-                        <span>ETA:</span>
-                        <strong>25-35 Mins</strong>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Review Modal -->
-    <div class="modal-overlay" id="review-modal">
-        <div class="modal-content review-modal-content">
-            <div class="modal-header">
-                <h3 class="text-lg">Share Your Experience</h3>
-                <button class="close-modal" id="close-review">&times;</button>
-            </div>
-            <div class="modal-body p-24">
-                <div class="rating-selector mb-24">
-                    <p class="text-sm color-text-secondary mb-12 text-center">Tap a star to rate</p>
-                    <div class="stars-input flex justify-center gap-8">
-                        <span class="star-item" data-value="1">★</span>
-                        <span class="star-item" data-value="2">★</span>
-                        <span class="star-item" data-value="3">★</span>
-                        <span class="star-item" data-value="4">★</span>
-                        <span class="star-item" data-value="5">★</span>
-                    </div>
-                </div>
-                <div class="input-group mb-20">
-                    <label class="text-xs mb-8 block color-text-secondary uppercase tracking-wider">Your Feedback</label>
-                    <textarea id="review-text" placeholder="Tell us what you loved about your meal..." class="w-full p-16 rounded-md surface-bg glass-border-input" rows="4"></textarea>
-                </div>
-                <button class="btn-primary w-full" id="submit-review">Submit Review</button>
-            </div>
-        </div>
-    </div>
-
-    <style>
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
-    <script type="module" src="app.js"></script>
-<div id="toast-container" class="toast-container"></div></body>
+</body>
 </html>
