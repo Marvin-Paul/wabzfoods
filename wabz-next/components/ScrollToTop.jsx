@@ -1,33 +1,30 @@
+"use client";
+
 import { useEffect } from "react";
-import { usePathname, useRouter } from 'next/navigation';
-
-const getHashId = (hash) => {
-  const rawId = hash.slice(1);
-
-  try {
-    return decodeURIComponent(rawId);
-  } catch {
-    return rawId;
-  }
-};
+import { usePathname } from "next/navigation";
 
 export default function ScrollToTop() {
-  const { pathname, hash } = usePathname();
-  const navigationType = useNavigationType();
+  const pathname = usePathname();
 
   useEffect(() => {
-    if (navigationType === "POP") return;
-
-    if (hash) {
-      const id = getHashId(hash);
-      const timer = window.setTimeout(() => {
+    // Check for hash anchor and scroll to it
+    if (window.location.hash) {
+      const rawHash = window.location.hash.slice(1);
+      const id = (() => {
+        try {
+          return decodeURIComponent(rawHash);
+        } catch {
+          return rawHash;
+        }
+      })();
+      const timer = setTimeout(() => {
         document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
       }, 50);
-      return () => window.clearTimeout(timer);
+      return () => clearTimeout(timer);
     }
 
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-  }, [pathname, hash, navigationType]);
+  }, [pathname]);
 
   return null;
 }

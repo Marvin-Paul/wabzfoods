@@ -41,12 +41,41 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-5 md:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           <div>
-            <Link href="/" className="inline-block">
-              <img
-                src="/wabzfoodz-logo-sm.png"
-                alt="Wabz Foods Logo"
-                className="h-10 w-auto object-contain brightness-0 invert"
-              />
+            <Link href="/" className="inline-block group">
+              <svg
+                width="140"
+                height="36"
+                viewBox="0 0 140 36"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="transition-opacity duration-300 group-hover:opacity-80"
+                role="img"
+                aria-label="Wabz Foods Logo"
+              >
+                <title>Wabz Foods Logo</title>
+                <text
+                  x="0"
+                  y="26"
+                  fontFamily="system-ui, -apple-system, sans-serif"
+                  fontSize="22"
+                  fontWeight="700"
+                  fill="white"
+                  letterSpacing="1.5"
+                >
+                  WABZ
+                </text>
+                <text
+                  x="64"
+                  y="26"
+                  fontFamily="system-ui, -apple-system, sans-serif"
+                  fontSize="22"
+                  fontWeight="300"
+                  fill="rgba(255,255,255,0.6)"
+                  letterSpacing="0.5"
+                >
+                  FOODS
+                </text>
+              </svg>
             </Link>
             <p className="mt-3 text-sm text-parchment/60 max-w-xs leading-relaxed">
               From{" "}

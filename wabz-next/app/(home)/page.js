@@ -194,7 +194,8 @@ function EmptyStateContent({ query, filter, onClear, onBrowse, onSearch }) {
   );
 }
 
-import { listProducts, getSettings } from "@/lib/supabase-data";
+import { supabase } from "@/lib/supabaseClient";
+import { mapFoodProduct, DEFAULT_SETTINGS } from "@/lib/supabase-data";
 import { Image } from "@/components/ui/image";
 import MenuItemCard from "@/components/MenuItemCard";
 import { useCart } from "@/components/CartContext";
@@ -209,6 +210,7 @@ import {
   X,
   ShoppingBag,
   ChefHat,
+  CupSoda,
   Truck,
   Clock,
   Star,
@@ -218,6 +220,7 @@ import {
   Quote,
   ArrowRight,
   Phone,
+  Sparkles,
 } from "lucide-react";
 
 const HERO_IMG =
@@ -436,12 +439,27 @@ export default function Home() {
   const [filter, setFilter] = useState("all");
   const [query, setQuery] = useState("");
   const [settings, setSettings] = useState(null);
+  const [greetingUser, setGreetingUser] = useState(null);
   const { addItem, setOpen } = useCart();
 
   useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        const name = session.user.user_metadata?.full_name;
+        if (name) setGreetingUser(name);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
     Promise.all([
-      listProducts(),
-      getSettings(),
+      supabase
+        .from("food_items")
+        .select("*, categories!inner(category_code)")
+        .eq("is_available", true)
+        .order("item_id", { ascending: true })
+        .then(({ data }) => (data || []).map(mapFoodProduct)),
+      Promise.resolve(DEFAULT_SETTINGS),
     ]).then(([products, settings]) => {
       setProducts(products);
       setSettings(settings);
@@ -555,6 +573,12 @@ export default function Home() {
         </div>
 
         <div className="relative w-full max-w-7xl mx-auto px-5 md:px-8 py-28 md:py-40">
+          {greetingUser && (
+            <div className="inline-flex items-center gap-2 bg-emerald-500/15 text-emerald-400 text-[10px] font-semibold uppercase tracking-[0.2em] px-4 py-2 rounded-full border border-emerald-500/20 mb-3 backdrop-blur-sm animate-in fade-in slide-in-from-bottom-2 duration-700">
+              <Sparkles size={12} />
+              Welcome back, {greetingUser}!
+            </div>
+          )}
           <div className="inline-flex items-center gap-2 bg-persimmon/15 text-persimmon text-[10px] font-semibold uppercase tracking-[0.2em] px-4 py-2 rounded-full border border-persimmon/20 mb-6 backdrop-blur-sm">
             <Flame size={12} />
             {settings?.name || "Wabz Foods"} &middot; Local &middot; Fast &middot; Crafted Fresh
@@ -914,6 +938,176 @@ export default function Home() {
             ))}
           </div>
         )}
+      </section>
+
+      {/* ════════════════════════════════════════════════
+          DRINKS — CocaCola Selection
+      ════════════════════════════════════════════════ */}
+      <section className="bg-gradient-to-b from-stone-50 to-stone-100/40 py-24 md:py-32 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-5 md:px-8">
+          <AnimatedSection>
+            <div className="text-center max-w-3xl mx-auto mb-16">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-persimmon/70 mb-4 block">
+                Quench Your Thirst
+              </span>
+              <h2 className="font-display text-3xl md:text-4xl font-light bg-gradient-to-r from-stone-900 via-persimmon to-amber-600 bg-clip-text text-transparent animate-shimmer mb-5"
+                style={{ backgroundSize: "200% auto" }}>
+                The Classic You Love — Now Served Your Way
+              </h2>
+              <p className="text-stone-500 text-sm md:text-base leading-relaxed max-w-2xl mx-auto">
+                Whether you prefer the crisp refreshment of a chilled plastic bottle or the
+                timeless elegance of a glass-bottled CocaCola — we&apos;ve got your perfect
+                sip waiting. Grab one with your meal!
+              </p>
+            </div>
+          </AnimatedSection>
+
+          {/* ── CocaCola cards — full bleed ── */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 max-w-4xl mx-auto">
+            {/* Plastic Bottle */}
+            <AnimatedSection>
+              <TiltCard tilt={8}>
+                <div className="group relative bg-white rounded-2xl border border-stone-200/80 overflow-hidden hover:border-stone-300 hover:shadow-2xl hover:shadow-stone-900/10 transition-all duration-700">
+                  {/* Full-bleed image */}
+                  <div className="absolute inset-0">
+                    <img
+                      src="/food/plastic-cocacola.jpg"
+                      alt="CocaCola Plastic Bottle"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                    />
+                  </div>
+                  {/* Dark gradient overlay — deepest at bottom for text */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 via-50% to-black/5" />
+                  {/* Extra tint wash over the image */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-red-800/10 to-rose-900/30 mix-blend-overlay" />
+
+                  {/* Content stacked on top */}
+                  <div className="relative z-10 flex flex-col justify-end min-h-[36rem] md:min-h-[40rem] p-6 md:p-8">
+                    {/* Badge */}
+                    <span className="absolute top-5 left-5 inline-flex items-center gap-1.5 bg-red-600/90 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-[0.15em] px-3 py-1.5 rounded-full shadow-lg border border-white/10">
+                      <CupSoda size={11} />
+                      Plastic Bottle
+                    </span>
+
+                    <div className="mt-auto">
+                      <h3 className="font-display text-2xl font-semibold text-white drop-shadow-sm">
+                        CocaCola &mdash; Plastic Bottle
+                      </h3>
+                      <p className="text-sm text-white/70 leading-relaxed mt-2 mb-6 max-w-xs drop-shadow-sm">
+                        The classic CocaCola taste you know and love, in a convenient
+                        resealable plastic bottle. Crisp, chilled, and ready to go.
+                      </p>
+                      <div className="flex items-center justify-between gap-4">
+                        <span className="font-display text-3xl font-bold text-white tabular-nums drop-shadow-lg">
+                          UGX 2,500
+                        </span>
+                        <button
+                          onClick={() => onAdd({
+                            id: "cocacola-plastic",
+                            name: "CocaCola Plastic Bottle",
+                            price: 2500,
+                            image_url: "/food/plastic-cocacola.jpg",
+                            category: "drinks",
+                            available: true,
+                            featured: true,
+                            prep: "2 mins",
+                            kcal: "~150 kcal",
+                          })}
+                          className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white/20 backdrop-blur-md text-white text-sm font-semibold hover:bg-white hover:text-stone-900 active:scale-[0.97] transition-all duration-300 shadow-lg border border-white/20 hover:border-white/40"
+                        >
+                          Add to Order
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </TiltCard>
+            </AnimatedSection>
+
+            {/* Glass Bottle */}
+            <AnimatedSection>
+              <TiltCard tilt={8}>
+                <div className="group relative bg-white rounded-2xl border border-stone-200/80 overflow-hidden hover:border-stone-300 hover:shadow-2xl hover:shadow-stone-900/10 transition-all duration-700">
+                  {/* Full-bleed image */}
+                  <div className="absolute inset-0">
+                    <img
+                      src="/food/glass-cocacola.jpg"
+                      alt="CocaCola Glass Bottle"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                    />
+                  </div>
+                  {/* Dark gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 via-50% to-black/5" />
+                  {/* Warm amber tint wash */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-amber-800/10 to-orange-900/30 mix-blend-overlay" />
+
+                  {/* Content stacked on top */}
+                  <div className="relative z-10 flex flex-col justify-end min-h-[36rem] md:min-h-[40rem] p-6 md:p-8">
+                    {/* Badge */}
+                    <span className="absolute top-5 left-5 inline-flex items-center gap-1.5 bg-amber-700/90 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-[0.15em] px-3 py-1.5 rounded-full shadow-lg border border-white/10">
+                      <CupSoda size={11} />
+                      Glass Bottle
+                    </span>
+
+                    <div className="mt-auto">
+                      <h3 className="font-display text-2xl font-semibold text-white drop-shadow-sm">
+                        CocaCola &mdash; Glass Bottle
+                      </h3>
+                      <p className="text-sm text-white/70 leading-relaxed mt-2 mb-6 max-w-xs drop-shadow-sm">
+                        The nostalgic glass bottle experience. Thicker glass, colder
+                        sip, and that unmistakable CocaCola fizz you remember from
+                        the good old days.
+                      </p>
+                      <div className="flex items-center justify-between gap-4">
+                        <span className="font-display text-3xl font-bold text-white tabular-nums drop-shadow-lg">
+                          UGX 3,000
+                        </span>
+                        <button
+                          onClick={() => onAdd({
+                            id: "cocacola-glass",
+                            name: "CocaCola Glass Bottle",
+                            price: 3000,
+                            image_url: "/food/glass-cocacola.jpg",
+                            category: "drinks",
+                            available: true,
+                            featured: true,
+                            prep: "2 mins",
+                            kcal: "~150 kcal",
+                          })}
+                          className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white/20 backdrop-blur-md text-white text-sm font-semibold hover:bg-white hover:text-stone-900 active:scale-[0.97] transition-all duration-300 shadow-lg border border-white/20 hover:border-white/40"
+                        >
+                          Add to Order
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </TiltCard>
+            </AnimatedSection>
+          </div>
+
+          {/* Browse all drinks CTA */}
+          <AnimatedSection>
+            <div className="flex justify-center mt-10">
+              <Link
+                href="/drinks"
+                className="group inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-sky-50 text-sky-800 border border-sky-200 text-sm font-semibold hover:bg-sky-100 hover:border-sky-300 transition-all duration-300 shadow-sm"
+              >
+                <CupSoda size={16} />
+                Browse All Drinks
+                <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+              </Link>
+            </div>
+          </AnimatedSection>
+
+          {/* Subtle footer note */}
+          <AnimatedSection>
+            <p className="text-center text-xs text-stone-400 mt-8 italic">
+              * CocaCola is a registered trademark of The CocaCola Company.
+              Served chilled for maximum refreshment.
+            </p>
+          </AnimatedSection>
+        </div>
       </section>
 
       {/* ════════════════════════════════════════════════

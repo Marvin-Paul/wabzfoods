@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Plus, Minus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 import { useCart } from "@/components/CartContext";
-import { base44 } from "@/lib/base44Client";
+import { DEFAULT_SETTINGS } from "@/lib/supabase-data";
 import {
   Sheet,
   SheetContent,
@@ -18,13 +18,8 @@ export default function CartDrawer() {
   const [deliveryFee, setDeliveryFee] = useState(0);
 
   useEffect(() => {
-    base44.apiClient
-      .get("/api/settings")
-      .then((r) => {
-        const fee = Number(r.data?.delivery_fee) || 0;
-        setDeliveryFee(fee);
-      })
-      .catch(() => {});
+    const fee = Number(DEFAULT_SETTINGS.delivery_fee) || 0;
+    setDeliveryFee(fee);
   }, []);
 
   const grandTotal = total + deliveryFee;

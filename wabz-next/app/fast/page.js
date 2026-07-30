@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
-import { listFastProducts } from "@/lib/supabase-data";
+import { supabase } from "@/lib/supabaseClient";
+import { mapFoodProduct } from "@/lib/supabase-data";
 import { useCart } from "@/components/CartContext";
 import { ArrowLeft, Heart, Clock, Flame, Utensils, Search, X, Star } from "lucide-react";
 
@@ -70,12 +71,19 @@ export default function FastPage() {
   const { addItem, setOpen } = useCart();
 
   useEffect(() => {
-    listFastProducts()
-      .then(setProducts)
+    supabase
+      .from("food_items")
+      .select("*, categories!inner(category_code)")
+      .eq("is_available", true)
+      .order("item_id", { ascending: true })
+      .then(({ data }) => {
+        if (!data) return;
+        const mapped = (data || []).map(mapFoodProduct);
+        setProducts(mapped.filter((p) => p.category === "fast"));
+      })
       .finally(() => setLoading(false));
   }, []);
 
-  /* ── All products from the API in one unified list ── */
   const allMenuItems = products.map((p) => ({
     ...p,
     category: p.subcategory || guessCategory(p.name || ""),
@@ -104,16 +112,15 @@ export default function FastPage() {
     setOpen(true);
   };
 
-  /* ── Guard card grid animation until it scrolls into view ── */
   const [gridRef, gridInView] = useInView({ threshold: 0.08 });
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 font-sans">
+    <div className="bg-cream-bg min-h-screen">
       <div className="max-w-7xl mx-auto px-5 md:px-8 py-8 md:py-12">
         <AnimatedSection>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-amber-500 transition-colors mb-8"
+            className="inline-flex items-center gap-2 text-sm text-stone-400 hover:text-persimmon transition-colors mb-8"
           >
             <ArrowLeft size={15} />
             Back to Home
@@ -123,35 +130,35 @@ export default function FastPage() {
         {/* Header */}
         <AnimatedSection>
           <header className="mb-10 text-center max-w-2xl mx-auto">
-            <span className="text-amber-500 font-semibold tracking-wider uppercase text-sm">
+            <span className="text-persimmon font-semibold tracking-wider uppercase text-sm">
               Quick & Delicious
             </span>
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-white mt-2 mb-4">
+            <h1 className="font-display text-4xl md:text-5xl font-light text-stone-900 mt-2 mb-4">
               Fast Favourites
             </h1>
-            <p className="text-slate-400 text-sm md:text-base">
+            <p className="text-stone-500 text-sm md:text-base">
               Burgers, pizzas, fries and more — made fresh to order with premium
               ingredients for that perfect bite, every time.
             </p>
           </header>
         </AnimatedSection>
 
-        {/* Unified Menu — search + category filter + all cards */}
+        {/* Menu Section */}
         <AnimatedSection>
           <div className="mb-16">
             <div className="flex items-center gap-3 mb-8">
-              <div className="w-8 h-8 rounded-lg bg-amber-500/15 flex items-center justify-center">
-                <Star size={16} className="text-amber-500" />
+              <div className="w-8 h-8 rounded-lg bg-persimmon/10 flex items-center justify-center">
+                <Star size={16} className="text-persimmon" />
               </div>
               <div>
-                <h2 className="font-display text-xl font-semibold text-white">
+                <h2 className="font-display text-xl font-semibold text-stone-900">
                   Today&apos;s Menu
                 </h2>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs text-stone-400 mt-0.5">
                   All our fast food favourites in one place
                 </p>
               </div>
-              <div className="flex-1 h-px bg-slate-700/50 ml-4" />
+              <div className="flex-1 h-px bg-stone-100 ml-4" />
             </div>
 
             {/* Search bar */}
@@ -159,18 +166,18 @@ export default function FastPage() {
               <div className="relative">
                 <Search
                   size={16}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none"
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 pointer-events-none"
                 />
                 <input
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search menu…"
-                  className="w-full pl-11 pr-10 py-3 bg-slate-800 border border-slate-700 rounded-xl text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-amber-500/50 focus:ring-2 focus:ring-amber-500/10 transition-all duration-300"
+                  className="w-full pl-11 pr-10 py-3 bg-white border border-stone-200 rounded-xl text-sm text-stone-900 placeholder:text-stone-400/70 focus:outline-none focus:border-persimmon focus:ring-2 focus:ring-persimmon/10 transition-all duration-300 shadow-sm"
                 />
                 {query && (
                   <button
                     onClick={() => setQuery("")}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 transition-colors"
                     aria-label="Clear search"
                   >
                     <X size={15} />
@@ -190,16 +197,16 @@ export default function FastPage() {
                     onClick={() => setSpecialCategory(cat.value)}
                     className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-semibold uppercase tracking-wider transition-all duration-300 ${
                       specialCategory === cat.value
-                        ? "bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/20 scale-105"
-                        : "bg-slate-800/80 text-slate-400 hover:text-white hover:bg-slate-700 border border-slate-700/50"
+                        ? "bg-stone-900 text-white shadow-lg shadow-stone-900/20 scale-105"
+                        : "bg-white text-stone-600 hover:text-stone-900 border border-stone-200 hover:border-stone-400 hover:shadow-md hover:shadow-stone-900/5"
                     }`}
                   >
-                    <Icon size={12} className={specialCategory === cat.value ? "text-slate-950" : "text-slate-500"} />
+                    <Icon size={12} className={specialCategory === cat.value ? "text-white" : "text-stone-400"} />
                     {cat.label}
                   </button>
                 );
               })}
-              <span className="ml-auto text-[11px] text-slate-500">
+              <span className="ml-auto text-[11px] text-stone-400">
                 {filteredItems.length} item{filteredItems.length !== 1 ? "s" : ""}
               </span>
             </div>
@@ -211,35 +218,35 @@ export default function FastPage() {
                   {[...Array(6)].map((_, i) => (
                     <div
                       key={i}
-                      className="bg-slate-800/80 rounded-2xl border border-slate-700/50 overflow-hidden animate-pulse"
+                      className="rounded-2xl overflow-hidden bg-white border border-stone-200 animate-pulse"
                     >
-                      <div className="h-52 bg-slate-700" />
+                      <div className="h-52 bg-stone-100" />
                       <div className="p-5 space-y-4">
-                        <div className="h-5 w-3/4 bg-slate-700 rounded" />
-                        <div className="h-3 w-1/2 bg-slate-700 rounded" />
-                        <div className="h-12 bg-slate-700 rounded" />
-                        <div className="h-10 bg-slate-700 rounded-xl" />
+                        <div className="h-5 w-3/4 bg-stone-100 rounded" />
+                        <div className="h-3 w-1/2 bg-stone-100 rounded" />
+                        <div className="h-12 bg-stone-100 rounded" />
+                        <div className="h-10 bg-stone-100 rounded-xl" />
                       </div>
                     </div>
                   ))}
                 </div>
               ) : filteredItems.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-24 text-center">
-                  <div className="w-16 h-16 rounded-2xl bg-slate-800 flex items-center justify-center mb-4 border border-slate-700">
-                    <Search size={24} className="text-slate-500" />
+                  <div className="w-16 h-16 rounded-2xl bg-stone-100 flex items-center justify-center mb-4">
+                    <Search size={24} className="text-stone-400" />
                   </div>
-                  <p className="text-white font-semibold text-lg">
+                  <p className="text-stone-900 font-semibold text-lg">
                     {query
                       ? `No fast foods matching "${query}"`
                       : "No fast food items available yet"}
                   </p>
-                  <p className="text-slate-400 text-sm mt-1">
+                  <p className="text-stone-500 text-sm mt-1">
                     {query ? "Try a different search term." : "Check back soon for new additions."}
                   </p>
                   {query && (
                     <button
                       onClick={() => setQuery("")}
-                      className="mt-5 text-sm font-medium text-amber-500 hover:text-white transition-colors"
+                      className="mt-5 text-sm font-medium text-persimmon hover:text-stone-900 transition-colors"
                     >
                       Clear search
                     </button>
@@ -250,7 +257,7 @@ export default function FastPage() {
                   {filteredItems.map((dish, idx) => (
                     <div
                       key={dish.id}
-                      className="group relative bg-slate-800/80 rounded-2xl border border-slate-700/50 overflow-hidden hover:border-amber-500/40 hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-500 flex flex-col"
+                      className="group relative bg-white rounded-2xl border border-stone-200/80 overflow-hidden hover:border-stone-300 hover:shadow-xl hover:shadow-stone-900/5 transition-all duration-500 flex flex-col"
                       style={{
                         opacity: 0,
                         animation: gridInView
@@ -258,67 +265,68 @@ export default function FastPage() {
                           : "none",
                       }}
                     >
-                      <div className="relative h-52 w-full overflow-hidden bg-slate-950">
+                      <div className="relative h-52 w-full overflow-hidden bg-stone-100">
                         <img
                           src={dish.image_url}
                           alt={dish.name}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          onError={(e) => { e.target.style.display = "none"; }}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-80" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                         {dish.featured && (
-                          <span className="absolute top-4 left-4 bg-amber-500 text-slate-950 font-bold text-[10px] uppercase tracking-wider px-2.5 py-1 rounded-full shadow-md flex items-center gap-1">
-                            <Star size={10} />
+                          <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 bg-amber-50 text-amber-800 text-[10px] font-semibold uppercase tracking-[0.15em] px-2.5 py-1 rounded-full shadow-lg shadow-amber-900/10 border border-amber-200/60">
+                            <Star size={10} className="text-amber-500" />
                             Chef&apos;s Special
                           </span>
                         )}
 
                         <button
                           onClick={() => toggleFavorite(dish.id)}
-                          className="absolute top-4 right-4 p-2.5 rounded-full bg-slate-900/60 backdrop-blur-md border border-white/10 text-slate-300 hover:text-red-500 transition-colors"
+                          className={`absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
+                            favorites.includes(dish.id)
+                              ? "bg-persimmon text-white shadow-lg shadow-persimmon/30 scale-110"
+                              : "bg-white/80 backdrop-blur-sm text-stone-500 hover:text-persimmon hover:bg-white shadow-lg shadow-black/10"
+                          }`}
                           aria-label={favorites.includes(dish.id) ? "Remove from favorites" : "Add to favorites"}
                         >
-                          <Heart
-                            className={`w-4 h-4 ${
-                              favorites.includes(dish.id) ? "fill-red-500 text-red-500" : ""
-                            }`}
-                          />
+                          <Heart size={14} fill={favorites.includes(dish.id) ? "currentColor" : "none"} />
                         </button>
                       </div>
 
-                      <div className="p-5 flex-1 flex flex-col justify-between">
-                        <div>
+                      <div className="p-5 flex-1 flex flex-col">
+                        <div className="flex-1">
                           <div className="flex justify-between items-start mb-2 gap-2">
-                            <h3 className="text-base font-bold text-white group-hover:text-amber-400 transition-colors leading-snug">
+                            <h3 className="text-base font-semibold text-stone-900 leading-snug">
                               {dish.name}
                             </h3>
-                            <span className="text-base font-bold text-amber-500 whitespace-nowrap">
+                            <span className="text-base font-bold text-persimmon whitespace-nowrap tabular-nums">
                               UGX {Number(dish.price).toLocaleString()}
                             </span>
                           </div>
-                          <p className="text-xs text-slate-400 leading-relaxed mb-4 line-clamp-2">
+                          <p className="text-sm text-stone-500 leading-relaxed mb-4 line-clamp-2">
                             {dish.description || "A delicious fast food favourite made fresh to order."}
                           </p>
                         </div>
 
                         <div>
-                          <div className="flex items-center gap-4 text-[11px] text-slate-400 border-t border-slate-700/60 pt-3 mb-4">
+                          <div className="flex items-center gap-4 text-xs text-stone-400 border-t border-stone-100 pt-3 mb-4">
                             <div className="flex items-center gap-1.5">
-                              <Clock className="w-3 h-3 text-amber-500" />
+                              <Clock size={13} className="text-persimmon" />
                               <span>{dish.prep || "15-20 mins"}</span>
                             </div>
                             <div className="flex items-center gap-1.5">
-                              <Flame className="w-3 h-3 text-amber-500" />
+                              <Flame size={13} className="text-persimmon" />
                               <span>{dish.kcal || "~450 kcal"}</span>
                             </div>
                           </div>
 
                           <button
                             onClick={() => onAdd(dish)}
-                            className="w-full py-2.5 bg-slate-700 hover:bg-amber-500 text-white hover:text-slate-950 font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 text-sm"
+                            className="w-full py-2.5 rounded-xl bg-stone-900 text-white text-sm font-semibold hover:bg-persimmon active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 shadow-md shadow-stone-900/15 hover:shadow-lg hover:shadow-persimmon/25"
                           >
-                            <Utensils className="w-3.5 h-3.5" />
-                            <span>Add to Order</span>
+                            <Utensils size={14} />
+                            Add to Order
                           </button>
                         </div>
                       </div>
@@ -335,7 +343,7 @@ export default function FastPage() {
           <div className="mt-8 text-center">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-amber-500 transition-colors"
+              className="inline-flex items-center gap-2 text-sm text-stone-400 hover:text-persimmon transition-colors"
             >
               <ArrowLeft size={14} />
               Back to Full Menu

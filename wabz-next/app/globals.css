@@ -1,18 +1,30 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap");
 @import "tailwindcss";
 
 @theme {
-  --color-carbon: #1c1917;
-  --color-parchment: #fafaf9;
-  --color-persimmon: #e34234;
-  --color-artichoke: #5a7d5a;
-  --color-forest: #1a2e1a;
-  --color-moss: #3a5a3a;
-  --color-bark: #3e2723;
-  --color-sand: #f5f0e8;
-  --color-cream: #fffdd0;
-  --color-cream-bg: #FFF8E7;
-  --color-lime: #32cd32;
-  --font-display: "Playfair Display", ui-serif, Georgia, serif;
+  /* ── Supabaze-inspired color system (admin section) ── */
+  --color-emerald: #3ecf8e;
+  --color-emerald-deep: #24b47e;
+  --color-emerald-soft: #4ade80;
+  --color-ink: #171717;
+  --color-ink-secondary: #212121;
+  --color-ink-mute: #707070;
+  --color-ink-mute-2: #9a9a9a;
+  --color-ink-faint: #b2b2b2;
+  --color-on-emerald: #171717;
+  --color-on-dark: #ffffff;
+  --color-canvas: #ffffff;
+  --color-canvas-soft: #fafafa;
+  --color-canvas-night: #1c1c1c;
+  --color-canvas-night-soft: #202020;
+  --color-hairline: #dfdfdf;
+  --color-hairline-strong: #c7c7c7;
+  --color-hairline-cool: #ededed;
+  --color-accent-purple: #6b01c2;
+  --color-accent-yellow: #ffdb13;
+  --color-accent-tomato: #ff2201;
+
+  /* ── shadcn CSS variable mappings (needed for bg-card, text-card-foreground, etc.) ── */
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
   --color-card: hsl(var(--card));
@@ -32,8 +44,38 @@
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
+
+  /* ── Legacy brand colors (kept for rest of site) ── */
+  --color-carbon: #1c1917;
+  --color-parchment: #fafaf9;
+  --color-persimmon: #e34234;
+  --color-artichoke: #5a7d5a;
+  --color-forest: #1a2e1a;
+  --color-moss: #3a5a3a;
+  --color-bark: #3e2723;
+  --color-sand: #f5f0e8;
+  --color-cream: #fffdd0;
+  --color-cream-bg: #FFF8E7;
+
+  /* ── Fonts ── */
+  --font-sans: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-display: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* ── Radius scale ── */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  /* ── Shadows ── */
+  --shadow-level-1: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-level-2: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-level-3: 0 16px 48px rgba(0, 0, 0, 0.12);
 }
 
+/* ── Base layer — shadcn CSS variables (unchanged from original) ── */
 @layer base {
   :root {
     --background: 42 100% 95%;
@@ -65,6 +107,9 @@
   body {
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
@@ -74,6 +119,7 @@
   }
 }
 
+/* ── Animations ── */
 @keyframes accordion-down {
   from { height: 0; }
   to { height: var(--radix-accordion-content-height); }
@@ -119,6 +165,12 @@
   50% { box-shadow: 0 0 30px rgba(227,66,52,0.45), 0 0 60px rgba(227,66,52,0.2), 0 0 80px rgba(227,66,52,0.1); }
 }
 
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-8px) rotate(2deg); }
+  66% { transform: translateY(4px) rotate(-1deg); }
+}
+
 @utility animate-accordion-down {
   animation: accordion-down 0.2s ease-out;
 }
@@ -154,6 +206,10 @@
 
 @utility animate-glow {
   animation: glow 3s ease-in-out infinite;
+}
+
+@utility animate-float {
+  animation: float 6s ease-in-out infinite;
 }
 
 @utility scrollbar-hide {

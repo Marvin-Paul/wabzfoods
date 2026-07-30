@@ -108,13 +108,13 @@ export default function Navbar() {
                 >
                   <div
                     className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0 ring-2 ring-white shadow-sm transition-transform duration-200 hover:scale-105"
-                    style={{ backgroundColor: getAvatarColor(user.email || user.name) }}
-                    title={user.email || user.name}
+                    style={{ backgroundColor: getAvatarColor(user.email || user.user_metadata?.full_name) }}
+                    title={user.email || user.user_metadata?.full_name}
                   >
-                    {(user.name || user.email || "?").charAt(0).toUpperCase()}
+                    {(user.user_metadata?.full_name || user.email || "?").charAt(0).toUpperCase()}
                   </div>
                   <span className="text-sm font-medium text-stone-700 max-w-[120px] truncate group-hover:text-stone-900 transition-colors">
-                    {user.name || user.email?.split("@")[0] || "User"}
+                    {user.user_metadata?.full_name || user.email?.split("@")[0] || "User"}
                   </span>
                 </button>
 
@@ -123,7 +123,7 @@ export default function Navbar() {
                   <div className="absolute top-full right-0 mt-2 w-48 bg-white border border-stone-200 rounded-xl shadow-xl shadow-stone-900/10 py-1.5 z-50 origin-top-right animate-in fade-in zoom-in-95 duration-150">
                     <div className="px-4 py-2 border-b border-stone-100">
                       <p className="text-xs font-semibold text-stone-900 truncate">
-                        {user.name || "User"}
+                        {user.user_metadata?.full_name || "User"}
                       </p>
                       <p className="text-[10px] text-stone-400 truncate">
                         {user.email || ""}
