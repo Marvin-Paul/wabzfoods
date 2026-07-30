@@ -1,12 +1,55 @@
-"use client"
+"use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { base44 } from "@/lib/base44Client";
+import { supabase } from "@/lib/supabaseClient";
+import { DEFAULT_SETTINGS } from "@/lib/supabase-data";
 import { useCart } from "@/components/CartContext";
 import { Image } from "@/components/ui/image";
-import { ArrowLeft, Loader2, Clock, Truck, Phone, AlertTriangle } from "lucide-react";
+import {
+  ArrowLeft,
+  Loader2,
+  Clock,
+  Truck,
+  Phone,
+  AlertTriangle,
+  ShoppingBag,
+  Soup,
+  Shield,
+  ArrowRight,
+} from "lucide-react";
+
+function useInView(options = {}) {
+  const ref = useRef(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setInView(true); obs.unobserve(el); } },
+      { threshold: 0.1, ...options }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return [ref, inView];
+}
+
+function AnimatedSection({ children, className = "", delay = 0 }) {
+  const [ref, inView] = useInView();
+  return (
+    <div
+      ref={ref}
+      className={`transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+      } ${className}`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+}
 
 export default function Checkout() {
   const { items, total, clearCart } = useCart();
@@ -14,12 +57,7 @@ export default function Checkout() {
   const [settings, setSettings] = useState(null);
 
   useEffect(() => {
-    base44.apiClient
-      .get("/api/settings")
-      .then((r) => {
-        if (r.data) setSettings(r.data);
-      })
-      .catch(() => {});
+    setSettings(DEFAULT_SETTINGS);
   }, []);
 
   const [form, setForm] = useState({
@@ -44,34 +82,35 @@ export default function Checkout() {
     }
     setSubmitting(true);
     try {
-      const order = await base44.entities.Order.create({
-        items: items.map((i) => ({ name: i.name, price: i.price, qty: i.qty })),
-        total,
+      const orderId = "order_" + Date.now();
+      const { error: orderError } = await supabase.from("orders").insert({
+        order_id: orderId,
+        order_type: form.order_type,
         status: "pending",
         payment_status: "unpaid",
-        order_type: form.order_type,
+        total_amount: total,
         customer_name: form.customer_name,
         phone: form.phone,
         address: form.address,
         notes: form.notes,
       });
+      if (orderError) throw orderError;
 
-      const res = await base44.functions.invoke("createCheckout", {
-        order_id: order.id,
-        items,
-        total,
-      });
-      const url = res?.data?.url;
-      if (!url) throw new Error("No checkout URL returned");
-
-      if (window.self !== window.top) {
-        alert("Checkout works only from the published app. Please open the published app to pay.");
-        router.push("/orders");
-        return;
+      // Insert items into the order_items table (separate relation)
+      // mapOrder reads item_id as the display name, so we pass the product name there.
+      if (items.length > 0) {
+        const { error: itemsError } = await supabase.from("order_items").insert(
+          items.map((i) => ({
+            order_id: orderId,
+            item_id: i.name || i.id || "Item",
+            price: i.price,
+            quantity: i.qty,
+          }))
+        );
+        if (itemsError) throw itemsError;
       }
-
       clearCart();
-      window.location.href = url;
+      router.push("/order-success?session_id=" + orderId);
     } catch (err) {
       setError(err?.message || "Could not start checkout. Please try again.");
       setSubmitting(false);
@@ -80,17 +119,30 @@ export default function Checkout() {
 
   if (items.length === 0) {
     return (
-      <div className="max-w-md mx-auto px-5 py-24 text-center">
-        <h1 className="font-display text-3xl text-carbon mb-3">Your cart is empty</h1>
-        <p className="text-carbon/60 mb-6">Add a few dishes before checking out.</p>
-        <Link href="/" className="inline-block bg-persimmon text-parchment px-6 py-3 rounded-lg text-sm uppercase tracking-wider">
-          Browse Menu
-        </Link>
+      <div className="min-h-screen bg-gradient-to-b from-stone-50/80 to-white flex items-center justify-center px-5 py-24">
+        <div className="text-center max-w-md">
+          <div className="w-16 h-16 rounded-2xl bg-stone-100 flex items-center justify-center mx-auto mb-6">
+            <ShoppingBag size={28} className="text-stone-400" />
+          </div>
+          <h1 className="font-display text-3xl md:text-4xl font-light text-stone-900 mb-3">
+            Your cart is empty
+          </h1>
+          <p className="text-stone-500 text-sm mb-8">
+            Add a few dishes before checking out. We have plenty of delicious options waiting for you!
+          </p>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 bg-stone-900 text-white px-8 py-4 rounded-xl text-sm font-semibold hover:bg-persimmon transition-all duration-300 shadow-lg shadow-stone-900/10 group"
+          >
+            <Soup size={15} />
+            Browse Menu
+            <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
+          </Link>
+        </div>
       </div>
     );
   }
 
-  /* ── Open / closed check ── */
   const openStatus = (() => {
     const { opening_time, closing_time } = settings || {};
     if (!opening_time || !closing_time) return null;
@@ -109,201 +161,259 @@ export default function Checkout() {
   })();
 
   return (
-    <div className="max-w-5xl mx-auto px-5 md:px-8 py-12">
-      <Link href="/" className="inline-flex items-center gap-2 text-sm text-carbon/60 hover:text-persimmon mb-6">
-        <ArrowLeft size={16} /> Back to menu
-      </Link>
-      <h1 className="font-display text-4xl font-light text-carbon mb-8">Checkout</h1>
-
-      {/* Open / Closed Banner */}
-      {openStatus && (
-        <div
-          className={`mb-6 rounded-xl border px-5 py-3.5 flex items-center gap-3 text-sm ${
-            openStatus.isOpen
-              ? openStatus.minsUntil <= 30
-                ? "bg-amber-50 border-amber-200 text-amber-800"
-                : "bg-emerald-50 border-emerald-200 text-emerald-800"
-              : "bg-stone-100 border-stone-200 text-stone-600"
-          }`}
-        >
-          <div
-            className={`w-2.5 h-2.5 rounded-full shrink-0 ${
-              openStatus.isOpen
-                ? openStatus.minsUntil <= 30
-                  ? "bg-amber-500"
-                  : "bg-emerald-500"
-                : "bg-stone-400"
-            }`}
-          />
-          {openStatus.isOpen ? (
-            <>
-              <span className="font-semibold">
-                {openStatus.minsUntil <= 30
-                  ? "Closing soon!"
-                  : `We\u2019re open!`}
-              </span>
-              <span className="opacity-80">
-                {openStatus.minsUntil <= 30
-                  ? `Order within ${openStatus.minsUntil} minutes.`
-                  : `Open until ${settings?.closing_time || ""}.`}
-              </span>
-            </>
-          ) : (
-            <>
-              <AlertTriangle size={16} className="shrink-0" />
-              <span className="font-semibold">We\u2019re closed</span>
-              <span className="opacity-80">
-                Open {openStatus.hours}. Orders will be processed when we reopen.
-              </span>
-            </>
-          )}
-        </div>
-      )}
-
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-        <form onSubmit={submit} className="lg:col-span-3 space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="text-xs uppercase tracking-wider text-carbon/60">Full Name</label>
-              <input
-                value={form.customer_name}
-                onChange={(e) => set("customer_name", e.target.value)}
-                className="mt-1 w-full px-3 py-2.5 bg-card border border-carbon/15 rounded-lg focus:outline-none focus:border-persimmon"
-              />
-            </div>
-            <div>
-              <label className="text-xs uppercase tracking-wider text-carbon/60">Phone</label>
-              <input
-                value={form.phone}
-                onChange={(e) => set("phone", e.target.value)}
-                placeholder="+256…"
-                className="mt-1 w-full px-3 py-2.5 bg-card border border-carbon/15 rounded-lg focus:outline-none focus:border-persimmon"
-              />
-            </div>
-          </div>
-
-          <div className="flex gap-2">
-            {["delivery", "pickup"].map((t) => (
-              <button
-                key={t}
-                type="button"
-                onClick={() => set("order_type", t)}
-                className={`flex-1 py-3 rounded-lg text-sm font-medium capitalize transition-colors ${
-                  form.order_type === t
-                    ? "bg-carbon text-parchment"
-                    : "bg-card border border-carbon/15 text-carbon/60"
-                }`}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-
-          {form.order_type === "delivery" && (
-            <div>
-              <label className="text-xs uppercase tracking-wider text-carbon/60">Delivery Address</label>
-              <textarea
-                value={form.address}
-                onChange={(e) => set("address", e.target.value)}
-                rows={2}
-                className="mt-1 w-full px-3 py-2.5 bg-card border border-carbon/15 rounded-lg focus:outline-none focus:border-persimmon"
-              />
-            </div>
-          )}
-
-          <div>
-            <label className="text-xs uppercase tracking-wider text-carbon/60">Notes (optional)</label>
-            <input
-              value={form.notes}
-              onChange={(e) => set("notes", e.target.value)}
-              placeholder="Allergies, gate instructions…"
-              className="mt-1 w-full px-3 py-2.5 bg-card border border-carbon/15 rounded-lg focus:outline-none focus:border-persimmon"
-            />
-          </div>
-
-          {error && <p className="text-sm text-red-600">{error}</p>}
-
-          <button
-            type="submit"
-            disabled={submitting}
-            className="w-full bg-persimmon text-parchment py-4 rounded-lg text-sm font-semibold uppercase tracking-[0.2em] hover:bg-carbon disabled:opacity-60 transition-colors flex items-center justify-center gap-2"
+    <div className="min-h-screen bg-gradient-to-b from-stone-50/80 to-white">
+      <div className="max-w-5xl mx-auto px-5 md:px-8 py-12 md:py-16">
+        <AnimatedSection>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-sm text-stone-500 hover:text-persimmon transition-colors mb-8 group"
           >
-            {submitting ? (
-              <><Loader2 size={18} className="animate-spin" /> Preparing payment…</>
-            ) : (
-              `Pay USh ${total.toLocaleString()}`
-            )}
-          </button>
-          <p className="text-[11px] text-carbon/40 text-center">Secure payment via Stripe. You&apos;ll be redirected to complete your purchase.</p>
-        </form>
+            <ArrowLeft size={15} className="transition-transform duration-300 group-hover:-translate-x-1" />
+            Back to menu
+          </Link>
+        </AnimatedSection>
 
-        <aside className="lg:col-span-2 space-y-4">
-          {/* Order Summary */}
-          <div className="bg-card border border-carbon/10 rounded-xl p-5">
-            <h2 className="font-display text-xl text-carbon mb-4">Order Summary</h2>
-            <ul className="space-y-3">
-              {items.map((i) => (
-                <li key={i.id} className="flex gap-3">
-                  <div className="w-14 h-14 rounded-lg overflow-hidden bg-carbon/5 shrink-0">
-                    <Image src={i.image_url} alt={i.name} fittingType="fill" className="w-full h-full" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm text-carbon font-medium">{i.qty}× {i.name}</p>
-                    <p className="text-xs text-carbon/50">USh {(i.price * i.qty).toLocaleString()}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-            <div className="mt-4 pt-4 border-t border-carbon/10 flex justify-between items-baseline">
-              <span className="text-sm uppercase tracking-wider text-carbon/60">Total</span>
-              <span className="font-display text-2xl text-carbon">USh {total.toLocaleString()}</span>
-            </div>
+        <AnimatedSection delay={50}>
+          <div className="mb-10">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-persimmon/70 mb-3 block">
+              Secure Checkout
+            </span>
+            <h1 className="font-display text-4xl md:text-5xl font-light text-stone-900 tracking-tight">
+              Complete your order
+            </h1>
+            <p className="text-stone-500 text-sm mt-2 max-w-lg">
+              Fill in your details and we&apos;ll take care of the rest. Fresh ingredients, cooked to order, delivered to your door.
+            </p>
           </div>
+        </AnimatedSection>
 
-          {/* Restaurant Info Card */}
-          {settings && (
-            <div className="bg-card border border-carbon/10 rounded-xl p-5">
-              <h3 className="text-xs font-semibold uppercase tracking-wider text-carbon/60 mb-3">
-                {settings.name || "Restaurant"}
-              </h3>
-              <div className="space-y-2.5">
-                {settings.opening_time && settings.closing_time && (
-                  <div className="flex items-center gap-2.5 text-sm text-carbon/60">
-                    <Clock size={14} className="text-carbon/40 shrink-0" />
-                    <span>
-                      Open{" "}
-                      <span className="font-medium text-carbon">
-                        {settings.opening_time} &ndash; {settings.closing_time}
-                      </span>
-                    </span>
-                  </div>
-                )}
-                {Number(settings.delivery_fee) > 0 && (
-                  <div className="flex items-center gap-2.5 text-sm text-carbon/60">
-                    <Truck size={14} className="text-carbon/40 shrink-0" />
-                    <span>
-                      Delivery{" "}
-                      <span className="font-medium text-carbon">
-                        UGX {Number(settings.delivery_fee).toLocaleString()}
-                      </span>
-                    </span>
-                  </div>
-                )}
-                {settings.phone && (
-                  <div className="flex items-center gap-2.5 text-sm text-carbon/60">
-                    <Phone size={14} className="text-carbon/40 shrink-0" />
-                    <a
-                      href={`tel:${settings.phone}`}
-                      className="font-medium text-carbon hover:text-persimmon transition-colors"
-                    >
-                      {settings.phone}
-                    </a>
-                  </div>
-                )}
-              </div>
+        {openStatus && (
+          <AnimatedSection delay={80}>
+            <div
+              className={`mb-8 rounded-xl border px-5 py-3.5 flex items-center gap-3 text-sm ${
+                openStatus.isOpen
+                  ? openStatus.minsUntil <= 30
+                    ? "bg-amber-50 border-amber-200 text-amber-800"
+                    : "bg-emerald-50 border-emerald-200 text-emerald-800"
+                  : "bg-stone-100 border-stone-200 text-stone-600"
+              }`}
+            >
+              <div
+                className={`w-2.5 h-2.5 rounded-full shrink-0 ${
+                  openStatus.isOpen
+                    ? openStatus.minsUntil <= 30
+                      ? "bg-amber-500"
+                      : "bg-emerald-500"
+                    : "bg-stone-400"
+                }`}
+              />
+              {openStatus.isOpen ? (
+                <>
+                  <span className="font-semibold">
+                    {openStatus.minsUntil <= 30 ? "Closing soon!" : "We\u2019re open!"}
+                  </span>
+                  <span className="opacity-80">
+                    {openStatus.minsUntil <= 30
+                      ? `Order within ${openStatus.minsUntil} minutes.`
+                      : `Open until ${settings?.closing_time || ""}.`}
+                  </span>
+                </>
+              ) : (
+                <>
+                  <AlertTriangle size={16} className="shrink-0" />
+                  <span className="font-semibold">We\u2019re closed</span>
+                  <span className="opacity-80">
+                    Open {openStatus.hours}. Orders will be processed when we reopen.
+                  </span>
+                </>
+              )}
             </div>
-          )}
-        </aside>
+          </AnimatedSection>
+        )}
+
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
+          <AnimatedSection delay={100} className="lg:col-span-3">
+            <form onSubmit={submit} className="bg-white rounded-2xl border border-stone-200/80 shadow-xl shadow-stone-900/5 p-6 md:p-8 space-y-5">
+              <h2 className="font-display text-xl font-semibold text-stone-900 mb-2">Your Details</h2>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-[11px] font-semibold uppercase tracking-[0.15em] text-stone-500">
+                    Full Name
+                  </label>
+                  <input
+                    value={form.customer_name}
+                    onChange={(e) => set("customer_name", e.target.value)}
+                    placeholder="e.g. John Doe"
+                    className="mt-1.5 w-full px-3 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:border-persimmon focus:ring-1 focus:ring-persimmon/20 transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="text-[11px] font-semibold uppercase tracking-[0.15em] text-stone-500">
+                    Phone
+                  </label>
+                  <input
+                    value={form.phone}
+                    onChange={(e) => set("phone", e.target.value)}
+                    placeholder="+256 700 000 000"
+                    className="mt-1.5 w-full px-3 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:border-persimmon focus:ring-1 focus:ring-persimmon/20 transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                {["delivery", "pickup"].map((t) => (
+                  <button
+                    key={t}
+                    type="button"
+                    onClick={() => set("order_type", t)}
+                    className={`flex-1 py-3 rounded-xl text-sm font-medium capitalize transition-all duration-200 ${
+                      form.order_type === t
+                        ? "bg-stone-900 text-white shadow-lg shadow-stone-900/10"
+                        : "bg-stone-50 border border-stone-200 text-stone-600 hover:border-stone-400"
+                    }`}
+                  >
+                    {t === "delivery" ? <><Truck size={13} className="inline mr-1.5" />{t}</> : t}
+                  </button>
+                ))}
+              </div>
+
+              {form.order_type === "delivery" && (
+                <div>
+                  <label className="text-[11px] font-semibold uppercase tracking-[0.15em] text-stone-500">
+                    Delivery Address
+                  </label>
+                  <textarea
+                    value={form.address}
+                    onChange={(e) => set("address", e.target.value)}
+                    rows={2}
+                    placeholder="Street, building, landmark…"
+                    className="mt-1.5 w-full px-3 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:border-persimmon focus:ring-1 focus:ring-persimmon/20 transition-all resize-none"
+                  />
+                </div>
+              )}
+
+              <div>
+                <label className="text-[11px] font-semibold uppercase tracking-[0.15em] text-stone-500">
+                  Notes <span className="font-normal normal-case text-stone-400">(optional)</span>
+                </label>
+                <input
+                  value={form.notes}
+                  onChange={(e) => set("notes", e.target.value)}
+                  placeholder="Allergies, gate instructions, special requests…"
+                  className="mt-1.5 w-full px-3 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:border-persimmon focus:ring-1 focus:ring-persimmon/20 transition-all"
+                />
+              </div>
+
+              {error && (
+                <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-sm text-red-700">
+                  {error}
+                </div>
+              )}
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full bg-stone-900 text-white py-4 rounded-xl text-sm font-semibold uppercase tracking-[0.15em] hover:bg-persimmon disabled:opacity-60 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-stone-900/10"
+              >
+                {submitting ? (
+                  <><Loader2 size={18} className="animate-spin" /> Preparing payment&hellip;</>
+                ) : (
+                  `Pay UGX ${total.toLocaleString()}`
+                )}
+              </button>
+              <p className="text-[11px] text-stone-400 text-center flex items-center justify-center gap-1.5">
+                <Shield size={11} />
+                Secure payment via Stripe. You&apos;ll be redirected to complete your purchase.
+              </p>
+            </form>
+          </AnimatedSection>
+
+          <aside className="lg:col-span-2 space-y-5">
+            <AnimatedSection delay={150}>
+              <div className="bg-white rounded-2xl border border-stone-200/80 shadow-xl shadow-stone-900/5 p-6">
+                <h2 className="font-display text-lg font-semibold text-stone-900 mb-5 flex items-center gap-2">
+                  <ShoppingBag size={16} className="text-persimmon" />
+                  Order Summary
+                </h2>
+                <ul className="space-y-4">
+                  {items.map((i) => (
+                    <li key={i.id} className="flex gap-3">
+                      <div className="w-14 h-14 rounded-xl overflow-hidden bg-stone-100 shrink-0 border border-stone-200">
+                        <Image src={i.image_url} alt={i.name} fittingType="fill" className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-stone-900 truncate">
+                          {i.qty}× {i.name}
+                        </p>
+                        <p className="text-xs text-stone-500 mt-0.5">
+                          UGX {(i.price * i.qty).toLocaleString()}
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-5 pt-4 border-t border-stone-100 flex items-center justify-between">
+                  <span className="text-sm font-medium text-stone-600">Total</span>
+                  <span className="font-display text-2xl font-semibold text-stone-900 tabular-nums">
+                    UGX {total.toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            </AnimatedSection>
+
+            {settings && (
+              <AnimatedSection delay={200}>
+                <div className="bg-white rounded-2xl border border-stone-200/80 shadow-xl shadow-stone-900/5 p-6">
+                  <h3 className="text-[11px] font-semibold uppercase tracking-[0.15em] text-stone-500 mb-4">
+                    {settings.name || "Restaurant"}
+                  </h3>
+                  <div className="space-y-3.5">
+                    {settings.opening_time && settings.closing_time && (
+                      <div className="flex items-center gap-3 text-sm text-stone-600">
+                        <div className="w-8 h-8 rounded-lg bg-stone-100 flex items-center justify-center shrink-0">
+                          <Clock size={14} className="text-stone-500" />
+                        </div>
+                        <span>
+                          Open{" "}
+                          <span className="font-medium text-stone-900">
+                            {settings.opening_time} &ndash; {settings.closing_time}
+                          </span>
+                        </span>
+                      </div>
+                    )}
+                    {Number(settings.delivery_fee) > 0 && (
+                      <div className="flex items-center gap-3 text-sm text-stone-600">
+                        <div className="w-8 h-8 rounded-lg bg-stone-100 flex items-center justify-center shrink-0">
+                          <Truck size={14} className="text-stone-500" />
+                        </div>
+                        <span>
+                          Delivery{" "}
+                          <span className="font-medium text-stone-900">
+                            UGX {Number(settings.delivery_fee).toLocaleString()}
+                          </span>
+                        </span>
+                      </div>
+                    )}
+                    {settings.phone && (
+                      <div className="flex items-center gap-3 text-sm text-stone-600">
+                        <div className="w-8 h-8 rounded-lg bg-stone-100 flex items-center justify-center shrink-0">
+                          <Phone size={14} className="text-stone-500" />
+                        </div>
+                        <a
+                          href={`tel:${settings.phone}`}
+                          className="font-medium text-stone-900 hover:text-persimmon transition-colors"
+                        >
+                          {settings.phone}
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </AnimatedSection>
+            )}
+          </aside>
+        </div>
       </div>
     </div>
   );
