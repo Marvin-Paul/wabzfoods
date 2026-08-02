@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import CartDrawer from "@/components/CartDrawer";
 import Footer from "@/components/Footer";
 import WhatsAppChatWidget from "@/components/WhatsAppChatWidget";
+import SplashScreen from "@/components/SplashScreen";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -24,6 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="flex flex-col min-h-screen">
+        <SplashScreen />
         <CartProvider>
           <ToastProvider>
             <Navbar />
