@@ -20,9 +20,24 @@ export const DEFAULT_SETTINGS = {
 };
 
 export const MOCK_USERS = [
-  { id: "1", phone_number: "+256 700 000 001", email: "admin@wabzfoods.com", created_at: "2026-01-15T08:00:00Z" },
-  { id: "2", phone_number: "+256 700 000 002", email: "sarah@example.com", created_at: "2026-02-20T10:30:00Z" },
-  { id: "3", phone_number: "+256 700 000 003", email: "james@example.com", created_at: "2026-03-05T14:15:00Z" },
+  {
+    id: "1",
+    phone_number: "+256 700 000 001",
+    email: "admin@wabzfoods.com",
+    created_at: "2026-01-15T08:00:00Z",
+  },
+  {
+    id: "2",
+    phone_number: "+256 700 000 002",
+    email: "sarah@example.com",
+    created_at: "2026-02-20T10:30:00Z",
+  },
+  {
+    id: "3",
+    phone_number: "+256 700 000 003",
+    email: "james@example.com",
+    created_at: "2026-03-05T14:15:00Z",
+  },
 ];
 
 export const MOCK_REVIEWS = [
@@ -72,13 +87,20 @@ function mapCategory(code) {
 
 function mapSubcategory(code) {
   switch (code) {
-    case "breakfast": return "sides";
-    case "lunch": return "sides";
-    case "dinner": return "grilled";
-    case "local": return "local";
-    case "junk": return "fried";
-    case "drinks": return "sides";
-    default: return "sides";
+    case "breakfast":
+      return "sides";
+    case "lunch":
+      return "sides";
+    case "dinner":
+      return "grilled";
+    case "local":
+      return "local";
+    case "junk":
+      return "fried";
+    case "drinks":
+      return "sides";
+    default:
+      return "sides";
   }
 }
 
@@ -140,8 +162,12 @@ export function mapProduct(item) {
 
 /**
  * Map a Supabase orders row (with order_items joined) to the UI order model.
+ *
+ * `itemNames` is an optional map of food_items item_id -> name. New orders store
+ * the real item_id in order_items.item_id, while older rows stored the display
+ * name — passing the map resolves ids to names and falls back to the stored value.
  */
-export function mapOrder(o) {
+export function mapOrder(o, itemNames) {
   return {
     id: o.order_id,
     order_type: o.order_type,
@@ -157,7 +183,7 @@ export function mapOrder(o) {
     notes: o.notes || "",
     items: (o.order_items || []).map((i) => ({
       qty: i.quantity,
-      name: i.item_id || "Item",
+      name: (itemNames && itemNames[i.item_id]) || i.item_id || "Item",
       price: i.price,
       customizations: i.customizations,
     })),

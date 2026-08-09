@@ -52,7 +52,9 @@ export default function Navbar() {
 
   useEffect(() => {
     const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (session?.user) {
         setUser(session.user);
       }
@@ -60,7 +62,9 @@ export default function Navbar() {
     getSession();
 
     // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
 
@@ -100,7 +104,10 @@ export default function Navbar() {
           <div className="flex items-center gap-2">
             {/* User avatar + name with sign-out dropdown */}
             {user ? (
-              <div className="flex items-center gap-2.5 pr-3 border-r border-stone-200 mr-2 relative" ref={avatarRef}>
+              <div
+                className="flex items-center gap-2.5 pr-3 border-r border-stone-200 mr-2 relative"
+                ref={avatarRef}
+              >
                 <button
                   onClick={() => setAvatarOpen((v) => !v)}
                   className="flex items-center gap-2.5 focus:outline-none group"
@@ -108,7 +115,9 @@ export default function Navbar() {
                 >
                   <div
                     className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0 ring-2 ring-white shadow-sm transition-transform duration-200 hover:scale-105"
-                    style={{ backgroundColor: getAvatarColor(user.email || user.user_metadata?.full_name) }}
+                    style={{
+                      backgroundColor: getAvatarColor(user.email || user.user_metadata?.full_name),
+                    }}
                     title={user.email || user.user_metadata?.full_name}
                   >
                     {(user.user_metadata?.full_name || user.email || "?").charAt(0).toUpperCase()}
@@ -125,9 +134,7 @@ export default function Navbar() {
                       <p className="text-xs font-semibold text-stone-900 truncate">
                         {user.user_metadata?.full_name || "User"}
                       </p>
-                      <p className="text-[10px] text-stone-400 truncate">
-                        {user.email || ""}
-                      </p>
+                      <p className="text-[10px] text-stone-400 truncate">{user.email || ""}</p>
                     </div>
                     <button
                       onClick={handleSignOut}

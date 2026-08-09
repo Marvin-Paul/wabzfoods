@@ -21,7 +21,7 @@ export default function Footer() {
     // Try fetching site settings from Supabase (table may not exist yet)
     const fetchSettings = async () => {
       try {
-        const { data } = await supabase.from('site_settings').select('*').single();
+        const { data } = await supabase.from("site_settings").select("*").single();
         if (data) {
           if (data.footer_accent) setAccent(data.footer_accent);
           if (data.footer_accent_secondary) setAccentSecondary(data.footer_accent_secondary);
@@ -81,20 +81,21 @@ export default function Footer() {
               From{" "}
               <span className="font-medium" style={{ color: hexWithOpacity(accentSecondary, 0.8) }}>
                 Ugandan classics
-              </span>
-              {" "}to{" "}
+              </span>{" "}
+              to{" "}
               <span className="font-medium" style={{ color: hexWithOpacity(accent, 0.8) }}>
                 fast-food favourites
-              </span>
-              {" "}—{" "}
-              <span className="font-medium text-emerald-400/70">order online</span>, pay securely, and{" "}
-              <span className="font-medium text-sky-400/70">track your meal</span>{" "}
-              in real time.
+              </span>{" "}
+              — <span className="font-medium text-emerald-400/70">order online</span>, pay securely,
+              and <span className="font-medium text-sky-400/70">track your meal</span> in real time.
             </p>
           </div>
 
           <div>
-            <h4 className="text-xs uppercase tracking-[0.2em] mb-4" style={{ color: hexWithOpacity(accent, 0.6) }}>
+            <h4
+              className="text-xs uppercase tracking-[0.2em] mb-4"
+              style={{ color: hexWithOpacity(accent, 0.6) }}
+            >
               <span
                 className="inline-block pb-1"
                 style={{ borderBottom: `1px solid ${hexWithOpacity(accent, 0.2)}` }}
@@ -140,7 +141,10 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="text-xs uppercase tracking-[0.2em] mb-4" style={{ color: hexWithOpacity(accentSecondary, 0.6) }}>
+            <h4
+              className="text-xs uppercase tracking-[0.2em] mb-4"
+              style={{ color: hexWithOpacity(accentSecondary, 0.6) }}
+            >
               <span
                 className="inline-block pb-1"
                 style={{ borderBottom: `1px solid ${hexWithOpacity(accentSecondary, 0.2)}` }}
@@ -217,7 +221,8 @@ export default function Footer() {
         <div className="mt-12 pt-8 border-t border-parchment/10 flex flex-col md:flex-row justify-between gap-4">
           <p className="text-xs text-parchment/40">
             &copy; {new Date().getFullYear()}{" "}
-            <span style={{ color: hexWithOpacity(accent, 0.6) }}>Wabz Foods</span>. All rights reserved.
+            <span style={{ color: hexWithOpacity(accent, 0.6) }}>Wabz Foods</span>. All rights
+            reserved.
           </p>
           <p className="text-xs">
             <span style={{ color: hexWithOpacity(accentSecondary, 0.7) }}>Order</span>{" "}

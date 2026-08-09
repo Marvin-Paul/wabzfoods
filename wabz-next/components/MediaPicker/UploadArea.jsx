@@ -102,12 +102,17 @@ export default function UploadArea({ onUploadComplete, onClose }) {
           dragOver
             ? "border-emerald bg-emerald/5 scale-[1.01]"
             : uploading
-            ? "border-emerald/40 bg-canvas-soft"
-            : "border-hairline-cool hover:border-hairline-strong hover:bg-canvas-soft/50"
+              ? "border-emerald/40 bg-canvas-soft"
+              : "border-hairline-cool hover:border-hairline-strong hover:bg-canvas-soft/50"
         }`}
         role="button"
         tabIndex={0}
-        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); inputRef.current?.click(); } }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            inputRef.current?.click();
+          }
+        }}
         aria-label="Upload image area"
       >
         <input
@@ -157,7 +162,10 @@ export default function UploadArea({ onUploadComplete, onClose }) {
             <p className="text-xs font-medium text-accent-tomato">Upload failed</p>
             <p className="text-[11px] text-accent-tomato/80 mt-0.5">{error}</p>
           </div>
-          <button onClick={() => setError(null)} className="text-accent-tomato/50 hover:text-accent-tomato transition-colors">
+          <button
+            onClick={() => setError(null)}
+            className="text-accent-tomato/50 hover:text-accent-tomato transition-colors"
+          >
             <X size={14} />
           </button>
         </div>
@@ -176,7 +184,12 @@ export default function UploadArea({ onUploadComplete, onClose }) {
         <File size={11} />
         <span>Allowed:</span>
         {ALLOWED_EXTENSIONS.map((ext) => (
-          <span key={ext} className="px-1.5 py-0.5 rounded-[2px] bg-canvas-soft border border-hairline-cool uppercase font-mono">{ext}</span>
+          <span
+            key={ext}
+            className="px-1.5 py-0.5 rounded-[2px] bg-canvas-soft border border-hairline-cool uppercase font-mono"
+          >
+            {ext}
+          </span>
         ))}
         <span className="ml-auto">Max 5 MB</span>
       </div>

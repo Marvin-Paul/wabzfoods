@@ -13,7 +13,12 @@ function useInView(options = {}) {
     const el = ref.current;
     if (!el) return;
     const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setInView(true); obs.unobserve(el); } },
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          obs.unobserve(el);
+        }
+      },
       { threshold: 0.1, ...options }
     );
     obs.observe(el);
@@ -45,20 +50,31 @@ export default function OrderSuccess() {
     const params = new URLSearchParams(window.location.search);
     const session_id = params.get("session_id");
     if (!session_id) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- sync from URL params after hydration
       setState("error");
       return;
     }
-    // Mock Stripe payment confirmation — no real backend
-    Promise.resolve({ data: { paid: true, order_id: "mock_" + session_id } })
-      .then((res) => {
-        if (res?.data?.paid) {
-          setOrderId(res.data.order_id);
-          setState("paid");
+    // Confirm the order exists in the database. Payment is collected on
+    // delivery/pickup, so there is nothing to "verify" with a payment provider.
+    supabase
+      .from("orders")
+      .select("order_id, order_type, status, payment_status")
+      .eq("order_id", session_id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (data) {
+          setOrderId(data.order_id);
+          // eslint-disable-next-line react-hooks/set-state-in-effect -- async fetch result after hydration
+          setState("confirmed");
         } else {
-          setState("pending");
+          // eslint-disable-next-line react-hooks/set-state-in-effect -- async fetch result after hydration
+          setState("error");
         }
       })
-      .catch(() => setState("error"));
+      .catch(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- async fetch result after hydration
+        setState("error");
+      });
   }, []);
 
   return (
@@ -74,15 +90,15 @@ export default function OrderSuccess() {
               <Loader2 size={32} className="animate-spin text-persimmon" />
             </div>
             <h1 className="font-display text-3xl md:text-4xl font-light text-stone-900 tracking-tight">
-              Confirming your payment&hellip;
+              Confirming your order&hellip;
             </h1>
             <p className="text-stone-500 text-sm mt-3 max-w-xs mx-auto">
-              Please wait while we verify with Stripe. This should only take a moment.
+              Just a moment while we pull up your order details.
             </p>
           </AnimatedSection>
         )}
 
-        {state === "paid" && (
+        {state === "confirmed" && (
           <>
             <AnimatedSection>
               <div className="w-20 h-20 rounded-2xl bg-emerald-50 flex items-center justify-center mx-auto mb-6 border-2 border-emerald-200">
@@ -92,14 +108,15 @@ export default function OrderSuccess() {
 
             <AnimatedSection delay={100}>
               <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-emerald-600/70 mb-3 block">
-                Payment Successful
+                Order Received
               </span>
               <h1 className="font-display text-4xl md:text-5xl font-light text-stone-900 tracking-tight mb-4">
                 Order confirmed!
               </h1>
               <p className="text-stone-500 text-sm md:text-base leading-relaxed max-w-sm mx-auto">
-                Your payment was successful. The kitchen is preparing your order now — fresh ingredients, 
-                cooked with care, and coming your way soon.
+                Thanks! Your order has been received and the kitchen is getting started. We&apos;ll
+                confirm by phone on the number you provided. Payment is collected on delivery or
+                pickup — no online payment required.
               </p>
             </AnimatedSection>
 
@@ -110,7 +127,10 @@ export default function OrderSuccess() {
                   className="inline-flex items-center gap-2 bg-stone-900 text-white px-8 py-4 rounded-xl text-sm font-semibold hover:bg-persimmon transition-all duration-300 shadow-lg shadow-stone-900/10 group"
                 >
                   Track My Order
-                  <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
+                  <ArrowRight
+                    size={15}
+                    className="transition-transform duration-300 group-hover:translate-x-1"
+                  />
                 </Link>
                 <Link
                   href="/"
@@ -127,33 +147,13 @@ export default function OrderSuccess() {
                 <div className="flex items-center justify-center gap-2 text-xs text-stone-400">
                   <Flame size={12} className="text-persimmon" />
                   <span>
-                    Order #{orderId?.slice(0, 8) || "————"} &middot; 
-                    Cooking now &middot; Track live above
+                    Order #{orderId?.slice(0, 8) || "————"} &middot; Cooking now &middot; Track live
+                    above
                   </span>
                 </div>
               </div>
             </AnimatedSection>
           </>
-        )}
-
-        {state === "pending" && (
-          <AnimatedSection>
-            <div className="w-16 h-16 rounded-2xl bg-amber-50 flex items-center justify-center mx-auto mb-6 border-2 border-amber-200">
-              <Loader2 size={32} className="animate-spin text-amber-500" />
-            </div>
-            <h1 className="font-display text-3xl md:text-4xl font-light text-stone-900 tracking-tight mb-3">
-              Payment pending
-            </h1>
-            <p className="text-stone-500 text-sm max-w-sm mx-auto">
-              We couldn&apos;t confirm payment yet. If you were charged, your order will update shortly.
-            </p>
-            <Link
-              href="/orders"
-              className="inline-block mt-8 text-persimmon font-medium hover:text-stone-900 transition-colors"
-            >
-              View my orders →
-            </Link>
-          </AnimatedSection>
         )}
 
         {state === "error" && (
@@ -162,10 +162,11 @@ export default function OrderSuccess() {
               <XCircle size={32} className="text-red-500" />
             </div>
             <h1 className="font-display text-3xl md:text-4xl font-light text-stone-900 tracking-tight mb-3">
-              Something went wrong
+              Order not found
             </h1>
             <p className="text-stone-500 text-sm max-w-sm mx-auto">
-              We couldn&apos;t verify this payment. Please contact us if you were charged.
+              We couldn&apos;t find that order. If you just placed one, try refreshing in a moment
+              or contact us directly.
             </p>
             <Link
               href="/"

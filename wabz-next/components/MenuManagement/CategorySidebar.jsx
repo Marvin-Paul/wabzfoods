@@ -1,17 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  LayoutGrid,
-  Wheat,
-  Pizza,
-  Coffee,
-  Plus,
-  Pencil,
-  Trash2,
-  Check,
-  X,
-} from "lucide-react";
+import { LayoutGrid, Wheat, Pizza, Coffee, Plus, Pencil, Trash2, Check, X } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 const CATEGORY_ICONS = {
@@ -71,7 +61,10 @@ export default function CategorySidebar({
       toast({ title: "Error", description: "Category name is required." });
       return;
     }
-    onEditCategory(editingId, { name: nameInput.trim(), slug: slugInput.trim() || nameInput.trim().toLowerCase().replace(/\s+/g, "-") });
+    onEditCategory(editingId, {
+      name: nameInput.trim(),
+      slug: slugInput.trim() || nameInput.trim().toLowerCase().replace(/\s+/g, "-"),
+    });
     setEditingId(null);
     setNameInput("");
     setSlugInput("");
@@ -113,7 +106,9 @@ export default function CategorySidebar({
         >
           <LayoutGrid size={16} className={!selectedCategory ? "text-emerald" : ""} />
           <span className="flex-1 text-left">All Categories</span>
-          <span className="text-xs tabular-nums">{categories.reduce((s, c) => s + c.itemCount, 0)}</span>
+          <span className="text-xs tabular-nums">
+            {categories.reduce((s, c) => s + c.itemCount, 0)}
+          </span>
         </button>
 
         {categories.map((cat) => {
@@ -123,7 +118,10 @@ export default function CategorySidebar({
 
           if (isEditing) {
             return (
-              <div key={cat.id} className="px-3 py-2.5 space-y-2 bg-canvas-soft rounded-sm border border-hairline-cool">
+              <div
+                key={cat.id}
+                className="px-3 py-2.5 space-y-2 bg-canvas-soft rounded-sm border border-hairline-cool"
+              >
                 <input
                   value={nameInput}
                   onChange={(e) => setNameInput(e.target.value)}
@@ -173,14 +171,20 @@ export default function CategorySidebar({
               {/* Edit/Delete actions on hover */}
               <div className="absolute right-2 top-1/2 -translate-y-1/2 hidden group-hover:flex items-center gap-1">
                 <button
-                  onClick={(e) => { e.stopPropagation(); handleStartEdit(cat); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleStartEdit(cat);
+                  }}
                   className="p-1 rounded-[4px] text-ink-faint hover:text-ink hover:bg-canvas-soft transition-all"
                   aria-label={`Edit ${cat.name}`}
                 >
                   <Pencil size={12} />
                 </button>
                 <button
-                  onClick={(e) => { e.stopPropagation(); handleDelete(cat); }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDelete(cat);
+                  }}
                   className="p-1 rounded-[4px] text-ink-faint hover:text-accent-tomato hover:bg-accent-tomato/5 transition-all"
                   aria-label={`Delete ${cat.name}`}
                 >
@@ -201,14 +205,20 @@ export default function CategorySidebar({
             placeholder="Category name"
             className="w-full px-2 py-1.5 bg-canvas border border-hairline-strong rounded-sm text-sm text-ink placeholder:text-ink-faint focus:outline-none focus:border-emerald focus:ring-1 focus:ring-emerald/20"
             autoFocus
-            onKeyDown={(e) => { if (e.key === "Enter") handleConfirmAdd(); if (e.key === "Escape") setAdding(false); }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleConfirmAdd();
+              if (e.key === "Escape") setAdding(false);
+            }}
           />
           <input
             value={slugInput}
             onChange={(e) => setSlugInput(e.target.value)}
             placeholder="slug (auto from name)"
             className="w-full px-2 py-1.5 bg-canvas border border-hairline-strong rounded-sm text-xs text-ink-mute placeholder:text-ink-faint focus:outline-none focus:border-emerald focus:ring-1 focus:ring-emerald/20"
-            onKeyDown={(e) => { if (e.key === "Enter") handleConfirmAdd(); if (e.key === "Escape") setAdding(false); }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") handleConfirmAdd();
+              if (e.key === "Escape") setAdding(false);
+            }}
           />
           <div className="flex gap-1.5">
             <button

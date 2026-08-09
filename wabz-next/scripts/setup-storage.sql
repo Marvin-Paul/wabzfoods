@@ -1,11 +1,13 @@
 -- ============================================================
--- Wabz Foods — Supabase Storage setup (bucket: wabzfoods)
+-- Wabz Foods — Supabase Storage setup (bucket: Wabzfoods)
 -- Paste this into Supabase SQL Editor (SQL > New query) and Run.
 -- Idempotent: safe to run more than once.
 -- ============================================================
 
--- 1. Bucket public (best effort)
-update storage.buckets set public = true where id = 'Wabzfoods';
+-- 1. Create the bucket if it doesn't exist yet, then make it public.
+insert into storage.buckets (id, name, public)
+values ('Wabzfoods', 'Wabzfoods', true)
+on conflict (id) do update set public = excluded.public;
 
 -- 2. Let anon/authenticated SEE buckets (fixes "Bucket not found")
 drop policy if exists "anon select buckets" on storage.buckets;

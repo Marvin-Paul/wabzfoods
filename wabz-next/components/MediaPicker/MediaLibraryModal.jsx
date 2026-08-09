@@ -19,7 +19,6 @@ export default function MediaLibraryModal({ currentUrl, onSelect, onClose }) {
 
   // Load images on mount
   useEffect(() => {
-    setLoading(true);
     // Simulate a short load for realism
     const timer = setTimeout(() => {
       const enriched = FOOD_IMAGES.map((img) => ({
@@ -54,8 +53,12 @@ export default function MediaLibraryModal({ currentUrl, onSelect, onClose }) {
   const safePage = Math.min(page, totalPages - 1);
   const paged = filtered.slice(safePage * ITEMS_PER_PAGE, (safePage + 1) * ITEMS_PER_PAGE);
 
-  // Reset page when search changes
-  useEffect(() => setPage(0), [search]);
+  // Reset page when search changes (adjust state during render instead of an effect)
+  const [prevSearch, setPrevSearch] = useState(search);
+  if (search !== prevSearch) {
+    setPrevSearch(search);
+    setPage(0);
+  }
 
   const handleSelect = (img) => {
     setSelectedUrl(img.url);
@@ -89,7 +92,9 @@ export default function MediaLibraryModal({ currentUrl, onSelect, onClose }) {
     <div
       className="fixed inset-0 z-[100] bg-ink/30 backdrop-blur-[2px] flex items-center justify-center p-4"
       onKeyDown={handleKeyDown}
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
     >
       <div className="bg-canvas rounded-sm w-full max-w-3xl max-h-[90vh] flex flex-col shadow-level-3 border border-hairline animate-in fade-in zoom-in-95 duration-150">
         {/* Header */}

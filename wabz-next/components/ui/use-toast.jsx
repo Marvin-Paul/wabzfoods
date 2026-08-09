@@ -1,28 +1,33 @@
 "use client";
 
-import React, { createContext, useContext, useState, useCallback } from "react";
+import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
 
 const ToastContext = createContext(null);
 
 // Module-level reference so the exported `toast()` can work outside React components
-let toastFn = null;
+const toastFnRef = { current: null };
 
 export function toast({ title, description }) {
-  if (toastFn) {
-    toastFn({ title, description });
+  if (toastFnRef.current) {
+    toastFnRef.current({ title, description });
   }
 }
 
 export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
 
-  toastFn = useCallback(({ title, description }) => {
+  const toastFn = useCallback(({ title, description }) => {
     const id = Date.now();
     setToasts((prev) => [...prev, { id, title, description }]);
     setTimeout(() => {
       setToasts((prev) => prev.filter((t) => t.id !== id));
     }, 3000);
   }, []);
+
+  // Keep the module-level reference in sync outside of render
+  useEffect(() => {
+    toastFnRef.current = toastFn;
+  }, [toastFn]);
 
   return (
     <ToastContext.Provider value={{ toast: toastFn }}>

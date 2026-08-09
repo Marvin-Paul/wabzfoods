@@ -36,7 +36,9 @@ export default function FoodTable({
   // Category lookup
   const catMap = useMemo(() => {
     const map = {};
-    categories.forEach((c) => { map[c.id] = c; });
+    categories.forEach((c) => {
+      map[c.id] = c;
+    });
     return map;
   }, [categories]);
 
@@ -48,9 +50,7 @@ export default function FoodTable({
     if (search.trim()) {
       const q = search.toLowerCase();
       items = items.filter(
-        (i) =>
-          i.name.toLowerCase().includes(q) ||
-          i.description?.toLowerCase().includes(q)
+        (i) => i.name.toLowerCase().includes(q) || i.description?.toLowerCase().includes(q)
       );
     }
 
@@ -95,6 +95,7 @@ export default function FoodTable({
 
   // Reset page when filters change
   React.useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reset page when filters change
     setPage(1);
   }, [search, categoryFilter, statusFilter, perPage]);
 
@@ -239,7 +240,9 @@ export default function FoodTable({
                           src={item.image}
                           alt={item.name}
                           className="w-full h-full object-cover"
-                          onError={(e) => { e.target.style.display = "none"; }}
+                          onError={(e) => {
+                            e.target.style.display = "none";
+                          }}
                         />
                       ) : (
                         <span className="text-xs font-medium text-ink-mute-2">
@@ -285,10 +288,7 @@ export default function FoodTable({
                   </td>
                   <td className="px-4 py-3.5 text-center">
                     {item.featured ? (
-                      <Star
-                        size={16}
-                        className="text-accent-yellow fill-accent-yellow mx-auto"
-                      />
+                      <Star size={16} className="text-accent-yellow fill-accent-yellow mx-auto" />
                     ) : (
                       <span className="text-xs text-ink-faint">—</span>
                     )}

@@ -5,16 +5,7 @@ import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
 import { mapOrder } from "@/lib/supabase-data";
 import LiveOrderTracker from "@/components/LiveOrderTracker";
-import {
-  Package,
-  ArrowRight,
-  Radio,
-  ShoppingBag,
-  MapPin,
-  Phone,
-  Clock,
-  Soup,
-} from "lucide-react";
+import { Package, ArrowRight, Radio, ShoppingBag, MapPin, Phone, Clock, Soup } from "lucide-react";
 
 /* ── Entrance animation hook ── */
 function useInView(options = {}) {
@@ -24,7 +15,12 @@ function useInView(options = {}) {
     const el = ref.current;
     if (!el) return;
     const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setInView(true); obs.unobserve(el); } },
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          obs.unobserve(el);
+        }
+      },
       { threshold: 0.1, ...options }
     );
     obs.observe(el);
@@ -57,21 +53,152 @@ function timeAgo(date) {
 }
 
 export default function Track() {
+  const [phone, setPhone] = useState("");
+  const [phoneInput, setPhoneInput] = useState("");
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const nameMapRef = useRef({});
+
+  // Restore the last phone used to track orders
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("wabz_track_phone");
+      if (saved) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- restore from localStorage after hydration
+        setPhone(saved);
+      }
+    } catch {
+      // localStorage unavailable — fall through to the phone prompt
+    }
+  }, []);
+
+  // Orders are matched against the phone number used at checkout, so one
+  // customer never sees another customer's orders.
+  const phoneKey = phone.replace(/\D/g, "").slice(-9);
+
+  const changePhone = () => {
+    setPhone("");
+    setPhoneInput("");
+    try {
+      localStorage.removeItem("wabz_track_phone");
+    } catch {
+      // ignore
+    }
+  };
+
+  const savePhone = () => {
+    const cleaned = phoneInput.trim();
+    if (!cleaned) return;
+    try {
+      localStorage.setItem("wabz_track_phone", cleaned);
+    } catch {
+      // ignore
+    }
+    setPhone(cleaned);
+  };
 
   useEffect(() => {
+    if (!phone) return;
+    let cancelled = false;
     const load = () =>
       supabase
         .from("orders")
         .select("*, order_items(*)")
+        .ilike("phone", `%${phoneKey}%`)
         .order("created_at", { ascending: false })
         .limit(50)
-        .then(({ data }) => setOrders((data || []).map(mapOrder)));
-    load().finally(() => setLoading(false));
+        .then(({ data }) => {
+          if (!cancelled) setOrders((data || []).map((o) => mapOrder(o, nameMapRef.current)));
+        })
+        .catch(() => {});
+    supabase
+      .from("food_items")
+      .select("item_id, name")
+      .then(({ data }) => {
+        const m = {};
+        (data || []).forEach((f) => {
+          m[f.item_id] = f.name;
+        });
+        nameMapRef.current = m;
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) {
+          load();
+          setLoading(false);
+        }
+      });
     const interval = setInterval(() => load(), 5000);
-    return () => clearInterval(interval);
-  }, []);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [phone, phoneKey]);
+
+  if (!phone) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-stone-50/80 to-white">
+        <div className="max-w-2xl mx-auto px-5 md:px-8 py-12 md:py-16">
+          <div className="flex items-center gap-2 mb-2">
+            <Radio size={14} className="text-persimmon animate-pulse" />
+            <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-persimmon/70">
+              Live Tracking
+            </span>
+          </div>
+          <h1 className="font-display text-4xl md:text-5xl font-light text-stone-900 tracking-tight mb-10">
+            Track Your Order
+          </h1>
+          <AnimatedSection delay={80}>
+            <div className="bg-white rounded-2xl border border-stone-200/80 shadow-xl shadow-stone-900/5 p-6 md:p-8">
+              <div className="w-12 h-12 rounded-2xl bg-persimmon/10 flex items-center justify-center mb-4">
+                <Phone size={22} className="text-persimmon" />
+              </div>
+              <h2 className="font-display text-xl font-semibold text-stone-900 mb-1">
+                Find your orders
+              </h2>
+              <p className="text-sm text-stone-500 mb-5 max-w-sm">
+                Enter the phone number you used when placing your order and we&apos;ll show its
+                live status.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <input
+                  value={phoneInput}
+                  onChange={(e) => setPhoneInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") savePhone();
+                  }}
+                  placeholder="+256 700 000 000"
+                  inputMode="tel"
+                  className="flex-1 px-3 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:border-persimmon focus:ring-1 focus:ring-persimmon/20 transition-all"
+                />
+                <button
+                  onClick={savePhone}
+                  disabled={!phoneInput.trim()}
+                  className="inline-flex items-center justify-center gap-2 bg-stone-900 text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-persimmon disabled:opacity-50 transition-all duration-300"
+                >
+                  Track <ArrowRight size={15} />
+                </button>
+              </div>
+            </div>
+          </AnimatedSection>
+          <AnimatedSection delay={160}>
+            <div className="mt-10">
+              <Link
+                href="/"
+                className="inline-flex items-center gap-2 text-sm text-stone-500 hover:text-persimmon transition-colors group"
+              >
+                Back to menu{" "}
+                <ArrowRight
+                  size={14}
+                  className="transition-transform duration-300 group-hover:translate-x-1"
+                />
+              </Link>
+            </div>
+          </AnimatedSection>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -108,7 +235,7 @@ export default function Track() {
               No orders to track yet
             </h1>
             <p className="text-stone-500 text-sm mb-8 max-w-xs mx-auto">
-              Place an order and watch it travel from our kitchen to you in real time.
+              No orders found for {phone}. Double-check the number you used when ordering.
             </p>
             <Link
               href="/"
@@ -121,6 +248,12 @@ export default function Track() {
                 className="transition-transform duration-300 group-hover:translate-x-1"
               />
             </Link>
+            <button
+              onClick={changePhone}
+              className="mt-4 block mx-auto text-xs text-stone-500 hover:text-persimmon transition-colors underline underline-offset-2"
+            >
+              Use a different phone number
+            </button>
           </div>
         </AnimatedSection>
       </div>
@@ -153,15 +286,28 @@ export default function Track() {
       <div className="max-w-3xl mx-auto px-5 md:px-8 py-12 md:py-16">
         {/* Live Tracking header */}
         <AnimatedSection>
-          <div className="flex items-center gap-2 mb-2">
-            <Radio size={14} className="text-persimmon animate-pulse" />
-            <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-persimmon/70">
-              Live Tracking
-            </span>
+          <div className="flex items-end justify-between gap-4 mb-2">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <Radio size={14} className="text-persimmon animate-pulse" />
+                <span className="text-[10px] font-semibold uppercase tracking-[0.3em] text-persimmon/70">
+                  Live Tracking
+                </span>
+              </div>
+              <h1 className="font-display text-4xl md:text-5xl font-light text-stone-900 tracking-tight">
+                Track Your Order
+              </h1>
+            </div>
+            <button
+              onClick={changePhone}
+              className="shrink-0 inline-flex items-center gap-1.5 text-xs font-medium text-stone-500 hover:text-persimmon transition-colors"
+            >
+              <Phone size={12} /> Change phone
+            </button>
           </div>
-          <h1 className="font-display text-4xl md:text-5xl font-light text-stone-900 tracking-tight mb-10">
-            Track Your Order
-          </h1>
+          <p className="text-stone-500 text-sm mb-10">
+            Orders for {phone} — refreshed live.
+          </p>
         </AnimatedSection>
 
         {/* Main tracking card */}
@@ -197,10 +343,14 @@ export default function Track() {
                 className={`inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.1em] px-3 py-1 rounded-full border ${
                   active.payment_status === "paid"
                     ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                    : "bg-red-50 text-red-700 border-red-200"
+                    : "bg-amber-50 text-amber-700 border-amber-200"
                 }`}
               >
-                {active.payment_status === "paid" ? "Paid" : "Payment Pending"}
+                {active.payment_status === "paid"
+                  ? "Paid"
+                  : active.order_type === "delivery"
+                    ? "Pay on delivery"
+                    : "Pay on pickup"}
               </span>
             </div>
 
@@ -280,8 +430,8 @@ export default function Track() {
                         o.status === "delivered"
                           ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                           : o.status === "cancelled"
-                          ? "bg-red-50 text-red-700 border border-red-200"
-                          : "bg-persimmon/10 text-persimmon border border-persimmon/20"
+                            ? "bg-red-50 text-red-700 border border-red-200"
+                            : "bg-persimmon/10 text-persimmon border border-persimmon/20"
                       }`}
                     >
                       {o.status.replace(/_/g, " ")}

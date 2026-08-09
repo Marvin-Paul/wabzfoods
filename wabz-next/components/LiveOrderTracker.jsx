@@ -64,9 +64,7 @@ export default function LiveOrderTracker({ status }) {
                 {s.label}
               </p>
               {done && (
-                <p className="text-xs text-stone-500 mt-0.5">
-                  {active ? s.time : "Complete"}
-                </p>
+                <p className="text-xs text-stone-500 mt-0.5">{active ? s.time : "Complete"}</p>
               )}
             </div>
 

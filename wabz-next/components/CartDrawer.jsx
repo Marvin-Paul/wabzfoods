@@ -1,26 +1,15 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { Plus, Minus, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
 import { useCart } from "@/components/CartContext";
 import { DEFAULT_SETTINGS } from "@/lib/supabase-data";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetClose,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetClose } from "@/components/ui/sheet";
 
 export default function CartDrawer() {
   const { items, isOpen, setOpen, addItem, updateQty, removeItem, count, total } = useCart();
-  const [deliveryFee, setDeliveryFee] = useState(0);
-
-  useEffect(() => {
-    const fee = Number(DEFAULT_SETTINGS.delivery_fee) || 0;
-    setDeliveryFee(fee);
-  }, []);
+  const [deliveryFee] = useState(() => Number(DEFAULT_SETTINGS.delivery_fee) || 0);
 
   const grandTotal = total + deliveryFee;
 
@@ -89,9 +78,7 @@ export default function CartDrawer() {
                   {/* Details */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-2">
-                      <p className="text-sm font-semibold text-stone-900 truncate">
-                        {item.name}
-                      </p>
+                      <p className="text-sm font-semibold text-stone-900 truncate">{item.name}</p>
                       <button
                         onClick={() => removeItem(item.id)}
                         className="opacity-0 group-hover:opacity-100 transition-opacity p-1 hover:text-persimmon shrink-0"
@@ -147,7 +134,11 @@ export default function CartDrawer() {
               </div>
               <div className="flex justify-between text-sm text-stone-500">
                 <span>Delivery</span>
-                <span className={deliveryFee > 0 ? "text-stone-500 tabular-nums" : "text-emerald-600 font-medium"}>
+                <span
+                  className={
+                    deliveryFee > 0 ? "text-stone-500 tabular-nums" : "text-emerald-600 font-medium"
+                  }
+                >
                   {deliveryFee > 0 ? `UGX ${deliveryFee.toLocaleString()}` : "Free"}
                 </span>
               </div>
@@ -166,7 +157,10 @@ export default function CartDrawer() {
               className="w-full py-3.5 rounded-xl bg-stone-900 text-white text-sm font-semibold hover:bg-persimmon active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-stone-900/15 hover:shadow-lg hover:shadow-persimmon/25 group"
             >
               Checkout
-              <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+              <ArrowRight
+                size={16}
+                className="transition-transform duration-300 group-hover:translate-x-1"
+              />
             </Link>
 
             <SheetClose asChild>

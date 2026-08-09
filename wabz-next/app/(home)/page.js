@@ -46,7 +46,16 @@ function useTilt(maxTilt = 5) {
 }
 
 /* ── Rich empty-state content cards ── */
-const POPULAR_SEARCHES = ["Rolex", "Chicken", "Matooke", "Burger", "Pizza", "Luwombo", "Chips", "Samosa"];
+const POPULAR_SEARCHES = [
+  "Rolex",
+  "Chicken",
+  "Matooke",
+  "Burger",
+  "Pizza",
+  "Luwombo",
+  "Chips",
+  "Samosa",
+];
 
 const EMPTY_CAT_KEYS = { "Local Foods": "local", "Fast Foods": "fast" };
 
@@ -136,11 +145,7 @@ function EmptyStateContent({ query, filter, onClear, onBrowse, onSearch }) {
                   </button>
                 </div>
                 <div className="absolute -bottom-4 -right-4 w-36 h-36 md:w-44 md:h-44 rounded-xl overflow-hidden shadow-lg rotate-6 group-hover:rotate-3 group-hover:scale-105 transition-all duration-700">
-                  <img
-                    src={cat.image}
-                    alt={cat.title}
-                    className="w-full h-full object-cover"
-                  />
+                  <img src={cat.image} alt={cat.title} className="w-full h-full object-cover" />
                 </div>
               </div>
             </AnimatedSection>
@@ -157,9 +162,7 @@ function EmptyStateContent({ query, filter, onClear, onBrowse, onSearch }) {
                 <Flame size={18} className="text-persimmon" />
               </div>
               <div>
-                <h4 className="font-display text-lg font-semibold">
-                  How to get started
-                </h4>
+                <h4 className="font-display text-lg font-semibold">How to get started</h4>
                 <p className="text-xs text-stone-400">Your next meal is just a few taps away</p>
               </div>
             </div>
@@ -170,7 +173,10 @@ function EmptyStateContent({ query, filter, onClear, onBrowse, onSearch }) {
                 { step: "2", label: "Order", desc: "Add to cart, checkout, and pay securely" },
                 { step: "3", label: "Enjoy", desc: "Track your delivery and dig in hot & fresh" },
               ].map((item) => (
-                <div key={item.step} className="bg-white/5 rounded-xl p-4 text-center hover:bg-white/10 transition-colors">
+                <div
+                  key={item.step}
+                  className="bg-white/5 rounded-xl p-4 text-center hover:bg-white/10 transition-colors"
+                >
                   <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-persimmon text-white text-[11px] font-bold mb-2">
                     {item.step}
                   </span>
@@ -181,7 +187,11 @@ function EmptyStateContent({ query, filter, onClear, onBrowse, onSearch }) {
             </div>
 
             <button
-              onClick={() => document.getElementById("menu")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+              onClick={() =>
+                document
+                  .getElementById("menu")
+                  ?.scrollIntoView({ behavior: "smooth", block: "start" })
+              }
               className="mt-5 w-full py-3 rounded-xl bg-persimmon text-white text-sm font-semibold hover:bg-white hover:text-stone-900 transition-all duration-300 flex items-center justify-center gap-2"
             >
               Start Browsing
@@ -299,8 +309,7 @@ const FEATURED_CATEGORIES = [
     icon: Soup,
     color: "bg-amber-50 text-amber-800 border-amber-200",
     gradient: "from-amber-50 to-orange-50",
-    image:
-      "https://images.unsplash.com/photo-1559847844-5315695dadae?w=600&q=80",
+    image: "https://images.unsplash.com/photo-1559847844-5315695dadae?w=600&q=80",
   },
   {
     title: "Fast Foods",
@@ -310,8 +319,7 @@ const FEATURED_CATEGORIES = [
     icon: Pizza,
     color: "bg-red-50 text-red-800 border-red-200",
     gradient: "from-red-50 to-rose-50",
-    image:
-      "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80",
+    image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80",
   },
 ];
 
@@ -343,7 +351,11 @@ function useInView(options = {}) {
 function TiltCard({ children, tilt = 5 }) {
   const ref = useTilt(tilt);
   return (
-    <div ref={ref} className="relative" style={{ transition: "transform 0.4s cubic-bezier(0.16,1,0.3,1)" }}>
+    <div
+      ref={ref}
+      className="relative"
+      style={{ transition: "transform 0.4s cubic-bezier(0.16,1,0.3,1)" }}
+    >
       {children}
     </div>
   );
@@ -353,29 +365,30 @@ function TiltCard({ children, tilt = 5 }) {
 function MenuItemCardWrapper({ product, onAdd, tilt = false, activeFilter = "all" }) {
   const hideBadge = activeFilter !== "all" && activeFilter === product.category;
 
-  const badge = product.category === "local" ? (
-    <span
-      className={`absolute top-3 left-3 z-10 inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.15em] px-2 py-1 rounded-full shadow-sm transition-all duration-500 ease-out ${
-        hideBadge
-          ? "opacity-0 scale-75 pointer-events-none"
-          : "opacity-100 scale-100 group-hover:scale-110 group-hover:shadow-md bg-amber-50 text-amber-800 border border-amber-200"
-      }`}
-    >
-      <Soup size={10} className={hideBadge ? "opacity-0" : ""} />
-      Local
-    </span>
-  ) : product.category === "fast" ? (
-    <span
-      className={`absolute top-3 left-3 z-10 inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.15em] px-2 py-1 rounded-full shadow-sm transition-all duration-500 ease-out ${
-        hideBadge
-          ? "opacity-0 scale-75 pointer-events-none"
-          : "opacity-100 scale-100 group-hover:scale-110 group-hover:shadow-md bg-red-50 text-red-800 border border-red-200"
-      }`}
-    >
-      <Pizza size={10} className={hideBadge ? "opacity-0" : ""} />
-      Fast
-    </span>
-  ) : null;
+  const badge =
+    product.category === "local" ? (
+      <span
+        className={`absolute top-3 left-3 z-10 inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.15em] px-2 py-1 rounded-full shadow-sm transition-all duration-500 ease-out ${
+          hideBadge
+            ? "opacity-0 scale-75 pointer-events-none"
+            : "opacity-100 scale-100 group-hover:scale-110 group-hover:shadow-md bg-amber-50 text-amber-800 border border-amber-200"
+        }`}
+      >
+        <Soup size={10} className={hideBadge ? "opacity-0" : ""} />
+        Local
+      </span>
+    ) : product.category === "fast" ? (
+      <span
+        className={`absolute top-3 left-3 z-10 inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-[0.15em] px-2 py-1 rounded-full shadow-sm transition-all duration-500 ease-out ${
+          hideBadge
+            ? "opacity-0 scale-75 pointer-events-none"
+            : "opacity-100 scale-100 group-hover:scale-110 group-hover:shadow-md bg-red-50 text-red-800 border border-red-200"
+        }`}
+      >
+        <Pizza size={10} className={hideBadge ? "opacity-0" : ""} />
+        Fast
+      </span>
+    ) : null;
 
   const inner = (
     <div className="relative group">
@@ -460,19 +473,18 @@ export default function Home() {
         .order("item_id", { ascending: true })
         .then(({ data }) => (data || []).map(mapFoodProduct)),
       Promise.resolve(DEFAULT_SETTINGS),
-    ]).then(([products, settings]) => {
-      setProducts(products);
-      setSettings(settings);
-    }).finally(() => setLoading(false));
+    ])
+      .then(([products, settings]) => {
+        setProducts(products);
+        setSettings(settings);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const grouped = useMemo(() => {
     let list = products;
     if (filter !== "all") list = list.filter((p) => p.category === filter);
-    if (query)
-      list = list.filter((p) =>
-        p.name.toLowerCase().includes(query.toLowerCase())
-      );
+    if (query) list = list.filter((p) => p.name.toLowerCase().includes(query.toLowerCase()));
     const map = new Map();
     for (const p of list) {
       const cat = p.category || "Other";
@@ -563,12 +575,7 @@ export default function Home() {
         className="relative min-h-[85vh] flex items-center bg-stone-900 text-stone-50 overflow-hidden"
       >
         <div ref={bgRef} className="absolute inset-0 will-change-transform">
-          <Image
-            src={HERO_IMG}
-            alt="Wabz Food"
-            fittingType="fill"
-            className="w-full h-full"
-          />
+          <Image src={HERO_IMG} alt="Wabz Food" fittingType="fill" className="w-full h-full" />
           <div className="absolute inset-0 bg-gradient-to-r from-stone-950 via-stone-950/85 to-stone-950/40" />
         </div>
 
@@ -598,8 +605,8 @@ export default function Home() {
           </h1>
 
           <p className="mt-6 text-base md:text-lg text-stone-300/80 max-w-lg leading-relaxed">
-            From Ugandan classics to fast-food favourites — order online, pay
-            securely, and track your meal in real time.
+            From Ugandan classics to fast-food favourites — order online, pay securely, and track
+            your meal in real time.
           </p>
 
           <div className="flex flex-wrap items-center gap-4 mt-10">
@@ -655,9 +662,7 @@ export default function Home() {
               {openStatus.isOpen ? (
                 <>
                   <span className="font-semibold">
-                    {openStatus.minsUntil <= 30
-                      ? `Closing soon!`
-                      : `We\u2019re open!`}
+                    {openStatus.minsUntil <= 30 ? `Closing soon!` : `We\u2019re open!`}
                   </span>
                   <span className="opacity-80">
                     {openStatus.minsUntil <= 30
@@ -668,9 +673,7 @@ export default function Home() {
               ) : (
                 <>
                   <span className="font-semibold">We\u2019re closed</span>
-                  <span className="opacity-80">
-                    Open {openStatus.hours}. Come back then!
-                  </span>
+                  <span className="opacity-80">Open {openStatus.hours}. Come back then!</span>
                 </>
               )}
             </div>
@@ -734,9 +737,7 @@ export default function Home() {
                   <span className="font-display text-3xl md:text-4xl font-bold text-stone-900 tabular-nums">
                     {statValue}
                   </span>
-                  <span className="text-sm text-stone-500 mt-1.5 font-medium">
-                    {stat.label}
-                  </span>
+                  <span className="text-sm text-stone-500 mt-1.5 font-medium">{stat.label}</span>
                 </div>
               );
             })}
@@ -768,7 +769,11 @@ export default function Home() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
                 {curatedCards.map((p, i) => (
-                  <div key={p.id} className="transition-all duration-700 ease-out" style={itemStyle(i, 0.6)}>
+                  <div
+                    key={p.id}
+                    className="transition-all duration-700 ease-out"
+                    style={itemStyle(i, 0.6)}
+                  >
                     <MenuItemCardWrapper product={p} onAdd={onAdd} tilt activeFilter={filter} />
                   </div>
                 ))}
@@ -776,11 +781,18 @@ export default function Home() {
 
               <div className="flex items-center justify-center mt-10">
                 <button
-                  onClick={() => document.getElementById("menu")?.scrollIntoView({ behavior: "smooth", block: "start" })}
+                  onClick={() =>
+                    document
+                      .getElementById("menu")
+                      ?.scrollIntoView({ behavior: "smooth", block: "start" })
+                  }
                   className="group inline-flex items-center gap-2.5 px-8 py-3.5 rounded-xl bg-stone-900 text-white text-sm font-semibold hover:bg-persimmon transition-all duration-300 shadow-lg shadow-stone-900/10"
                 >
                   Browse Full Menu
-                  <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
+                  <ArrowRight
+                    size={15}
+                    className="transition-transform duration-300 group-hover:translate-x-1"
+                  />
                 </button>
               </div>
             </div>
@@ -791,10 +803,7 @@ export default function Home() {
       {/* ════════════════════════════════════════════════
           MENU SECTION (with integrated Chef's Picks)
       ════════════════════════════════════════════════ */}
-      <section
-        id="menu"
-        className="max-w-7xl mx-auto px-5 md:px-8 pt-24 md:pt-32 pb-12 md:pb-16"
-      >
+      <section id="menu" className="max-w-7xl mx-auto px-5 md:px-8 pt-24 md:pt-32 pb-12 md:pb-16">
         {/* Header */}
         <AnimatedSection>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
@@ -802,8 +811,10 @@ export default function Home() {
               <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-persimmon/70 mb-3">
                 Browse Our Menu
               </p>
-              <h2 className="font-display text-3xl md:text-4xl font-light bg-gradient-to-r from-stone-900 via-persimmon to-amber-600 bg-clip-text text-transparent animate-shimmer"
-                style={{ backgroundSize: "200% auto" }}>
+              <h2
+                className="font-display text-3xl md:text-4xl font-light bg-gradient-to-r from-stone-900 via-persimmon to-amber-600 bg-clip-text text-transparent animate-shimmer"
+                style={{ backgroundSize: "200% auto" }}
+              >
                 What are you craving?
               </h2>
             </div>
@@ -859,10 +870,7 @@ export default function Home() {
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {[...Array(8)].map((_, i) => (
-              <div
-                key={i}
-                className="rounded-2xl overflow-hidden bg-white border border-stone-200"
-              >
+              <div key={i} className="rounded-2xl overflow-hidden bg-white border border-stone-200">
                 <div className="aspect-[4/3] bg-stone-100 animate-pulse" />
                 <div className="p-5 space-y-3">
                   <div className="h-3 w-16 bg-stone-100 rounded animate-pulse" />
@@ -905,7 +913,12 @@ export default function Home() {
                   <div className="flex-1 h-px bg-stone-100 ml-4" />
                 </div>
 
-                <MarqueeRow items={items} onAdd={onAdd} activeFilter={filter} speed={items.length * 3} />
+                <MarqueeRow
+                  items={items}
+                  onAdd={onAdd}
+                  activeFilter={filter}
+                  speed={items.length * 3}
+                />
 
                 <div
                   className="flex items-center justify-center mt-8"
@@ -921,7 +934,10 @@ export default function Home() {
                     >
                       <Soup size={16} />
                       Browse Local Foods
-                      <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+                      <ArrowRight
+                        size={14}
+                        className="transition-transform duration-300 group-hover:translate-x-1"
+                      />
                     </Link>
                   ) : (
                     <Link
@@ -930,7 +946,10 @@ export default function Home() {
                     >
                       <Pizza size={16} />
                       Browse Fast Foods
-                      <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+                      <ArrowRight
+                        size={14}
+                        className="transition-transform duration-300 group-hover:translate-x-1"
+                      />
                     </Link>
                   )}
                 </div>
@@ -950,14 +969,16 @@ export default function Home() {
               <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-persimmon/70 mb-4 block">
                 Quench Your Thirst
               </span>
-              <h2 className="font-display text-3xl md:text-4xl font-light bg-gradient-to-r from-stone-900 via-persimmon to-amber-600 bg-clip-text text-transparent animate-shimmer mb-5"
-                style={{ backgroundSize: "200% auto" }}>
+              <h2
+                className="font-display text-3xl md:text-4xl font-light bg-gradient-to-r from-stone-900 via-persimmon to-amber-600 bg-clip-text text-transparent animate-shimmer mb-5"
+                style={{ backgroundSize: "200% auto" }}
+              >
                 The Classic You Love — Now Served Your Way
               </h2>
               <p className="text-stone-500 text-sm md:text-base leading-relaxed max-w-2xl mx-auto">
-                Whether you prefer the crisp refreshment of a chilled plastic bottle or the
-                timeless elegance of a glass-bottled CocaCola — we&apos;ve got your perfect
-                sip waiting. Grab one with your meal!
+                Whether you prefer the crisp refreshment of a chilled plastic bottle or the timeless
+                elegance of a glass-bottled CocaCola — we&apos;ve got your perfect sip waiting. Grab
+                one with your meal!
               </p>
             </div>
           </AnimatedSection>
@@ -994,25 +1015,27 @@ export default function Home() {
                         CocaCola &mdash; Plastic Bottle
                       </h3>
                       <p className="text-sm text-white/70 leading-relaxed mt-2 mb-6 max-w-xs drop-shadow-sm">
-                        The classic CocaCola taste you know and love, in a convenient
-                        resealable plastic bottle. Crisp, chilled, and ready to go.
+                        The classic CocaCola taste you know and love, in a convenient resealable
+                        plastic bottle. Crisp, chilled, and ready to go.
                       </p>
                       <div className="flex items-center justify-between gap-4">
                         <span className="font-display text-3xl font-bold text-white tabular-nums drop-shadow-lg">
                           UGX 2,500
                         </span>
                         <button
-                          onClick={() => onAdd({
-                            id: "cocacola-plastic",
-                            name: "CocaCola Plastic Bottle",
-                            price: 2500,
-                            image_url: "/food/plastic-cocacola.jpg",
-                            category: "drinks",
-                            available: true,
-                            featured: true,
-                            prep: "2 mins",
-                            kcal: "~150 kcal",
-                          })}
+                          onClick={() =>
+                            onAdd({
+                              id: "cocacola-plastic",
+                              name: "CocaCola Plastic Bottle",
+                              price: 2500,
+                              image_url: "/food/plastic-cocacola.jpg",
+                              category: "drinks",
+                              available: true,
+                              featured: true,
+                              prep: "2 mins",
+                              kcal: "~150 kcal",
+                            })
+                          }
                           className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white/20 backdrop-blur-md text-white text-sm font-semibold hover:bg-white hover:text-stone-900 active:scale-[0.97] transition-all duration-300 shadow-lg border border-white/20 hover:border-white/40"
                         >
                           Add to Order
@@ -1054,26 +1077,27 @@ export default function Home() {
                         CocaCola &mdash; Glass Bottle
                       </h3>
                       <p className="text-sm text-white/70 leading-relaxed mt-2 mb-6 max-w-xs drop-shadow-sm">
-                        The nostalgic glass bottle experience. Thicker glass, colder
-                        sip, and that unmistakable CocaCola fizz you remember from
-                        the good old days.
+                        The nostalgic glass bottle experience. Thicker glass, colder sip, and that
+                        unmistakable CocaCola fizz you remember from the good old days.
                       </p>
                       <div className="flex items-center justify-between gap-4">
                         <span className="font-display text-3xl font-bold text-white tabular-nums drop-shadow-lg">
                           UGX 3,000
                         </span>
                         <button
-                          onClick={() => onAdd({
-                            id: "cocacola-glass",
-                            name: "CocaCola Glass Bottle",
-                            price: 3000,
-                            image_url: "/food/glass-cocacola.jpg",
-                            category: "drinks",
-                            available: true,
-                            featured: true,
-                            prep: "2 mins",
-                            kcal: "~150 kcal",
-                          })}
+                          onClick={() =>
+                            onAdd({
+                              id: "cocacola-glass",
+                              name: "CocaCola Glass Bottle",
+                              price: 3000,
+                              image_url: "/food/glass-cocacola.jpg",
+                              category: "drinks",
+                              available: true,
+                              featured: true,
+                              prep: "2 mins",
+                              kcal: "~150 kcal",
+                            })
+                          }
                           className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white/20 backdrop-blur-md text-white text-sm font-semibold hover:bg-white hover:text-stone-900 active:scale-[0.97] transition-all duration-300 shadow-lg border border-white/20 hover:border-white/40"
                         >
                           Add to Order
@@ -1095,7 +1119,10 @@ export default function Home() {
               >
                 <CupSoda size={16} />
                 Browse All Drinks
-                <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />
+                <ArrowRight
+                  size={14}
+                  className="transition-transform duration-300 group-hover:translate-x-1"
+                />
               </Link>
             </div>
           </AnimatedSection>
@@ -1103,8 +1130,8 @@ export default function Home() {
           {/* Subtle footer note */}
           <AnimatedSection>
             <p className="text-center text-xs text-stone-400 mt-8 italic">
-              * CocaCola is a registered trademark of The CocaCola Company.
-              Served chilled for maximum refreshment.
+              * CocaCola is a registered trademark of The CocaCola Company. Served chilled for
+              maximum refreshment.
             </p>
           </AnimatedSection>
         </div>
@@ -1120,8 +1147,10 @@ export default function Home() {
               <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-persimmon/70 mb-4 block">
                 How It Works
               </span>
-              <h2 className="font-display text-3xl md:text-4xl font-light bg-gradient-to-r from-stone-900 via-persimmon to-amber-600 bg-clip-text text-transparent animate-shimmer"
-                style={{ backgroundSize: "200% auto" }}>
+              <h2
+                className="font-display text-3xl md:text-4xl font-light bg-gradient-to-r from-stone-900 via-persimmon to-amber-600 bg-clip-text text-transparent animate-shimmer"
+                style={{ backgroundSize: "200% auto" }}
+              >
                 From your craving to your doorstep in three simple steps
               </h2>
             </div>
@@ -1138,9 +1167,7 @@ export default function Home() {
                     >
                       <Icon size={28} className={step.color} />
                     </div>
-                    <span
-                      className="text-[11px] font-bold uppercase tracking-[0.2em] mb-3 block bg-gradient-to-r from-persimmon via-amber-500 to-emerald-500 bg-clip-text text-transparent"
-                    >
+                    <span className="text-[11px] font-bold uppercase tracking-[0.2em] mb-3 block bg-gradient-to-r from-persimmon via-amber-500 to-emerald-500 bg-clip-text text-transparent">
                       Step {i + 1}
                     </span>
                     <h3 className="font-display text-xl font-semibold text-stone-900 mb-3">
@@ -1170,8 +1197,10 @@ export default function Home() {
               <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-persimmon/70 mb-4 block">
                 What Our Customers Say
               </span>
-              <h2 className="font-display text-3xl md:text-4xl font-light bg-gradient-to-r from-stone-900 via-persimmon to-amber-600 bg-clip-text text-transparent animate-shimmer"
-                style={{ backgroundSize: "200% auto" }}>
+              <h2
+                className="font-display text-3xl md:text-4xl font-light bg-gradient-to-r from-stone-900 via-persimmon to-amber-600 bg-clip-text text-transparent animate-shimmer"
+                style={{ backgroundSize: "200% auto" }}
+              >
                 Loved by thousands across Kampala
               </h2>
             </div>
@@ -1185,11 +1214,7 @@ export default function Home() {
                 >
                   <div className="flex items-center gap-1 mb-5">
                     {[...Array(t.rating)].map((_, s) => (
-                      <Star
-                        key={s}
-                        size={14}
-                        className="fill-amber-400 text-amber-400"
-                      />
+                      <Star key={s} size={14} className="fill-amber-400 text-amber-400" />
                     ))}
                   </div>
 
@@ -1226,7 +1251,8 @@ export default function Home() {
               <div
                 className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-amber-500/20 mb-6"
                 style={{
-                  background: "linear-gradient(to right, rgba(227,66,52,0.15), rgba(251,191,36,0.15))",
+                  background:
+                    "linear-gradient(to right, rgba(227,66,52,0.15), rgba(251,191,36,0.15))",
                   ...itemStyle(0, 0.5),
                 }}
               >
@@ -1235,13 +1261,18 @@ export default function Home() {
                   Ready to Order?
                 </span>
               </div>
-              <h2 className="font-display text-3xl md:text-5xl font-light leading-tight bg-gradient-to-r from-parchment via-amber-200 to-persimmon bg-clip-text text-transparent animate-shimmer"
-                style={{ backgroundSize: "200% auto" }}>
+              <h2
+                className="font-display text-3xl md:text-5xl font-light leading-tight bg-gradient-to-r from-parchment via-amber-200 to-persimmon bg-clip-text text-transparent animate-shimmer"
+                style={{ backgroundSize: "200% auto" }}
+              >
                 Your next favourite meal is just a click away
               </h2>
-              <p className="mt-4 text-stone-400 text-base max-w-lg mx-auto" style={itemStyle(2, 0.5)}>
-                Join thousands of happy customers enjoying authentic Ugandan
-                cuisine and fast-food favourites delivered fresh to your door.
+              <p
+                className="mt-4 text-stone-400 text-base max-w-lg mx-auto"
+                style={itemStyle(2, 0.5)}
+              >
+                Join thousands of happy customers enjoying authentic Ugandan cuisine and fast-food
+                favourites delivered fresh to your door.
               </p>
               <a
                 href="#menu"

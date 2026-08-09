@@ -92,8 +92,7 @@ export default function FastPage() {
   }));
 
   const filteredItems = allMenuItems.filter((item) => {
-    const matchesCategory =
-      specialCategory === "all" || item.category === specialCategory;
+    const matchesCategory = specialCategory === "all" || item.category === specialCategory;
     const matchesQuery =
       !query ||
       item.name?.toLowerCase().includes(query.toLowerCase()) ||
@@ -137,8 +136,8 @@ export default function FastPage() {
               Fast Favourites
             </h1>
             <p className="text-stone-500 text-sm md:text-base">
-              Burgers, pizzas, fries and more — made fresh to order with premium
-              ingredients for that perfect bite, every time.
+              Burgers, pizzas, fries and more — made fresh to order with premium ingredients for
+              that perfect bite, every time.
             </p>
           </header>
         </AnimatedSection>
@@ -201,7 +200,10 @@ export default function FastPage() {
                         : "bg-white text-stone-600 hover:text-stone-900 border border-stone-200 hover:border-stone-400 hover:shadow-md hover:shadow-stone-900/5"
                     }`}
                   >
-                    <Icon size={12} className={specialCategory === cat.value ? "text-white" : "text-stone-400"} />
+                    <Icon
+                      size={12}
+                      className={specialCategory === cat.value ? "text-white" : "text-stone-400"}
+                    />
                     {cat.label}
                   </button>
                 );
@@ -270,7 +272,9 @@ export default function FastPage() {
                           src={dish.image_url}
                           alt={dish.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          onError={(e) => { e.target.style.display = "none"; }}
+                          onError={(e) => {
+                            e.target.style.display = "none";
+                          }}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
@@ -288,9 +292,16 @@ export default function FastPage() {
                               ? "bg-persimmon text-white shadow-lg shadow-persimmon/30 scale-110"
                               : "bg-white/80 backdrop-blur-sm text-stone-500 hover:text-persimmon hover:bg-white shadow-lg shadow-black/10"
                           }`}
-                          aria-label={favorites.includes(dish.id) ? "Remove from favorites" : "Add to favorites"}
+                          aria-label={
+                            favorites.includes(dish.id)
+                              ? "Remove from favorites"
+                              : "Add to favorites"
+                          }
                         >
-                          <Heart size={14} fill={favorites.includes(dish.id) ? "currentColor" : "none"} />
+                          <Heart
+                            size={14}
+                            fill={favorites.includes(dish.id) ? "currentColor" : "none"}
+                          />
                         </button>
                       </div>
 
@@ -305,7 +316,8 @@ export default function FastPage() {
                             </span>
                           </div>
                           <p className="text-sm text-stone-500 leading-relaxed mb-4 line-clamp-2">
-                            {dish.description || "A delicious fast food favourite made fresh to order."}
+                            {dish.description ||
+                              "A delicious fast food favourite made fresh to order."}
                           </p>
                         </div>
 

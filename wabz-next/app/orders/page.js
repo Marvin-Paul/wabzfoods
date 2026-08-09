@@ -13,6 +13,7 @@ import {
   Bike,
   Home,
   Clock,
+  Phone,
   Soup,
 } from "lucide-react";
 
@@ -24,7 +25,12 @@ function useInView(options = {}) {
     const el = ref.current;
     if (!el) return;
     const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setInView(true); obs.unobserve(el); } },
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          obs.unobserve(el);
+        }
+      },
       { threshold: 0.1, ...options }
     );
     obs.observe(el);
@@ -106,44 +112,153 @@ function StatusTracker({ status }) {
 }
 
 export default function MyOrders() {
+  const [phone, setPhone] = useState("");
+  const [phoneInput, setPhoneInput] = useState("");
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const nameMapRef = useRef({});
+
+  // Restore the last phone used for "My Orders"
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem("wabz_track_phone");
+      if (saved) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- restore from localStorage after hydration
+        setPhone(saved);
+      }
+    } catch {
+      // localStorage unavailable — fall through to the phone prompt
+    }
+  }, []);
+
+  // Orders are matched against the phone number used at checkout, so one
+  // customer never sees another customer's orders.
+  const phoneKey = phone.replace(/\D/g, "").slice(-9);
+
+  const changePhone = () => {
+    setPhone("");
+    setPhoneInput("");
+    try {
+      localStorage.removeItem("wabz_track_phone");
+    } catch {
+      // ignore
+    }
+  };
+
+  const savePhone = () => {
+    const cleaned = phoneInput.trim();
+    if (!cleaned) return;
+    try {
+      localStorage.setItem("wabz_track_phone", cleaned);
+    } catch {
+      // ignore
+    }
+    setPhone(cleaned);
+  };
 
   useEffect(() => {
+    if (!phone) return;
+    let cancelled = false;
     const load = () =>
       supabase
         .from("orders")
         .select("*, order_items(*)")
+        .ilike("phone", `%${phoneKey}%`)
         .order("created_at", { ascending: false })
         .limit(50)
-        .then(({ data }) => setOrders((data || []).map(mapOrder)))
+        .then(({ data }) => {
+          if (!cancelled) setOrders((data || []).map((o) => mapOrder(o, nameMapRef.current)));
+        })
         .catch((err) => console.error("Orders fetch failed:", err));
-    load().finally(() => setLoading(false));
-
+    supabase
+      .from("food_items")
+      .select("item_id, name")
+      .then(({ data }) => {
+        const m = {};
+        (data || []).forEach((f) => {
+          m[f.item_id] = f.name;
+        });
+        nameMapRef.current = m;
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (!cancelled) {
+          load();
+          setLoading(false);
+        }
+      });
     const interval = setInterval(() => load(), 5000);
-    return () => clearInterval(interval);
-  }, []);
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, [phone, phoneKey]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-stone-50/80 to-white">
       <div className="max-w-4xl mx-auto px-5 md:px-8 py-12 md:py-16">
         {/* Header */}
         <AnimatedSection>
-          <div className="mb-10">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-persimmon/70 mb-3 block">
-              Order Tracking
-            </span>
-            <h1 className="font-display text-4xl md:text-5xl font-light text-stone-900 tracking-tight">
-              My Orders
-            </h1>
-            <p className="text-stone-500 text-sm mt-2 max-w-lg">
-              Track all your orders in real time — from the kitchen to your doorstep.
-            </p>
+          <div className="flex items-start justify-between gap-4 mb-10">
+            <div>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-persimmon/70 mb-3 block">
+                Order Tracking
+              </span>
+              <h1 className="font-display text-4xl md:text-5xl font-light text-stone-900 tracking-tight">
+                My Orders
+              </h1>
+              <p className="text-stone-500 text-sm mt-2 max-w-lg">
+                Track your orders in real time — from the kitchen to your doorstep.
+              </p>
+            </div>
+            {phone && (
+              <button
+                onClick={changePhone}
+                className="shrink-0 inline-flex items-center gap-1.5 text-xs font-medium text-stone-500 hover:text-persimmon transition-colors"
+              >
+                <Phone size={12} /> Change phone
+              </button>
+            )}
           </div>
         </AnimatedSection>
 
+        {!phone && (
+          <AnimatedSection delay={80}>
+            <div className="bg-white rounded-2xl border border-stone-200/80 shadow-xl shadow-stone-900/5 p-6 md:p-8 max-w-2xl">
+              <div className="w-12 h-12 rounded-2xl bg-persimmon/10 flex items-center justify-center mb-4">
+                <Phone size={22} className="text-persimmon" />
+              </div>
+              <h2 className="font-display text-xl font-semibold text-stone-900 mb-1">
+                Find your orders
+              </h2>
+              <p className="text-sm text-stone-500 mb-5 max-w-sm">
+                Enter the phone number you used when placing your orders.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <input
+                  value={phoneInput}
+                  onChange={(e) => setPhoneInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") savePhone();
+                  }}
+                  placeholder="+256 700 000 000"
+                  inputMode="tel"
+                  className="flex-1 px-3 py-2.5 bg-stone-50 border border-stone-200 rounded-xl text-sm text-stone-900 placeholder:text-stone-400 focus:outline-none focus:border-persimmon focus:ring-1 focus:ring-persimmon/20 transition-all"
+                />
+                <button
+                  onClick={savePhone}
+                  disabled={!phoneInput.trim()}
+                  className="inline-flex items-center justify-center gap-2 bg-stone-900 text-white px-6 py-2.5 rounded-xl text-sm font-semibold hover:bg-persimmon disabled:opacity-50 transition-all duration-300"
+                >
+                  View Orders <ArrowRight size={15} />
+                </button>
+              </div>
+            </div>
+          </AnimatedSection>
+        )}
+
         {/* Loading */}
-        {loading ? (
+        {!phone ? null : loading ? (
           <div className="space-y-4">
             {[...Array(3)].map((_, i) => (
               <div
@@ -167,8 +282,7 @@ export default function MyOrders() {
                 No orders yet
               </h2>
               <p className="text-sm text-stone-500 mb-8">
-                When you place an order, it will appear here with live tracking so you can
-                follow it from the kitchen to your door.
+                No orders found for {phone}. Double-check the number you used when ordering.
               </p>
               <Link
                 href="/"
@@ -181,6 +295,12 @@ export default function MyOrders() {
                   className="transition-transform duration-300 group-hover:translate-x-1"
                 />
               </Link>
+              <button
+                onClick={changePhone}
+                className="mt-4 text-xs text-stone-500 hover:text-persimmon transition-colors underline underline-offset-2"
+              >
+                Use a different phone number
+              </button>
             </div>
           </AnimatedSection>
         ) : (
@@ -194,7 +314,14 @@ export default function MyOrders() {
                     <div>
                       <p className="text-[11px] uppercase tracking-[0.15em] text-stone-400 flex items-center gap-1.5">
                         <Clock size={11} />
-                        {new Date(o.created_date).toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit", hour12: true })}
+                        {new Date(o.created_date).toLocaleString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                          hour: "numeric",
+                          minute: "2-digit",
+                          hour12: true,
+                        })}
                       </p>
                       <h3 className="font-display text-xl font-semibold text-stone-900 mt-1">
                         Order &middot; UGX {Number(o.total).toLocaleString()}
@@ -204,10 +331,14 @@ export default function MyOrders() {
                       className={`inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.15em] px-3 py-1.5 rounded-full border ${
                         o.payment_status === "paid"
                           ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                          : "bg-red-50 text-red-700 border-red-200"
+                          : "bg-amber-50 text-amber-700 border-amber-200"
                       }`}
                     >
-                      {o.payment_status === "paid" ? "Paid" : "Unpaid"}
+                      {o.payment_status === "paid"
+                        ? "Paid"
+                        : o.order_type === "delivery"
+                          ? "Pay on delivery"
+                          : "Pay on pickup"}
                     </span>
                   </div>
 

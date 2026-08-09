@@ -1,6 +1,10 @@
 -- ═══════════════════════════════════════════════════════════════════
 -- Wabz Foods — Disable RLS then Seed Database
 -- ═══════════════════════════════════════════════════════════════════
+-- NOTE: Superseded for new setups by supabase/setup.sql (RLS +
+-- site_settings + feedback). This file is kept for legacy databases
+-- that are still RLS-disabled; do NOT run it after enabling RLS.
+-- ═══════════════════════════════════════════════════════════════════
 -- Paste this entire block at:
 --   https://supabase.com/dashboard/project/apnxvhjlpahiepwntpmn/sql/new
 -- Then click "Run".

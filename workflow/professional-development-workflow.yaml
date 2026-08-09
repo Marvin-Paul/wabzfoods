@@ -1,0 +1,162 @@
+version: "1.0"
+project:
+  name: Professional Development Workflow
+  description: Standard workflow executed before commits and pushes.
+
+tools:
+  node: ">=20"
+  npm: ">=10"
+
+folders:
+  - .husky/
+  - .vscode/
+  - scripts/
+  - src/
+  - public/
+
+files:
+
+  - path: .husky/pre-commit
+    type: git-hook
+    extension: none
+    description: Runs automatically before every commit.
+    executes:
+      - ./scripts/pre-commit.sh
+
+  - path: scripts/pre-commit.sh
+    type: shell
+    extension: .sh
+    description: Local quality assurance checks.
+    commands:
+      - npm run format
+      - npm run lint
+      - npm run typecheck
+      - npm test
+      - npm run build
+      - gitleaks protect --staged
+
+  - path: scripts/pre-push.sh
+    type: shell
+    extension: .sh
+    description: Heavy validation before pushing.
+    commands:
+      - npm test
+      - npm run build
+
+  - path: package.json
+    type: configuration
+    scripts:
+      format: prettier --write .
+      lint: eslint .
+      typecheck: tsc --noEmit
+      test: vitest run
+      build: vite build
+
+  - path: prettier.config.js
+    type: formatter
+    extension: .js
+    purpose: Code formatting
+
+  - path: eslint.config.js
+    type: linter
+    extension: .js
+    purpose: Static code analysis
+
+  - path: tsconfig.json
+    type: typescript
+    extension: .json
+    purpose: TypeScript compiler configuration
+
+  - path: .editorconfig
+    type: editor
+    extension: none
+    purpose: Editor consistency
+
+  - path: .gitignore
+    type: git
+    extension: none
+    ignored:
+      - node_modules/
+      - dist/
+      - coverage/
+      - .env
+
+  - path: .env
+    type: environment
+    extension: none
+    committed: false
+
+  - path: .vscode/settings.json
+    type: vscode
+    purpose: Workspace settings
+
+  - path: .vscode/tasks.json
+    type: vscode
+    purpose: VS Code tasks
+
+  - path: .vscode/extensions.json
+    type: vscode
+    purpose: Recommended extensions
+    recommendations:
+      - dbaeumer.vscode-eslint
+      - esbenp.prettier-vscode
+      - eamodio.gitlens
+      - usernamehw.errorlens
+
+  - path: commitlint.config.js
+    type: commitlint
+    extension: .js
+    purpose: Conventional commit validation
+
+  - path: gitleaks.toml
+    type: security
+    extension: .toml
+    purpose: Secret scanning configuration
+
+workflow:
+
+  save:
+    - Auto format
+    - Auto organize imports
+
+  commit:
+    - Format source code
+    - Lint project
+    - Type check
+    - Run unit tests
+    - Build application
+    - Scan for secrets
+    - Validate commit message
+
+  push:
+    - Run full test suite
+    - Build production bundle
+    - Push to remote repository
+
+ci:
+  steps:
+    - Checkout source
+    - Install dependencies
+    - Run formatter check
+    - Run ESLint
+    - Run TypeScript
+    - Run tests
+    - Build application
+    - Run security scan
+    - Deploy
+
+recommended_extensions:
+  - ESLint
+  - Prettier
+  - GitLens
+  - Error Lens
+  - EditorConfig
+
+best_practices:
+  - Never commit .env
+  - Never bypass linting
+  - Write meaningful commit messages
+  - Keep builds passing
+  - Push only tested code
+  - Use feature branches
+  - Rebase before merging

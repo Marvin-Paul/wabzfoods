@@ -17,7 +17,12 @@ function useInView() {
     const el = ref.current;
     if (!el) return;
     const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setInView(true); obs.unobserve(el); } },
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          obs.unobserve(el);
+        }
+      },
       { threshold: 0.1 }
     );
     obs.observe(el);
@@ -58,7 +63,10 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
         <AnimatedWrapper>
           <div className="text-center mb-10">
             <Link href="/" className="inline-flex items-center gap-1.5 mb-6 group">
-              <span className="text-2xl font-bold tracking-tight bg-gradient-to-r from-stone-900 via-persimmon to-amber-600 bg-clip-text text-transparent animate-shimmer" style={{ backgroundSize: "200% auto" }}>
+              <span
+                className="text-2xl font-bold tracking-tight bg-gradient-to-r from-stone-900 via-persimmon to-amber-600 bg-clip-text text-transparent animate-shimmer"
+                style={{ backgroundSize: "200% auto" }}
+              >
                 Wabz
               </span>
               <span className="text-2xl font-bold tracking-tight text-stone-900">Foods</span>
@@ -69,9 +77,7 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
             <h1 className="font-display text-3xl md:text-4xl font-light text-stone-900 tracking-tight">
               {title}
             </h1>
-            {subtitle && (
-              <p className="text-stone-500 text-sm mt-2 max-w-xs mx-auto">{subtitle}</p>
-            )}
+            {subtitle && <p className="text-stone-500 text-sm mt-2 max-w-xs mx-auto">{subtitle}</p>}
           </div>
         </AnimatedWrapper>
 
@@ -85,9 +91,7 @@ export default function AuthLayout({ icon: Icon, title, subtitle, footer, childr
         {/* Footer */}
         {footer && (
           <AnimatedWrapper delay={200}>
-            <p className="text-center text-sm text-stone-500 mt-6">
-              {footer}
-            </p>
+            <p className="text-center text-sm text-stone-500 mt-6">{footer}</p>
           </AnimatedWrapper>
         )}
 

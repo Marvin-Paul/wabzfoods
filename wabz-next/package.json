@@ -5,7 +5,14 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "format": "prettier --config ../workflow/config/prettier.config.mjs --write .",
+    "format:check": "prettier --config ../workflow/config/prettier.config.mjs --check .",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "precommit": "powershell -NoProfile -ExecutionPolicy Bypass -File ../workflow/scripts/pre-commit.ps1",
+    "prepush": "powershell -NoProfile -ExecutionPolicy Bypass -File ../workflow/scripts/pre-push.ps1"
   },
   "dependencies": {
     "@base44/sdk": "^0.8.40",
@@ -30,9 +37,16 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.2.1",
+    "@commitlint/config-conventional": "^21.2.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "typescript": "^5"
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.2.12",
+    "eslint-config-prettier": "^10.1.8",
+    "prettier": "^3.9.6",
+    "typescript": "^5",
+    "vitest": "^4.1.10"
   }
 }

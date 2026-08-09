@@ -50,7 +50,12 @@ export default function ProductForm({ product, onClose }) {
 
   useEffect(() => {
     if (product) {
-      setForm({ ...product, subcategory: product.subcategory || "", price: String(product.price ?? "") });
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- sync form when editing a different product
+      setForm({
+        ...product,
+        subcategory: product.subcategory || "",
+        price: String(product.price ?? ""),
+      });
     }
   }, [product]);
 
@@ -104,10 +109,7 @@ export default function ProductForm({ product, onClose }) {
           .eq("item_id", product.id)
           .select();
       } else {
-        result = await supabase
-          .from("food_items")
-          .insert(payload)
-          .select();
+        result = await supabase.from("food_items").insert(payload).select();
       }
 
       if (result.error) {
@@ -138,7 +140,9 @@ export default function ProductForm({ product, onClose }) {
       <div className="bg-canvas rounded-sm w-full max-w-lg max-h-[90vh] overflow-y-auto shadow-level-3 border border-hairline">
         {/* Header */}
         <div className="sticky top-0 bg-canvas flex items-center justify-between px-6 py-4 border-b border-hairline z-10">
-          <h2 className="text-[18px] font-medium text-ink tracking-tight">{isEdit ? "Edit Dish" : "New Dish"}</h2>
+          <h2 className="text-[18px] font-medium text-ink tracking-tight">
+            {isEdit ? "Edit Dish" : "New Dish"}
+          </h2>
           <button onClick={onClose} className="text-ink-mute hover:text-ink transition-colors">
             <X size={20} />
           </button>
@@ -146,7 +150,9 @@ export default function ProductForm({ product, onClose }) {
 
         <form onSubmit={submit} className="p-6 space-y-4">
           <div>
-            <label className="text-xs font-medium uppercase tracking-wider text-ink-mute">Name</label>
+            <label className="text-xs font-medium uppercase tracking-wider text-ink-mute">
+              Name
+            </label>
             <input
               required
               value={form.name}
@@ -156,7 +162,9 @@ export default function ProductForm({ product, onClose }) {
           </div>
 
           <div>
-            <label className="text-xs font-medium uppercase tracking-wider text-ink-mute">Description</label>
+            <label className="text-xs font-medium uppercase tracking-wider text-ink-mute">
+              Description
+            </label>
             <textarea
               value={form.description}
               onChange={(e) => setField("description", e.target.value)}
@@ -167,7 +175,9 @@ export default function ProductForm({ product, onClose }) {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-xs font-medium uppercase tracking-wider text-ink-mute">Category</label>
+              <label className="text-xs font-medium uppercase tracking-wider text-ink-mute">
+                Category
+              </label>
               <select
                 value={form.category}
                 onChange={(e) => setField("category", e.target.value)}
@@ -179,7 +189,9 @@ export default function ProductForm({ product, onClose }) {
               </select>
             </div>
             <div>
-              <label className="text-xs font-medium uppercase tracking-wider text-ink-mute">Subcategory</label>
+              <label className="text-xs font-medium uppercase tracking-wider text-ink-mute">
+                Subcategory
+              </label>
               <select
                 value={form.subcategory}
                 onChange={(e) => setField("subcategory", e.target.value)}
@@ -196,7 +208,9 @@ export default function ProductForm({ product, onClose }) {
           </div>
 
           <div>
-            <label className="text-xs font-medium uppercase tracking-wider text-ink-mute">Price (UGX)</label>
+            <label className="text-xs font-medium uppercase tracking-wider text-ink-mute">
+              Price (UGX)
+            </label>
             <input
               required
               type="number"
@@ -206,10 +220,7 @@ export default function ProductForm({ product, onClose }) {
             />
           </div>
 
-          <MediaPicker
-            value={form.image_url}
-            onChange={(url) => setField("image_url", url)}
-          />
+          <MediaPicker value={form.image_url} onChange={(url) => setField("image_url", url)} />
 
           <div className="flex gap-6">
             <label className="flex items-center gap-2 cursor-pointer">
@@ -228,7 +239,9 @@ export default function ProductForm({ product, onClose }) {
                 onChange={(e) => setField("featured", e.target.checked)}
                 className="w-4 h-4 accent-emerald"
               />
-              <span className="text-sm text-ink-secondary">                  <span className="text-emerald">Featured</span> (Chef&apos;s Pick)
+              <span className="text-sm text-ink-secondary">
+                {" "}
+                <span className="text-emerald">Featured</span> (Chef&apos;s Pick)
               </span>
             </label>
           </div>
@@ -250,10 +263,7 @@ export default function ProductForm({ product, onClose }) {
             </button>
           </div>
         </form>
-
       </div>
     </div>
   );
 }
-
-

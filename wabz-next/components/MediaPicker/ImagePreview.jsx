@@ -52,9 +52,7 @@ export default function ImagePreview({ imageUrl, filename, fileSize, dimensions 
             {filename}
           </span>
         )}
-        {dimensions && (
-          <span className="text-ink-faint whitespace-nowrap">{dimensions}</span>
-        )}
+        {dimensions && <span className="text-ink-faint whitespace-nowrap">{dimensions}</span>}
         {fileSize && (
           <span className="text-ink-faint whitespace-nowrap">{formatSize(fileSize)}</span>
         )}

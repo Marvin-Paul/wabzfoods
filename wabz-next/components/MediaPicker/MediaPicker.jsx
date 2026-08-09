@@ -39,13 +39,12 @@ export default function MediaPicker({ value, onChange }) {
 
   // Keep advancedUrl in sync when value changes externally (upload, library selection)
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- keep URL in sync when value changes externally
     setAdvancedUrl(value || "");
   }, [value]);
 
   // Derived metadata from the current image URL
-  const filename = value
-    ? value.split("/").pop()
-    : null;
+  const filename = value ? value.split("/").pop() : null;
 
   // Handle image selection from library
   const handleLibrarySelect = useCallback(
@@ -64,7 +63,10 @@ export default function MediaPicker({ value, onChange }) {
 
     const allowedTypes = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"];
     if (!allowedTypes.includes(file.type)) {
-      toast({ title: "Invalid file", description: "Please select a JPG, PNG, WEBP, or GIF image." });
+      toast({
+        title: "Invalid file",
+        description: "Please select a JPG, PNG, WEBP, or GIF image.",
+      });
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
@@ -141,17 +143,10 @@ export default function MediaPicker({ value, onChange }) {
   return (
     <div className="space-y-3">
       {/* Label */}
-      <label className="text-xs font-medium uppercase tracking-wider text-ink-mute">
-        Image
-      </label>
+      <label className="text-xs font-medium uppercase tracking-wider text-ink-mute">Image</label>
 
       {/* Preview */}
-      <ImagePreview
-        imageUrl={value}
-        filename={filename}
-        dimensions={null}
-        fileSize={null}
-      />
+      <ImagePreview imageUrl={value} filename={filename} dimensions={null} fileSize={null} />
 
       {/* Action buttons */}
       <div className="flex flex-wrap items-center gap-2">
@@ -199,8 +194,8 @@ export default function MediaPicker({ value, onChange }) {
                   Remove image
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                  Are you sure you want to remove <strong>{removeName}</strong> from this item?
-                  The image file will not be deleted from the server.
+                  Are you sure you want to remove <strong>{removeName}</strong> from this item? The
+                  image file will not be deleted from the server.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>

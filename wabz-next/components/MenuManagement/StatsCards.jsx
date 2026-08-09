@@ -1,12 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-  LayoutGrid,
-  UtensilsCrossed,
-  CheckCircle2,
-  AlertTriangle,
-} from "lucide-react";
+import { LayoutGrid, UtensilsCrossed, CheckCircle2, AlertTriangle } from "lucide-react";
 
 export default function StatsCards({ categories, foodItems }) {
   const totalCategories = categories.length;

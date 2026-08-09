@@ -1,0 +1,19 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Workflow: pre-commit checks",
+      "type": "npm",
+      "script": "precommit",
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "Workflow: pre-push checks",
+      "type": "npm",
+      "script": "prepush",
+      "group": "build",
+      "problemMatcher": []
+    }
+  ]
+}

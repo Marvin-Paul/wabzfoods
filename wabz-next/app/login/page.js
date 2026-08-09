@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
@@ -24,11 +24,16 @@ export default function Login() {
   const friendlyAuthError = (msg) => {
     if (!msg) return "An unexpected error occurred. Please try again.";
     const lower = msg.toLowerCase();
-    if (lower.includes("rate limit")) return "Too many attempts. Please wait a moment and try again.";
-    if (lower.includes("email not confirmed")) return "Please verify your email address first. Check your inbox for the confirmation link.";
-    if (lower.includes("invalid login credentials")) return "Invalid email or password. Please check your credentials and try again.";
-    if (lower.includes("email rate limit")) return "Too many sign-in attempts. Please wait a moment and try again.";
-    if (lower.includes("network error")) return "A network error occurred. Please check your internet connection and try again.";
+    if (lower.includes("rate limit"))
+      return "Too many attempts. Please wait a moment and try again.";
+    if (lower.includes("email not confirmed"))
+      return "Please verify your email address first. Check your inbox for the confirmation link.";
+    if (lower.includes("invalid login credentials"))
+      return "Invalid email or password. Please check your credentials and try again.";
+    if (lower.includes("email rate limit"))
+      return "Too many sign-in attempts. Please wait a moment and try again.";
+    if (lower.includes("network error"))
+      return "A network error occurred. Please check your internet connection and try again.";
     return msg;
   };
 
@@ -36,12 +41,13 @@ export default function Login() {
     try {
       const savedEmail = localStorage.getItem("wabz_remember_email");
       if (savedEmail) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect -- restore Remember Me after hydration
         setEmail(savedEmail);
         setRememberMe(true);
       }
     } catch {
       // localStorage unavailable (Safari private browsing, embedded views) — skip Remember Me
-      }
+    }
   }, []);
 
   const handleSubmit = async (e) => {
@@ -52,9 +58,17 @@ export default function Login() {
       const { error } = await supabase.auth.signInWithPassword({ email, password });
       if (error) throw error;
       if (rememberMe) {
-        try { localStorage.setItem("wabz_remember_email", email); } catch { /* ignore */ }
+        try {
+          localStorage.setItem("wabz_remember_email", email);
+        } catch {
+          /* ignore */
+        }
       } else {
-        try { localStorage.removeItem("wabz_remember_email"); } catch { /* ignore */ }
+        try {
+          localStorage.removeItem("wabz_remember_email");
+        } catch {
+          /* ignore */
+        }
       }
       router.push("/");
     } catch (err) {
@@ -65,7 +79,10 @@ export default function Login() {
   };
 
   const handleGoogle = () => {
-    supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/' } });
+    supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: window.location.origin + "/" },
+    });
   };
 
   return (
@@ -75,7 +92,7 @@ export default function Login() {
       subtitle="Log in to your account"
       footer={
         <>
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link href="/register" className="text-primary font-medium hover:underline">
             Create one
           </Link>
@@ -110,7 +127,10 @@ export default function Login() {
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
+            <Mail
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+              aria-hidden="true"
+            />
             <Input
               id="email"
               type="email"
@@ -132,7 +152,10 @@ export default function Login() {
             </Link>
           </div>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
+            <Lock
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+              aria-hidden="true"
+            />
             <Input
               id="password"
               type={showPassword ? "text" : "password"}
@@ -161,11 +184,13 @@ export default function Login() {
           onClick={() => setRememberMe(!rememberMe)}
           className="flex items-center gap-2.5 w-auto group cursor-pointer text-left"
         >
-          <span className={`w-4 h-4 rounded flex items-center justify-center border-2 transition-all duration-150 shrink-0 ${
-            rememberMe
-              ? "bg-primary border-primary text-primary-foreground"
-              : "border-muted-foreground/40 group-hover:border-muted-foreground/70"
-          }`}>
+          <span
+            className={`w-4 h-4 rounded flex items-center justify-center border-2 transition-all duration-150 shrink-0 ${
+              rememberMe
+                ? "bg-primary border-primary text-primary-foreground"
+                : "border-muted-foreground/40 group-hover:border-muted-foreground/70"
+            }`}
+          >
             {rememberMe && <Check size={12} strokeWidth={3} />}
           </span>
           <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors select-none">
@@ -186,6 +211,3 @@ export default function Login() {
     </AuthLayout>
   );
 }
-
-
-

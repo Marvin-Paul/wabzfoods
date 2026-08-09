@@ -13,8 +13,7 @@ const readdirP = promisify(readdir);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
 
-const SUPABASE_URL =
-  process.env.SUPABASE_URL || "https://apnxvhjlpahiepwntpmn.supabase.co";
+const SUPABASE_URL = process.env.SUPABASE_URL || "https://apnxvhjlpahiepwntpmn.supabase.co";
 const SUPABASE_ANON_KEY =
   process.env.SUPABASE_ANON_KEY ||
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFwbnh2aGpscGFoaWVwd250cG1uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzcyMTY0MDAsImV4cCI6MjA5Mjc5MjQwMH0.7GX9Pt-gW43fkoiTytFGIhzkfUnQI9H9iK4YyiBawbM";

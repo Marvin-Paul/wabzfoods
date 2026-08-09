@@ -16,7 +16,6 @@ import {
   AlertTriangle,
   ShoppingBag,
   Soup,
-  Shield,
   ArrowRight,
 } from "lucide-react";
 
@@ -27,7 +26,12 @@ function useInView(options = {}) {
     const el = ref.current;
     if (!el) return;
     const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setInView(true); obs.unobserve(el); } },
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setInView(true);
+          obs.unobserve(el);
+        }
+      },
       { threshold: 0.1, ...options }
     );
     obs.observe(el);
@@ -54,11 +58,7 @@ function AnimatedSection({ children, className = "", delay = 0 }) {
 export default function Checkout() {
   const { items, total, clearCart } = useCart();
   const router = useRouter();
-  const [settings, setSettings] = useState(null);
-
-  useEffect(() => {
-    setSettings(DEFAULT_SETTINGS);
-  }, []);
+  const [settings] = useState(DEFAULT_SETTINGS);
 
   const [form, setForm] = useState({
     customer_name: "",
@@ -71,6 +71,11 @@ export default function Checkout() {
   const [error, setError] = useState("");
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
+
+  // Delivery orders carry the configured delivery fee; pickup orders don't.
+  const deliveryFee =
+    form.order_type === "delivery" ? Number(settings?.delivery_fee) || 0 : 0;
+  const grandTotal = total + deliveryFee;
 
   const submit = async (e) => {
     e.preventDefault();
@@ -88,7 +93,7 @@ export default function Checkout() {
         order_type: form.order_type,
         status: "pending",
         payment_status: "unpaid",
-        total_amount: total,
+        total_amount: grandTotal,
         customer_name: form.customer_name,
         phone: form.phone,
         address: form.address,
@@ -97,12 +102,11 @@ export default function Checkout() {
       if (orderError) throw orderError;
 
       // Insert items into the order_items table (separate relation)
-      // mapOrder reads item_id as the display name, so we pass the product name there.
       if (items.length > 0) {
         const { error: itemsError } = await supabase.from("order_items").insert(
           items.map((i) => ({
             order_id: orderId,
-            item_id: i.name || i.id || "Item",
+            item_id: i.id,
             price: i.price,
             quantity: i.qty,
           }))
@@ -128,7 +132,8 @@ export default function Checkout() {
             Your cart is empty
           </h1>
           <p className="text-stone-500 text-sm mb-8">
-            Add a few dishes before checking out. We have plenty of delicious options waiting for you!
+            Add a few dishes before checking out. We have plenty of delicious options waiting for
+            you!
           </p>
           <Link
             href="/"
@@ -136,7 +141,10 @@ export default function Checkout() {
           >
             <Soup size={15} />
             Browse Menu
-            <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
+            <ArrowRight
+              size={15}
+              className="transition-transform duration-300 group-hover:translate-x-1"
+            />
           </Link>
         </div>
       </div>
@@ -168,7 +176,10 @@ export default function Checkout() {
             href="/"
             className="inline-flex items-center gap-2 text-sm text-stone-500 hover:text-persimmon transition-colors mb-8 group"
           >
-            <ArrowLeft size={15} className="transition-transform duration-300 group-hover:-translate-x-1" />
+            <ArrowLeft
+              size={15}
+              className="transition-transform duration-300 group-hover:-translate-x-1"
+            />
             Back to menu
           </Link>
         </AnimatedSection>
@@ -176,13 +187,14 @@ export default function Checkout() {
         <AnimatedSection delay={50}>
           <div className="mb-10">
             <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-persimmon/70 mb-3 block">
-              Secure Checkout
+              Checkout
             </span>
             <h1 className="font-display text-4xl md:text-5xl font-light text-stone-900 tracking-tight">
               Complete your order
             </h1>
             <p className="text-stone-500 text-sm mt-2 max-w-lg">
-              Fill in your details and we&apos;ll take care of the rest. Fresh ingredients, cooked to order, delivered to your door.
+              Fill in your details and we&apos;ll take care of the rest. Fresh ingredients, cooked
+              to order, delivered to your door.
             </p>
           </div>
         </AnimatedSection>
@@ -233,8 +245,13 @@ export default function Checkout() {
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
           <AnimatedSection delay={100} className="lg:col-span-3">
-            <form onSubmit={submit} className="bg-white rounded-2xl border border-stone-200/80 shadow-xl shadow-stone-900/5 p-6 md:p-8 space-y-5">
-              <h2 className="font-display text-xl font-semibold text-stone-900 mb-2">Your Details</h2>
+            <form
+              onSubmit={submit}
+              className="bg-white rounded-2xl border border-stone-200/80 shadow-xl shadow-stone-900/5 p-6 md:p-8 space-y-5"
+            >
+              <h2 className="font-display text-xl font-semibold text-stone-900 mb-2">
+                Your Details
+              </h2>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -273,7 +290,14 @@ export default function Checkout() {
                         : "bg-stone-50 border border-stone-200 text-stone-600 hover:border-stone-400"
                     }`}
                   >
-                    {t === "delivery" ? <><Truck size={13} className="inline mr-1.5" />{t}</> : t}
+                    {t === "delivery" ? (
+                      <>
+                        <Truck size={13} className="inline mr-1.5" />
+                        {t}
+                      </>
+                    ) : (
+                      t
+                    )}
                   </button>
                 ))}
               </div>
@@ -317,14 +341,15 @@ export default function Checkout() {
                 className="w-full bg-stone-900 text-white py-4 rounded-xl text-sm font-semibold uppercase tracking-[0.15em] hover:bg-persimmon disabled:opacity-60 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-stone-900/10"
               >
                 {submitting ? (
-                  <><Loader2 size={18} className="animate-spin" /> Preparing payment&hellip;</>
+                  <>
+                    <Loader2 size={18} className="animate-spin" /> Placing order&hellip;
+                  </>
                 ) : (
-                  `Pay UGX ${total.toLocaleString()}`
+                  `Place Order · UGX ${grandTotal.toLocaleString()}`
                 )}
               </button>
-              <p className="text-[11px] text-stone-400 text-center flex items-center justify-center gap-1.5">
-                <Shield size={11} />
-                Secure payment via Stripe. You&apos;ll be redirected to complete your purchase.
+              <p className="text-[11px] text-stone-400 text-center">
+                No online payment needed — you&apos;ll pay in cash on delivery or pickup.
               </p>
             </form>
           </AnimatedSection>
@@ -340,7 +365,12 @@ export default function Checkout() {
                   {items.map((i) => (
                     <li key={i.id} className="flex gap-3">
                       <div className="w-14 h-14 rounded-xl overflow-hidden bg-stone-100 shrink-0 border border-stone-200">
-                        <Image src={i.image_url} alt={i.name} fittingType="fill" className="w-full h-full object-cover" />
+                        <Image
+                          src={i.image_url}
+                          alt={i.name}
+                          fittingType="fill"
+                          className="w-full h-full object-cover"
+                        />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-stone-900 truncate">
@@ -353,11 +383,23 @@ export default function Checkout() {
                     </li>
                   ))}
                 </ul>
-                <div className="mt-5 pt-4 border-t border-stone-100 flex items-center justify-between">
-                  <span className="text-sm font-medium text-stone-600">Total</span>
-                  <span className="font-display text-2xl font-semibold text-stone-900 tabular-nums">
-                    UGX {total.toLocaleString()}
-                  </span>
+                <div className="mt-5 pt-4 border-t border-stone-100 space-y-1.5">
+                  <div className="flex items-center justify-between text-sm text-stone-500">
+                    <span>Subtotal</span>
+                    <span className="tabular-nums">UGX {total.toLocaleString()}</span>
+                  </div>
+                  {form.order_type === "delivery" && deliveryFee > 0 && (
+                    <div className="flex items-center justify-between text-sm text-stone-500">
+                      <span>Delivery fee</span>
+                      <span className="tabular-nums">UGX {deliveryFee.toLocaleString()}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center justify-between pt-2">
+                    <span className="text-sm font-medium text-stone-600">Total</span>
+                    <span className="font-display text-2xl font-semibold text-stone-900 tabular-nums">
+                      UGX {grandTotal.toLocaleString()}
+                    </span>
+                  </div>
                 </div>
               </div>
             </AnimatedSection>

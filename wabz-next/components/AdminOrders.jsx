@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { mapOrder } from "@/lib/supabase-data";
 
@@ -19,6 +19,7 @@ export default function AdminOrders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
+  const nameMapRef = useRef({});
 
   const load = () =>
     supabase
@@ -26,10 +27,21 @@ export default function AdminOrders() {
       .select("*, order_items(*)")
       .order("created_at", { ascending: false })
       .limit(100)
-      .then(({ data }) => setOrders((data || []).map(mapOrder)))
+      .then(({ data }) => setOrders((data || []).map((o) => mapOrder(o, nameMapRef.current))))
       .catch((err) => console.error("Admin orders fetch failed:", err));
 
   useEffect(() => {
+    supabase
+      .from("food_items")
+      .select("item_id, name")
+      .then(({ data }) => {
+        const m = {};
+        (data || []).forEach((f) => {
+          m[f.item_id] = f.name;
+        });
+        nameMapRef.current = m;
+      })
+      .catch(() => {});
     load().finally(() => setLoading(false));
     const interval = setInterval(() => load(), 5000);
     return () => clearInterval(interval);
@@ -64,7 +76,10 @@ export default function AdminOrders() {
       {loading ? (
         <div className="space-y-3">
           {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-32 bg-canvas-soft rounded-sm animate-pulse border border-hairline-cool" />
+            <div
+              key={i}
+              className="h-32 bg-canvas-soft rounded-sm animate-pulse border border-hairline-cool"
+            />
           ))}
         </div>
       ) : visible.length === 0 ? (
@@ -72,22 +87,44 @@ export default function AdminOrders() {
       ) : (
         <div className="space-y-3">
           {visible.map((o) => (
-            <div key={o.id} className="bg-canvas border border-hairline rounded-sm p-5 hover:shadow-level-1 transition-shadow">
+            <div
+              key={o.id}
+              className="bg-canvas border border-hairline rounded-sm p-5 hover:shadow-level-1 transition-shadow"
+            >
               <div className="flex flex-wrap justify-between gap-3">
                 <div>
                   <p className="text-[11px] font-medium uppercase tracking-wider text-ink-mute">
-                    {new Date(o.created_date).toLocaleString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit", hour12: true })}
+                    {new Date(o.created_date).toLocaleString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                      hour: "numeric",
+                      minute: "2-digit",
+                      hour12: true,
+                    })}
                   </p>
-                  <h3 className="text-[18px] font-medium text-ink mt-1 tracking-tight">{o.customer_name || "Customer"}</h3>
-                  <p className="text-xs text-ink-mute mt-0.5">{o.phone} · {o.order_type}</p>
+                  <h3 className="text-[18px] font-medium text-ink mt-1 tracking-tight">
+                    {o.customer_name || "Customer"}
+                  </h3>
+                  <p className="text-xs text-ink-mute mt-0.5">
+                    {o.phone} · {o.order_type}
+                  </p>
                   {o.address && <p className="text-xs text-ink-mute mt-0.5">{o.address}</p>}
-                  {o.notes && <p className="text-xs text-ink-mute-2 italic mt-1">"{o.notes}"</p>}
+                  {o.notes && (
+                    <p className="text-xs text-ink-mute-2 italic mt-1">&ldquo;{o.notes}&rdquo;</p>
+                  )}
                 </div>
                 <div className="text-right">
-                  <p className="text-xl font-medium text-ink tabular-nums">UGX {Number(o.total).toLocaleString()}</p>
-                  <span className={`inline-block mt-1 text-[10px] font-medium uppercase tracking-wide px-2 py-0.5 rounded-[4px] border ${
-                    o.payment_status === "paid"                    ? "bg-emerald/10 text-emerald-deep border-emerald/20" : "bg-accent-tomato/10 text-accent-tomato border-accent-tomato/20"
-                  }`}>
+                  <p className="text-xl font-medium text-ink tabular-nums">
+                    UGX {Number(o.total).toLocaleString()}
+                  </p>
+                  <span
+                    className={`inline-block mt-1 text-[10px] font-medium uppercase tracking-wide px-2 py-0.5 rounded-[4px] border ${
+                      o.payment_status === "paid"
+                        ? "bg-emerald/10 text-emerald-deep border-emerald/20"
+                        : "bg-accent-tomato/10 text-accent-tomato border-accent-tomato/20"
+                    }`}
+                  >
                     {o.payment_status}
                   </span>
                 </div>
@@ -95,12 +132,16 @@ export default function AdminOrders() {
 
               <ul className="mt-3 text-xs text-ink-mute space-y-0.5">
                 {o.items?.map((it, i) => (
-                  <li key={i} className="tabular-nums">{it.qty}× {it.name}</li>
+                  <li key={i} className="tabular-nums">
+                    {it.qty}× {it.name}
+                  </li>
                 ))}
               </ul>
 
               <div className="mt-4 pt-4 border-t border-hairline-cool flex flex-wrap items-center gap-3">
-                <span className={`text-[10px] font-medium uppercase tracking-wide px-2.5 py-1 rounded-[4px] border ${STATUS_STYLE[o.status]}`}>
+                <span
+                  className={`text-[10px] font-medium uppercase tracking-wide px-2.5 py-1 rounded-[4px] border ${STATUS_STYLE[o.status]}`}
+                >
                   {o.status.replace(/_/g, " ")}
                 </span>
                 <select
@@ -109,7 +150,9 @@ export default function AdminOrders() {
                   className="ml-auto text-xs border border-hairline-strong rounded-[4px] px-3 py-1.5 bg-canvas text-ink focus:outline-none focus:border-emerald focus:ring-1 focus:ring-emerald/20 transition-all"
                 >
                   {STATUSES.map((s) => (
-                    <option key={s} value={s}>{s.replace(/_/g, " ")}</option>
+                    <option key={s} value={s}>
+                      {s.replace(/_/g, " ")}
+                    </option>
                   ))}
                 </select>
               </div>

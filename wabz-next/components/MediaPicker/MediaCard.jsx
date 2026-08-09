@@ -33,7 +33,12 @@ export default function MediaCard({ image, isSelected, onSelect, loading }) {
         loading="lazy"
         onError={(e) => {
           e.target.style.display = "none";
-          e.target.parentElement.classList.add("bg-canvas-soft", "flex", "items-center", "justify-center");
+          e.target.parentElement.classList.add(
+            "bg-canvas-soft",
+            "flex",
+            "items-center",
+            "justify-center"
+          );
           const fallback = document.createElement("span");
           fallback.className = "text-[10px] text-ink-faint px-1 text-center leading-tight";
           fallback.textContent = filename;
@@ -58,8 +63,8 @@ export default function MediaCard({ image, isSelected, onSelect, loading }) {
             {image.fileSize < 1024
               ? `${image.fileSize} B`
               : image.fileSize < 1024 * 1024
-              ? `${(image.fileSize / 1024).toFixed(1)} KB`
-              : `${(image.fileSize / (1024 * 1024)).toFixed(1)} MB`}
+                ? `${(image.fileSize / 1024).toFixed(1)} KB`
+                : `${(image.fileSize / (1024 * 1024)).toFixed(1)} MB`}
           </p>
         )}
       </div>

@@ -1,19 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  X,
-  Upload,
-  Image as ImageIcon,
-} from "lucide-react";
+import { X, Upload, Image as ImageIcon } from "lucide-react";
 
-export default function AddFoodDialog({
-  open,
-  onClose,
-  onSave,
-  editItem,
-  categories,
-}) {
+export default function AddFoodDialog({ open, onClose, onSave, editItem, categories }) {
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -30,6 +20,7 @@ export default function AddFoodDialog({
 
   React.useEffect(() => {
     if (editItem) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- sync form when editing a different item
       setForm({
         name: editItem.name,
         description: editItem.description || "",
@@ -171,7 +162,10 @@ export default function AddFoodDialog({
             </label>
             <div className="flex gap-2">
               <div className="relative flex-1">
-                <Upload size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint" />
+                <Upload
+                  size={14}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint"
+                />
                 <input
                   value={form.image}
                   onChange={(e) => handleImageUrlChange(e.target.value)}
@@ -187,7 +181,9 @@ export default function AddFoodDialog({
                   src={imagePreview}
                   alt="Preview"
                   className="w-full h-full object-cover"
-                  onError={(e) => { e.target.style.display = "none"; }}
+                  onError={(e) => {
+                    e.target.style.display = "none";
+                  }}
                 />
               </div>
             )}
@@ -236,8 +232,10 @@ export default function AddFoodDialog({
                   <span className="w-3.5 h-3.5 border-2 border-on-emerald/30 border-t-on-emerald rounded-full animate-spin" />
                   Saving…
                 </>
+              ) : isEdit ? (
+                "Update Item"
               ) : (
-                isEdit ? "Update Item" : "Save Item"
+                "Save Item"
               )}
             </button>
           </div>

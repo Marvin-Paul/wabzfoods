@@ -1,0 +1,4 @@
+title = "Wabz Foods — gitleaks config"
+
+[extend]
+useDefault = true

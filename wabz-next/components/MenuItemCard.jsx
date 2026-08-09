@@ -1,17 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  Plus,
-  Minus,
-  Sparkles,
-  ImageIcon,
-  ShoppingCart,
-  Eye,
-  Share2,
-  Heart,
-
-} from "lucide-react";
+import { Plus, Minus, Sparkles, ImageIcon, ShoppingCart, Eye, Share2, Heart } from "lucide-react";
 import { useCart } from "@/components/CartContext";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
@@ -142,7 +132,10 @@ export default function MenuItemCard({ product, onAdd }) {
                 onClick={() => onAdd(product)}
                 className="w-full py-3 rounded-xl bg-stone-900 text-white text-sm font-semibold hover:bg-persimmon active:scale-[0.98] transition-all duration-300 shadow-md shadow-stone-900/15 hover:shadow-lg hover:shadow-persimmon/25 flex items-center justify-center gap-2 group/btn"
               >
-                <Plus size={16} className="transition-transform duration-300 group-hover/btn:rotate-90" />
+                <Plus
+                  size={16}
+                  className="transition-transform duration-300 group-hover/btn:rotate-90"
+                />
                 Add to Order
               </button>
             )}
@@ -158,10 +151,7 @@ export default function MenuItemCard({ product, onAdd }) {
           <ShoppingCart size={15} className="mr-2.5 text-persimmon" />
           Add to Order
         </ContextMenuItem>
-        <ContextMenuItem
-          onSelect={() => {}}
-          className="rounded-lg text-sm py-2.5 cursor-pointer"
-        >
+        <ContextMenuItem onSelect={() => {}} className="rounded-lg text-sm py-2.5 cursor-pointer">
           <Eye size={15} className="mr-2.5 text-stone-400" />
           View Details
         </ContextMenuItem>

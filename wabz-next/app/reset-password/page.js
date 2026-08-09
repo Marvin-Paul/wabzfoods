@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
@@ -6,7 +6,18 @@ import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Lock, Loader2, AlertTriangle, Eye, EyeOff, ShieldCheck, ShieldAlert, ShieldMinus, ShieldX, Sparkles } from "lucide-react";
+import {
+  Lock,
+  Loader2,
+  AlertTriangle,
+  Eye,
+  EyeOff,
+  ShieldCheck,
+  ShieldAlert,
+  ShieldMinus,
+  ShieldX,
+  Sparkles,
+} from "lucide-react";
 import AuthLayout from "@/components/AuthLayout";
 
 export default function ResetPassword() {
@@ -28,11 +39,46 @@ export default function ResetPassword() {
     if (/[^a-zA-Z0-9]/.test(pw)) score += 1;
     if (pw.length >= 14) score += 1;
     const levels = [
-      { min: 5, level: "Strong", color: "bg-emerald-500", textColor: "text-emerald-500", width: "100%", icon: ShieldCheck },
-      { min: 4, level: "Good", color: "bg-emerald-400", textColor: "text-emerald-400", width: "80%", icon: ShieldCheck },
-      { min: 3, level: "Fair", color: "bg-amber-400", textColor: "text-amber-500", width: "60%", icon: ShieldAlert },
-      { min: 2, level: "Weak", color: "bg-orange-400", textColor: "text-orange-500", width: "40%", icon: ShieldMinus },
-      { min: 1, level: "Weak", color: "bg-red-500", textColor: "text-red-500", width: "20%", icon: ShieldX },
+      {
+        min: 5,
+        level: "Strong",
+        color: "bg-emerald-500",
+        textColor: "text-emerald-500",
+        width: "100%",
+        icon: ShieldCheck,
+      },
+      {
+        min: 4,
+        level: "Good",
+        color: "bg-emerald-400",
+        textColor: "text-emerald-400",
+        width: "80%",
+        icon: ShieldCheck,
+      },
+      {
+        min: 3,
+        level: "Fair",
+        color: "bg-amber-400",
+        textColor: "text-amber-500",
+        width: "60%",
+        icon: ShieldAlert,
+      },
+      {
+        min: 2,
+        level: "Weak",
+        color: "bg-orange-400",
+        textColor: "text-orange-500",
+        width: "40%",
+        icon: ShieldMinus,
+      },
+      {
+        min: 1,
+        level: "Weak",
+        color: "bg-red-500",
+        textColor: "text-red-500",
+        width: "20%",
+        icon: ShieldX,
+      },
       { min: 0, level: "", color: "", textColor: "", width: "0%", icon: null },
     ];
     return levels.find((l) => score >= l.min) || levels[levels.length - 1];
@@ -55,7 +101,10 @@ export default function ResetPassword() {
     for (let i = pw.length; i < 16; i++) {
       pw += all[Math.floor(Math.random() * all.length)];
     }
-    return pw.split('').sort(() => Math.random() - 0.5).join('');
+    return pw
+      .split("")
+      .sort(() => Math.random() - 0.5)
+      .join("");
   };
 
   const handleGenerate = () => {
@@ -68,6 +117,7 @@ export default function ResetPassword() {
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- read reset token from URL after hydration
     setResetToken(urlParams.get("token"));
   }, []);
 
@@ -109,11 +159,7 @@ export default function ResetPassword() {
   }
 
   return (
-    <AuthLayout
-      icon={Lock}
-      title="New password"
-      subtitle="Enter your new password below"
-    >
+    <AuthLayout icon={Lock} title="New password" subtitle="Enter your new password below">
       {error && (
         <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
           {error}
@@ -123,7 +169,10 @@ export default function ResetPassword() {
         <div className="space-y-2">
           <Label htmlFor="password">New Password</Label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
+            <Lock
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+              aria-hidden="true"
+            />
             <Input
               id="password"
               type={showPassword ? "text" : "password"}
@@ -169,7 +218,9 @@ export default function ResetPassword() {
                   />
                 </div>
                 {StrengthIcon && (
-                  <span className={`flex items-center gap-1 text-[11px] font-medium ${strength.textColor}`}>
+                  <span
+                    className={`flex items-center gap-1 text-[11px] font-medium ${strength.textColor}`}
+                  >
                     <StrengthIcon size={12} />
                     {strength.level}
                   </span>
@@ -179,7 +230,11 @@ export default function ResetPassword() {
                 <span className={newPassword.length >= 6 ? "text-emerald-500" : ""}>
                   {newPassword.length >= 6 ? "✓" : "•"} 6+ characters
                 </span>
-                <span className={/[a-z]/.test(newPassword) && /[A-Z]/.test(newPassword) ? "text-emerald-500" : ""}>
+                <span
+                  className={
+                    /[a-z]/.test(newPassword) && /[A-Z]/.test(newPassword) ? "text-emerald-500" : ""
+                  }
+                >
                   {/[a-z]/.test(newPassword) && /[A-Z]/.test(newPassword) ? "✓" : "•"} Upper & lower
                 </span>
                 <span className={/\d/.test(newPassword) ? "text-emerald-500" : ""}>
@@ -195,7 +250,10 @@ export default function ResetPassword() {
         <div className="space-y-2">
           <Label htmlFor="confirm">Confirm Password</Label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
+            <Lock
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+              aria-hidden="true"
+            />
             <Input
               id="confirm"
               type={showConfirm ? "text" : "password"}

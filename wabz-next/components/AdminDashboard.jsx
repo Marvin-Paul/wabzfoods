@@ -29,12 +29,32 @@ function formatCurrency(n) {
 /* ── Sample-data generators (used when Supabase has no real data yet) ── */
 
 const FAKE_PRODUCT_NAMES = [
-  "Matooke & Beef", "Chicken Luwombo", "Rolex", "Nyama Choma",
-  "Chips & Chicken", "Chicken Burger", "Pizza", "Fish & Chips",
-  "Passion Juice", "Coffee", "CocaCola", "Chapati",
+  "Matooke & Beef",
+  "Chicken Luwombo",
+  "Rolex",
+  "Nyama Choma",
+  "Chips & Chicken",
+  "Chicken Burger",
+  "Pizza",
+  "Fish & Chips",
+  "Passion Juice",
+  "Coffee",
+  "CocaCola",
+  "Chapati",
 ];
 
-const FAKE_STATUSES = ["delivered", "delivered", "delivered", "delivered", "pending", "preparing", "delivered", "delivered", "ready", "delivered"];
+const FAKE_STATUSES = [
+  "delivered",
+  "delivered",
+  "delivered",
+  "delivered",
+  "pending",
+  "preparing",
+  "delivered",
+  "delivered",
+  "ready",
+  "delivered",
+];
 
 function generateSampleOrders(count = 48) {
   const orders = [];
@@ -47,7 +67,9 @@ function generateSampleOrders(count = 48) {
     const items = [];
     let total = 0;
     for (let j = 0; j < itemsCount; j++) {
-      const price = [2500, 4000, 5000, 8000, 10000, 12000, 15000, 18000, 25000][Math.floor(Math.random() * 9)];
+      const price = [2500, 4000, 5000, 8000, 10000, 12000, 15000, 18000, 25000][
+        Math.floor(Math.random() * 9)
+      ];
       const qty = 1 + Math.floor(Math.random() * 3);
       items.push({
         qty,
@@ -58,7 +80,16 @@ function generateSampleOrders(count = 48) {
     }
     orders.push({
       id: `sample-${i}`,
-      customer_name: ["Sarah N.", "James M.", "Grace A.", "Peter K.", "Faith O.", "John D.", "Mary W.", "David S."][Math.floor(Math.random() * 8)],
+      customer_name: [
+        "Sarah N.",
+        "James M.",
+        "Grace A.",
+        "Peter K.",
+        "Faith O.",
+        "John D.",
+        "Mary W.",
+        "David S.",
+      ][Math.floor(Math.random() * 8)],
       created_date: date.toISOString(),
       created_at: date.toISOString(),
       status: FAKE_STATUSES[i % FAKE_STATUSES.length],
@@ -109,13 +140,18 @@ function StatCard({ icon: Icon, value, label, trend, trendLabel, color = "text-i
     <div className="bg-canvas border border-hairline rounded-sm p-5 hover:shadow-level-1 transition-shadow relative overflow-hidden group">
       <div className="flex items-start justify-between mb-3">
         <div className="w-10 h-10 rounded-[4px] bg-canvas-soft flex items-center justify-center border border-hairline-cool group-hover:bg-ink transition-colors duration-300">
-          <Icon size={18} className="text-ink-mute group-hover:text-canvas transition-colors duration-300" />
+          <Icon
+            size={18}
+            className="text-ink-mute group-hover:text-canvas transition-colors duration-300"
+          />
         </div>
         {trend !== undefined && (
-          <span className={cn(
-            "inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-[4px]",
-            isUp ? "bg-emerald/10 text-emerald-deep" : "bg-accent-tomato/10 text-accent-tomato"
-          )}>
+          <span
+            className={cn(
+              "inline-flex items-center gap-0.5 text-[10px] font-semibold px-1.5 py-0.5 rounded-[4px]",
+              isUp ? "bg-emerald/10 text-emerald-deep" : "bg-accent-tomato/10 text-accent-tomato"
+            )}
+          >
             {isUp ? <ArrowUpRight size={10} /> : <ArrowDownRight size={10} />}
             {Math.abs(trend)}%
           </span>
@@ -219,12 +255,14 @@ function RevenueChart({ data, period }) {
                   fill="#24b47e"
                   className="hover:opacity-80 transition-opacity cursor-pointer"
                 >
-                  <title>{d.dateStr}: {formatCurrency(d.revenue)}</title>
+                  <title>
+                    {d.dateStr}: {formatCurrency(d.revenue)}
+                  </title>
                 </rect>
                 {/* Orders dot */}
                 <circle
                   cx={x + barWidth * 0.75}
-                  cy={chartHeight - (d.orders / (maxRevenue / 25000))}
+                  cy={chartHeight - d.orders / (maxRevenue / 25000)}
                   r={3}
                   fill="#b2b2b2"
                   opacity={0.5}
@@ -280,8 +318,12 @@ function StatusDistribution({ orders }) {
                   }}
                 />
               </div>
-              <span className="w-12 text-right text-xs font-medium text-ink tabular-nums shrink-0">{count}</span>
-              <span className="w-10 text-right text-[10px] text-ink-faint tabular-nums shrink-0">{pct}%</span>
+              <span className="w-12 text-right text-xs font-medium text-ink tabular-nums shrink-0">
+                {count}
+              </span>
+              <span className="w-10 text-right text-[10px] text-ink-faint tabular-nums shrink-0">
+                {pct}%
+              </span>
             </div>
           );
         })}
@@ -369,8 +411,12 @@ function CategoryDistribution({ products }) {
                   }}
                 />
               </div>
-              <span className="w-8 text-right text-xs font-medium text-ink tabular-nums shrink-0">{cat.count}</span>
-              <span className="w-10 text-right text-[10px] text-ink-faint tabular-nums shrink-0">{pct}%</span>
+              <span className="w-8 text-right text-xs font-medium text-ink tabular-nums shrink-0">
+                {cat.count}
+              </span>
+              <span className="w-10 text-right text-[10px] text-ink-faint tabular-nums shrink-0">
+                {pct}%
+              </span>
             </div>
           );
         })}
@@ -383,7 +429,12 @@ function CategoryDistribution({ products }) {
    MAIN DASHBOARD COMPONENT
  ═══════════════════════════════════════════════════════════════ */
 
-export default function AdminDashboard({ products = [], orders = [], onNavigate, loading = false }) {
+export default function AdminDashboard({
+  products = [],
+  orders = [],
+  onNavigate,
+  loading = false,
+}) {
   const [period, setPeriod] = React.useState("7d"); // "7d" | "14d" | "30d"
 
   // Use real orders if available, otherwise generate sample data
@@ -403,9 +454,7 @@ export default function AdminDashboard({ products = [], orders = [], onNavigate,
     const cutoff = new Date();
     cutoff.setDate(cutoff.getDate() - days);
 
-    const periodOrders = effectiveOrders.filter(
-      (o) => new Date(o.created_date) >= cutoff
-    );
+    const periodOrders = effectiveOrders.filter((o) => new Date(o.created_date) >= cutoff);
 
     const totalRevenue = periodOrders.reduce((s, o) => s + Number(o.total || 0), 0);
     const totalOrders = periodOrders.length;
@@ -424,12 +473,12 @@ export default function AdminDashboard({ products = [], orders = [], onNavigate,
       return d >= prevCutoff && d < prevEnd;
     });
     const prevRevenue = prevOrders.reduce((s, o) => s + Number(o.total || 0), 0);
-    const revenueTrend = prevRevenue > 0
-      ? Math.round(((totalRevenue - prevRevenue) / prevRevenue) * 100)
-      : 0;
-    const orderTrend = prevOrders.length > 0
-      ? Math.round(((totalOrders - prevOrders.length) / prevOrders.length) * 100)
-      : 0;
+    const revenueTrend =
+      prevRevenue > 0 ? Math.round(((totalRevenue - prevRevenue) / prevRevenue) * 100) : 0;
+    const orderTrend =
+      prevOrders.length > 0
+        ? Math.round(((totalOrders - prevOrders.length) / prevOrders.length) * 100)
+        : 0;
 
     return {
       totalRevenue,
@@ -481,9 +530,7 @@ export default function AdminDashboard({ products = [], orders = [], onNavigate,
               onClick={() => setPeriod(p.value)}
               className={cn(
                 "px-3 py-1.5 text-[11px] font-medium rounded-[3px] transition-all duration-150",
-                period === p.value
-                  ? "bg-ink text-canvas shadow-sm"
-                  : "text-ink-mute hover:text-ink"
+                period === p.value ? "bg-ink text-canvas shadow-sm" : "text-ink-mute hover:text-ink"
               )}
             >
               {p.label}
@@ -519,22 +566,17 @@ export default function AdminDashboard({ products = [], orders = [], onNavigate,
           value={metrics.pendingCount + metrics.preparingCount}
           label="In Progress"
         />
-        <StatCard
-          icon={Flame}
-          value={metrics.deliveredCount}
-          label="Delivered"
-        />
-        <StatCard
-          icon={Users}
-          value={products.length}
-          label="Menu Items"
-        />
+        <StatCard icon={Flame} value={metrics.deliveredCount} label="Delivered" />
+        <StatCard icon={Users} value={products.length} label="Menu Items" />
       </div>
 
       {/* ── Revenue Chart + Status Distribution ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <div className="lg:col-span-2">
-          <RevenueChart data={trendData} period={period === "7d" ? "7 days" : period === "14d" ? "14 days" : "30 days"} />
+          <RevenueChart
+            data={trendData}
+            period={period === "7d" ? "7 days" : period === "14d" ? "14 days" : "30 days"}
+          />
         </div>
         <div>
           <StatusDistribution orders={effectiveOrders} />
@@ -583,14 +625,20 @@ export default function AdminDashboard({ products = [], orders = [], onNavigate,
                     <p className="text-xs font-medium text-ink tabular-nums">
                       {formatCurrency(o.total)}
                     </p>
-                    <span className={cn(
-                      "inline-block text-[9px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded-[3px] mt-0.5",
-                      o.status === "delivered" ? "bg-emerald/10 text-emerald-deep" :
-                      o.status === "pending" ? "bg-stone-100 text-stone-500" :
-                      o.status === "preparing" ? "bg-emerald/10 text-emerald-deep" :
-                      o.status === "cancelled" ? "bg-red-50 text-red-500" :
-                      "bg-canvas-soft text-ink-mute"
-                    )}>
+                    <span
+                      className={cn(
+                        "inline-block text-[9px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded-[3px] mt-0.5",
+                        o.status === "delivered"
+                          ? "bg-emerald/10 text-emerald-deep"
+                          : o.status === "pending"
+                            ? "bg-stone-100 text-stone-500"
+                            : o.status === "preparing"
+                              ? "bg-emerald/10 text-emerald-deep"
+                              : o.status === "cancelled"
+                                ? "bg-red-50 text-red-500"
+                                : "bg-canvas-soft text-ink-mute"
+                      )}
+                    >
                       {o.status.replace(/_/g, " ")}
                     </span>
                   </div>
@@ -610,7 +658,9 @@ export default function AdminDashboard({ products = [], orders = [], onNavigate,
             </div>
             <div>
               <h3 className="text-sm font-medium">Menu Management</h3>
-              <p className="text-[11px] text-canvas/60 mt-0.5">{products.length} dishes · {products.filter((p) => p.available).length} visible</p>
+              <p className="text-[11px] text-canvas/60 mt-0.5">
+                {products.length} dishes · {products.filter((p) => p.available).length} visible
+              </p>
             </div>
           </div>
           <button

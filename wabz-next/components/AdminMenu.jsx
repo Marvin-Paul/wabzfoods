@@ -8,21 +8,156 @@ import { useToast } from "@/components/ui/use-toast";
 import ProductForm from "./ProductForm";
 
 const FALLBACK_PRODUCTS = [
-  { id: 101, name: "Matooke",              description: "Steamed green bananas served with rich groundnut sauce and beef stew.",     category: "local",  price: 10000, image_url: "/food/matooke-and-beef.jpg",         available: true,  featured: true },
-  { id: 102, name: "Luwombo",              description: "Traditional steamed groundnut stew with chicken, cooked in banana leaves.", category: "local",  price: 15000, image_url: "/food/chicken-luwombo.jpg",         available: true,  featured: false },
-  { id: 103, name: "Posho & Beef",         description: "Creamy maize meal served with a generous portion of beef stew.",            category: "local",  price: 8000,  image_url: "",                                available: true,  featured: false },
-  { id: 104, name: "Rolex",                description: "Ugandan classic — eggs rolled with chapati, onions, tomatoes, and cabbage.", category: "local",  price: 5000,  image_url: "/food/ugandan-rolex.jpg",            available: true,  featured: true },
-  { id: 105, name: "Groundnut Sauce",       description: "Rich peanut-butter based sauce, served with rice, posho or matooke.",      category: "local",  price: 6000,  image_url: "/food/matooke-with-groundnuts.jpg",   available: false, featured: false },
-  { id: 106, name: "Chicken Burger",        description: "Crispy chicken fillet with lettuce, tomato, and mayo on a toasted bun.",  category: "fast",   price: 12000, image_url: "/food/air-fryer-tandoori-chicken.jpg", available: true,  featured: false },
-  { id: 107, name: "Beef Burger",           description: "Juicy beef patty with cheddar, bacon, and special sauce.",                 category: "fast",   price: 10000, image_url: "",                                available: true,  featured: false },
-  { id: 108, name: "Pizza",                description: "Stone-baked pizza with mozzarella, pepperoni, and fresh basil.",            category: "fast",   price: 25000, image_url: "/food/cheesy-bbq-chicken-pizza.webp", available: true,  featured: true },
-  { id: 109, name: "Chips",                description: "Golden crispy French fries served with ketchup and mayo.",                  category: "fast",   price: 5000,  image_url: "/food/chips-and-chicken.jpg",        available: true,  featured: false },
-  { id: 110, name: "Hot Dog",              description: "Grilled sausage in a soft bun with onions, mustard, and relish.",           category: "fast",   price: 7000,  image_url: "",                                available: false, featured: false },
-  { id: 111, name: "Passion Juice",         description: "Freshly blended passion fruit juice — sweet, tangy, and chilled.",          category: "drinks", price: 4000,  image_url: "",                                available: true,  featured: false },
-  { id: 112, name: "Mango Juice",           description: "Sweet ripe mango juice, freshly blended and served over ice.",             category: "drinks", price: 4000,  image_url: "",                                available: true,  featured: false },
-  { id: 113, name: "Soda",                 description: "Assorted chilled sodas — Coke, Fanta, Sprite, and more.",                   category: "drinks", price: 2500,  image_url: "/food/coca-cola.jpg",               available: true,  featured: false },
-  { id: 114, name: "Coffee",               description: "Rich Ugandan Arabica coffee, brewed fresh.",                                category: "drinks", price: 5000,  image_url: "",                                available: true,  featured: false },
-  { id: 115, name: "Tea",                  description: "Hot spiced chai tea with milk and ginger.",                                 category: "drinks", price: 3000,  image_url: "",                                available: true,  featured: false },
+  {
+    id: 101,
+    name: "Matooke",
+    description: "Steamed green bananas served with rich groundnut sauce and beef stew.",
+    category: "local",
+    price: 10000,
+    image_url: "/food/matooke-and-beef.jpg",
+    available: true,
+    featured: true,
+  },
+  {
+    id: 102,
+    name: "Luwombo",
+    description: "Traditional steamed groundnut stew with chicken, cooked in banana leaves.",
+    category: "local",
+    price: 15000,
+    image_url: "/food/chicken-luwombo.jpg",
+    available: true,
+    featured: false,
+  },
+  {
+    id: 103,
+    name: "Posho & Beef",
+    description: "Creamy maize meal served with a generous portion of beef stew.",
+    category: "local",
+    price: 8000,
+    image_url: "",
+    available: true,
+    featured: false,
+  },
+  {
+    id: 104,
+    name: "Rolex",
+    description: "Ugandan classic — eggs rolled with chapati, onions, tomatoes, and cabbage.",
+    category: "local",
+    price: 5000,
+    image_url: "/food/ugandan-rolex.jpg",
+    available: true,
+    featured: true,
+  },
+  {
+    id: 105,
+    name: "Groundnut Sauce",
+    description: "Rich peanut-butter based sauce, served with rice, posho or matooke.",
+    category: "local",
+    price: 6000,
+    image_url: "/food/matooke-with-groundnuts.jpg",
+    available: false,
+    featured: false,
+  },
+  {
+    id: 106,
+    name: "Chicken Burger",
+    description: "Crispy chicken fillet with lettuce, tomato, and mayo on a toasted bun.",
+    category: "fast",
+    price: 12000,
+    image_url: "/food/air-fryer-tandoori-chicken.jpg",
+    available: true,
+    featured: false,
+  },
+  {
+    id: 107,
+    name: "Beef Burger",
+    description: "Juicy beef patty with cheddar, bacon, and special sauce.",
+    category: "fast",
+    price: 10000,
+    image_url: "",
+    available: true,
+    featured: false,
+  },
+  {
+    id: 108,
+    name: "Pizza",
+    description: "Stone-baked pizza with mozzarella, pepperoni, and fresh basil.",
+    category: "fast",
+    price: 25000,
+    image_url: "/food/cheesy-bbq-chicken-pizza.webp",
+    available: true,
+    featured: true,
+  },
+  {
+    id: 109,
+    name: "Chips",
+    description: "Golden crispy French fries served with ketchup and mayo.",
+    category: "fast",
+    price: 5000,
+    image_url: "/food/chips-and-chicken.jpg",
+    available: true,
+    featured: false,
+  },
+  {
+    id: 110,
+    name: "Hot Dog",
+    description: "Grilled sausage in a soft bun with onions, mustard, and relish.",
+    category: "fast",
+    price: 7000,
+    image_url: "",
+    available: false,
+    featured: false,
+  },
+  {
+    id: 111,
+    name: "Passion Juice",
+    description: "Freshly blended passion fruit juice — sweet, tangy, and chilled.",
+    category: "drinks",
+    price: 4000,
+    image_url: "",
+    available: true,
+    featured: false,
+  },
+  {
+    id: 112,
+    name: "Mango Juice",
+    description: "Sweet ripe mango juice, freshly blended and served over ice.",
+    category: "drinks",
+    price: 4000,
+    image_url: "",
+    available: true,
+    featured: false,
+  },
+  {
+    id: 113,
+    name: "Soda",
+    description: "Assorted chilled sodas — Coke, Fanta, Sprite, and more.",
+    category: "drinks",
+    price: 2500,
+    image_url: "/food/coca-cola.jpg",
+    available: true,
+    featured: false,
+  },
+  {
+    id: 114,
+    name: "Coffee",
+    description: "Rich Ugandan Arabica coffee, brewed fresh.",
+    category: "drinks",
+    price: 5000,
+    image_url: "",
+    available: true,
+    featured: false,
+  },
+  {
+    id: 115,
+    name: "Tea",
+    description: "Hot spiced chai tea with milk and ginger.",
+    category: "drinks",
+    price: 3000,
+    image_url: "",
+    available: true,
+    featured: false,
+  },
 ];
 
 import {
@@ -80,19 +215,17 @@ export default function AdminMenu() {
   }, []);
 
   // Reset to first page when search or filter changes
-  useEffect(() => { setPage(0); }, [searchQuery, categoryFilter]);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reset derived UI state on filter change
+    setPage(0);
+  }, [searchQuery, categoryFilter]);
 
   const toggleAvailable = async (p) => {
     const isFallback = p.id > 100;
     if (!isFallback) {
-      await supabase
-        .from("food_items")
-        .update({ is_available: !p.available })
-        .eq("item_id", p.id);
+      await supabase.from("food_items").update({ is_available: !p.available }).eq("item_id", p.id);
     }
-    setProducts((prev) =>
-      prev.map((x) => (x.id === p.id ? { ...x, available: !x.available } : x))
-    );
+    setProducts((prev) => prev.map((x) => (x.id === p.id ? { ...x, available: !x.available } : x)));
     toast({
       title: p.available ? "Item hidden" : "Item visible",
       description: `"${p.name}" is now ${p.available ? "hidden from" : "visible on"} the menu.`,
@@ -122,11 +255,8 @@ export default function AdminMenu() {
   // ── Filtering & sorting ──
   let filtered = products;
   if (searchQuery)
-    filtered = filtered.filter((p) =>
-      p.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  if (categoryFilter !== "all")
-    filtered = filtered.filter((p) => p.category === categoryFilter);
+    filtered = filtered.filter((p) => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  if (categoryFilter !== "all") filtered = filtered.filter((p) => p.category === categoryFilter);
 
   filtered = [...filtered].sort((a, b) => {
     if (sortBy === "name") return a.name.localeCompare(b.name);
@@ -141,10 +271,14 @@ export default function AdminMenu() {
 
   const categoryLabel = (cat) => {
     switch (cat) {
-      case "local": return "Local";
-      case "fast": return "Fast";
-      case "drinks": return "Drinks";
-      default: return cat;
+      case "local":
+        return "Local";
+      case "fast":
+        return "Fast";
+      case "drinks":
+        return "Drinks";
+      default:
+        return cat;
     }
   };
 
@@ -174,7 +308,10 @@ export default function AdminMenu() {
             visible
           </div>
           <button
-            onClick={() => { setEditing(null); setShowForm(true); }}
+            onClick={() => {
+              setEditing(null);
+              setShowForm(true);
+            }}
             className="inline-flex items-center gap-2 text-sm font-medium text-on-emerald bg-emerald hover:bg-emerald-deep active:bg-emerald-deep transition-all duration-150 px-4 py-2 rounded-sm shrink-0"
           >
             <Plus size={15} /> Add Food Item
@@ -265,7 +402,10 @@ export default function AdminMenu() {
           </p>
           {!searchQuery && categoryFilter === "all" && (
             <button
-              onClick={() => { setEditing(null); setShowForm(true); }}
+              onClick={() => {
+                setEditing(null);
+                setShowForm(true);
+              }}
               className="inline-flex items-center gap-2 text-sm font-medium text-on-emerald bg-emerald hover:bg-emerald-deep transition-all duration-150 px-4 py-2 rounded-sm"
             >
               <Plus size={15} /> Add Food Item
@@ -278,13 +418,27 @@ export default function AdminMenu() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-hairline bg-canvas-soft/80">
-                  <th className="text-left px-4 py-3 text-[11px] font-medium uppercase tracking-wider text-ink-mute w-14">Image</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-medium uppercase tracking-wider text-ink-mute">Food Name</th>
-                  <th className="text-left px-4 py-3 text-[11px] font-medium uppercase tracking-wider text-ink-mute">Category</th>
-                  <th className="text-right px-4 py-3 text-[11px] font-medium uppercase tracking-wider text-ink-mute">Price</th>
-                  <th className="text-center px-4 py-3 text-[11px] font-medium uppercase tracking-wider text-ink-mute">Available</th>
-                  <th className="text-center px-4 py-3 text-[11px] font-medium uppercase tracking-wider text-ink-mute">Featured</th>
-                  <th className="text-center px-4 py-3 text-[11px] font-medium uppercase tracking-wider text-ink-mute w-28">Actions</th>
+                  <th className="text-left px-4 py-3 text-[11px] font-medium uppercase tracking-wider text-ink-mute w-14">
+                    Image
+                  </th>
+                  <th className="text-left px-4 py-3 text-[11px] font-medium uppercase tracking-wider text-ink-mute">
+                    Food Name
+                  </th>
+                  <th className="text-left px-4 py-3 text-[11px] font-medium uppercase tracking-wider text-ink-mute">
+                    Category
+                  </th>
+                  <th className="text-right px-4 py-3 text-[11px] font-medium uppercase tracking-wider text-ink-mute">
+                    Price
+                  </th>
+                  <th className="text-center px-4 py-3 text-[11px] font-medium uppercase tracking-wider text-ink-mute">
+                    Available
+                  </th>
+                  <th className="text-center px-4 py-3 text-[11px] font-medium uppercase tracking-wider text-ink-mute">
+                    Featured
+                  </th>
+                  <th className="text-center px-4 py-3 text-[11px] font-medium uppercase tracking-wider text-ink-mute w-28">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -301,7 +455,9 @@ export default function AdminMenu() {
                             src={p.image_url}
                             alt={p.name}
                             className="w-full h-full object-cover"
-                            onError={(e) => { e.target.style.display = "none"; }}
+                            onError={(e) => {
+                              e.target.style.display = "none";
+                            }}
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
@@ -369,7 +525,10 @@ export default function AdminMenu() {
                     <td className="px-4 py-3 text-center">
                       <div className="flex items-center justify-center gap-1">
                         <button
-                          onClick={() => { setEditing(p); setShowForm(true); }}
+                          onClick={() => {
+                            setEditing(p);
+                            setShowForm(true);
+                          }}
                           className="p-1.5 rounded-[4px] text-ink-faint hover:text-ink hover:bg-canvas-soft transition-all"
                           aria-label={`Edit ${p.name}`}
                         >
@@ -394,7 +553,8 @@ export default function AdminMenu() {
           <div className="px-4 py-3 border-t border-hairline-cool flex flex-col sm:flex-row items-center justify-between gap-2">
             <div className="flex items-center gap-3 text-xs text-ink-faint">
               <span>
-                {page * rowsPerPage + 1}–{Math.min((page + 1) * rowsPerPage, filtered.length)} of {filtered.length} items
+                {page * rowsPerPage + 1}–{Math.min((page + 1) * rowsPerPage, filtered.length)} of{" "}
+                {filtered.length} items
               </span>
               <span className="text-hairline-strong">|</span>
               <span className="text-ink-mute">
@@ -438,9 +598,7 @@ export default function AdminMenu() {
         </div>
       )}
 
-      {showForm && (
-        <ProductForm product={editing} onClose={onSaved} />
-      )}
+      {showForm && <ProductForm product={editing} onClose={onSaved} />}
     </div>
   );
 }

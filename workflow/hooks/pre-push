@@ -1,0 +1,3 @@
+#!/bin/sh
+cd wabz-next
+npm run prepush

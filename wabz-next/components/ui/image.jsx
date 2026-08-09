@@ -1,22 +1,22 @@
-import * as React from "react"
-import { useSize } from "@/hooks/use-size"
-import { cn } from "@/lib/utils"
+import * as React from "react";
+import { useSize } from "@/hooks/use-size";
+import { cn } from "@/lib/utils";
 
 const FALLBACK_IMAGE_URL =
-  "https://static.wixstatic.com/media/12d367_4f26ccd17f8f4e3a8958306ea08c2332~mv2.png"
+  "https://static.wixstatic.com/media/12d367_4f26ccd17f8f4e3a8958306ea08c2332~mv2.png";
 
 // Wix Media Platform hosts whose images support /v1/ transform URLs
 // (resize, focal-point crop, and format conversion via the OUTPUT FILENAME
 // EXTENSION — a .webp output re-encodes JPG/PNG uploads to WebP on the fly).
-const WIX_MEDIA_HOSTS = ["media.base44.com", "static.wixstatic.com"]
+const WIX_MEDIA_HOSTS = ["media.base44.com", "static.wixstatic.com"];
 // First-paint width before the container is measured.
-const DEFAULT_TRANSFORM_WIDTH = 1024
-const DEVICE_PIXEL_RATIOS = [1, 2, 3]
+const DEFAULT_TRANSFORM_WIDTH = 1024;
+const DEVICE_PIXEL_RATIOS = [1, 2, 3];
 // Not a documented CDN limit — verified live that w_/h_ up to 10000 succeed
 // and requests start failing somewhere between 10000 and 15000. This is a
 // defensive ceiling with generous headroom (a 3x DPR request needs a
 // ~2000px container to reach it), not a real constraint we expect to hit.
-const MAX_DIMENSION = 6000
+const MAX_DIMENSION = 6000;
 
 /**
  * Detects a Wix Media URL and strips any existing /v1/ transform so it can be
@@ -25,20 +25,20 @@ const MAX_DIMENSION = 6000
  */
 function parseWixMediaUrl(src) {
   try {
-    const url = new URL(src)
-    if (!WIX_MEDIA_HOSTS.includes(url.hostname)) return null
-    const v1 = url.pathname.indexOf("/v1/")
-    const basePath = v1 === -1 ? url.pathname : url.pathname.slice(0, v1)
-    const filename = basePath.split("/").pop()
-    if (!filename || /\.svg$/i.test(filename)) return null
-    return { baseUrl: `${url.origin}${basePath}`, filename }
+    const url = new URL(src);
+    if (!WIX_MEDIA_HOSTS.includes(url.hostname)) return null;
+    const v1 = url.pathname.indexOf("/v1/");
+    const basePath = v1 === -1 ? url.pathname : url.pathname.slice(0, v1);
+    const filename = basePath.split("/").pop();
+    if (!filename || /\.svg$/i.test(filename)) return null;
+    return { baseUrl: `${url.origin}${basePath}`, filename };
   } catch {
-    return null
+    return null;
   }
 }
 
-const clampDim = (n) => Math.min(Math.max(Math.round(n), 1), MAX_DIMENSION)
-const clamp01 = (n) => Math.min(1, Math.max(0, n))
+const clampDim = (n) => Math.min(Math.max(Math.round(n), 1), MAX_DIMENSION);
+const clamp01 = (n) => Math.min(1, Math.max(0, n));
 
 /**
  * Builds a Wix Media transform URL:
@@ -46,19 +46,19 @@ const clamp01 = (n) => Math.min(1, Math.max(0, n))
  * GIFs keep their extension (WebP output could drop animation).
  */
 function buildTransformUrl({ baseUrl, filename }, { width, height, crop, focalPoint, quality }) {
-  const params = [`w_${clampDim(width)}`, `h_${clampDim(height || width)}`]
+  const params = [`w_${clampDim(width)}`, `h_${clampDim(height || width)}`];
   if (crop) {
     params.push(
       focalPoint
         ? `fp_${clamp01(focalPoint.x).toFixed(2)}_${clamp01(focalPoint.y).toFixed(2)}`
         : "al_c"
-    )
+    );
   }
-  params.push(`q_${quality}`, "usm_0.66_1.00_0.01", "enc_webp", "quality_auto")
+  params.push(`q_${quality}`, "usm_0.66_1.00_0.01", "enc_webp", "quality_auto");
   const outputName = /\.gif$/i.test(filename)
     ? filename
-    : filename.replace(/\.[a-z0-9]+$/i, "") + ".webp"
-  return `${baseUrl}/v1/${crop ? "fill" : "fit"}/${params.join(",")}/${outputName}`
+    : filename.replace(/\.[a-z0-9]+$/i, "") + ".webp";
+  return `${baseUrl}/v1/${crop ? "fill" : "fit"}/${params.join(",")}/${outputName}`;
 }
 
 function buildSrcSet(parsed, options) {
@@ -69,7 +69,7 @@ function buildSrcSet(parsed, options) {
         width: options.width * dpr,
         height: options.height ? options.height * dpr : undefined,
       })} ${dpr}x`
-  ).join(", ")
+  ).join(", ");
 }
 
 const ImageWrapper = React.forwardRef(({ aspectRatio, className, style, children }, ref) => (
@@ -80,24 +80,27 @@ const ImageWrapper = React.forwardRef(({ aspectRatio, className, style, children
   >
     {children}
   </span>
-))
-ImageWrapper.displayName = "ImageWrapper"
+));
+ImageWrapper.displayName = "ImageWrapper";
 
 const ResponsiveImage = React.forwardRef(
-  ({ parsed, fittingType, focalPoint, quality, className, style, aspectRatio, onLoad, ...props }, parentRef) => {
-    const wrapperRef = React.useRef(null)
-    const imgRef = React.useRef(null)
-    const size = useSize(wrapperRef)
-    const [loaded, setLoaded] = React.useState(false)
+  (
+    { parsed, fittingType, focalPoint, quality, className, style, aspectRatio, onLoad, ...props },
+    parentRef
+  ) => {
+    const wrapperRef = React.useRef(null);
+    const imgRef = React.useRef(null);
+    const size = useSize(wrapperRef);
+    const [loaded, setLoaded] = React.useState(false);
 
-    React.useImperativeHandle(parentRef, () => imgRef.current)
+    React.useImperativeHandle(parentRef, () => imgRef.current);
 
     // Reset the blur-up when the underlying image changes.
     React.useEffect(() => {
-      setLoaded(false)
-    }, [parsed.baseUrl])
+      setLoaded(false);
+    }, [parsed.baseUrl]);
 
-    const crop = fittingType !== "fit"
+    const crop = fittingType !== "fit";
     // `size` is null exactly once: the pre-measurement first render, which we
     // never let reach the network (see below — useSize measures before paint).
     // A *measured* zero (content-sized wrapper with no CSS dimensions) falls
@@ -108,7 +111,7 @@ const ResponsiveImage = React.forwardRef(
       crop,
       focalPoint: crop ? focalPoint : undefined,
       quality,
-    }
+    };
 
     // Both layers render only once the container is measured, so the first
     // URL the browser ever fetches is already the right size — never a
@@ -153,17 +156,17 @@ const ResponsiveImage = React.forwardRef(
               fittingType === "fit" ? "object-contain" : "object-cover"
             )}
             onLoad={(e) => {
-              setLoaded(true)
-              onLoad?.(e)
+              setLoaded(true);
+              onLoad?.(e);
             }}
             {...props}
           />
         )}
       </ImageWrapper>
-    )
+    );
   }
-)
-ResponsiveImage.displayName = "ResponsiveImage"
+);
+ResponsiveImage.displayName = "ResponsiveImage";
 
 /**
  * Image with built-in Wix Media Platform support: URLs on media.base44.com /
@@ -186,44 +189,44 @@ const Image = React.forwardRef(
     },
     ref
   ) => {
-    const [imgSrc, setImgSrc] = React.useState(src)
+    const [imgSrc, setImgSrc] = React.useState(src);
 
     React.useEffect(() => {
-      setImgSrc(src)
-    }, [src])
+      setImgSrc(src);
+    }, [src]);
 
     const imageProps = {
       ...props,
       onError: () => setImgSrc(FALLBACK_IMAGE_URL),
-    }
+    };
 
     if (!src) {
       // Renders as a real <img> (not a <div>) — the visual editor's
       // click-to-edit toolbar keys its "Replace Image" action off the DOM
       // tag being `img`, so a placeholder div would be unrecoverable in the
       // editor. FALLBACK_IMAGE_URL doubles as the "no image chosen" graphic.
-      return <img ref={ref} src={FALLBACK_IMAGE_URL} {...imageProps} data-empty-image />
+      return <img ref={ref} src={FALLBACK_IMAGE_URL} {...imageProps} data-empty-image />;
     }
 
     // The fallback renders as a plain <img> so a broken upload can't cascade
     // into a second (transformed) failing request.
-    const parsed = imgSrc === FALLBACK_IMAGE_URL ? null : parseWixMediaUrl(imgSrc)
+    const parsed = imgSrc === FALLBACK_IMAGE_URL ? null : parseWixMediaUrl(imgSrc);
 
     if (!parsed) {
-      const isErrorUrl = imgSrc === FALLBACK_IMAGE_URL
+      const isErrorUrl = imgSrc === FALLBACK_IMAGE_URL;
       return (
         <img ref={ref} src={imgSrc} {...imageProps} data-error-image={isErrorUrl || undefined} />
-      )
+      );
     }
 
     const focalPoint =
       typeof focalPointX === "number" && typeof focalPointY === "number"
         ? { x: focalPointX, y: focalPointY }
-        : undefined
+        : undefined;
     // Origin dimensions are optional — when known they stabilize layout via
     // the wrapper's aspect-ratio before the image loads.
     const aspectRatio =
-      originWidth && originHeight ? `${originWidth} / ${originHeight}` : undefined
+      originWidth && originHeight ? `${originWidth} / ${originHeight}` : undefined;
 
     return (
       <ResponsiveImage
@@ -235,9 +238,9 @@ const Image = React.forwardRef(
         aspectRatio={aspectRatio}
         {...imageProps}
       />
-    )
+    );
   }
-)
-Image.displayName = "Image"
+);
+Image.displayName = "Image";
 
-export { Image }
+export { Image };

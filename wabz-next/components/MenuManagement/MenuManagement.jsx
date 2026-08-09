@@ -13,32 +13,188 @@ import DeleteDialog from "./DeleteDialog";
 // ── Fallback sample data (used when Supabase tables are empty) ──
 const FALLBACK_CATEGORIES = [
   { id: "cat-local", name: "Local Foods", slug: "local-foods", itemCount: 5 },
-  { id: "cat-fast",  name: "Fast Foods",  slug: "fast-foods",  itemCount: 5 },
-  { id: "cat-drinks", name: "Drinks",     slug: "drinks",      itemCount: 5 },
+  { id: "cat-fast", name: "Fast Foods", slug: "fast-foods", itemCount: 5 },
+  { id: "cat-drinks", name: "Drinks", slug: "drinks", itemCount: 5 },
 ];
 
 const FALLBACK_FOOD_ITEMS = [
-  { id: "f1",  name: "Matooke",         description: "Steamed green bananas served with rich groundnut sauce and beef stew.",             price: 10000, image: "", categoryId: "cat-local", available: true,  featured: true,  createdAt: "2026-01-15" },
-  { id: "f2",  name: "Luwombo",         description: "Traditional steamed groundnut stew with chicken, cooked in banana leaves.",        price: 15000, image: "", categoryId: "cat-local", available: true,  featured: true,  createdAt: "2026-01-20" },
-  { id: "f3",  name: "Posho & Beef",    description: "Smooth maize posho served with slow-cooked beef stew and vegetables.",              price: 8000,  image: "", categoryId: "cat-local", available: true,  featured: false, createdAt: "2026-02-01" },
-  { id: "f4",  name: "Rolex",           description: "The iconic Kampala street food — eggs & vegetables rolled in a fresh chapati.",     price: 4000,  image: "", categoryId: "cat-local", available: true,  featured: true,  createdAt: "2026-02-10" },
-  { id: "f5",  name: "Groundnut Sauce", description: "Rich peanut-butter based sauce, served with rice, posho or matooke.",               price: 6000,  image: "", categoryId: "cat-local", available: false, featured: false, createdAt: "2026-02-15" },
-  { id: "f6",  name: "Chicken Burger",  description: "Crispy chicken fillet with lettuce, tomato, and mayo on a toasted bun.",           price: 12000, image: "", categoryId: "cat-fast",  available: true,  featured: true,  createdAt: "2026-02-20" },
-  { id: "f7",  name: "Beef Burger",     description: "Juicy beef patty with cheddar, bacon, and special sauce.",                         price: 10000, image: "", categoryId: "cat-fast",  available: true,  featured: false, createdAt: "2026-03-01" },
-  { id: "f8",  name: "Pizza",           description: "Wood-fired pizza with mozzarella, pepperoni, and fresh basil.",                    price: 25000, image: "", categoryId: "cat-fast",  available: true,  featured: true,  createdAt: "2026-03-05" },
-  { id: "f9",  name: "Chips",           description: "Golden crispy French fries served with ketchup and mayo.",                         price: 5000,  image: "", categoryId: "cat-fast",  available: true,  featured: false, createdAt: "2026-03-10" },
-  { id: "f10", name: "Hot Dog",         description: "Grilled sausage in a soft bun with onions, mustard, and relish.",                  price: 7000,  image: "", categoryId: "cat-fast",  available: false, featured: false, createdAt: "2026-03-15" },
-  { id: "f11", name: "Passion Juice",   description: "Freshly blended passion fruit juice — sweet, tangy, and chilled.",                 price: 4000,  image: "", categoryId: "cat-drinks", available: true,  featured: true,  createdAt: "2026-03-20" },
-  { id: "f12", name: "Mango Juice",     description: "Sweet ripe mango juice, freshly blended and served over ice.",                     price: 4000,  image: "", categoryId: "cat-drinks", available: true,  featured: false, createdAt: "2026-03-25" },
-  { id: "f13", name: "Soda",            description: "Coke, Fanta Orange, Sprite, or Mineral Water — ice cold.",                         price: 2500,  image: "", categoryId: "cat-drinks", available: true,  featured: false, createdAt: "2026-04-01" },
-  { id: "f14", name: "Coffee",          description: "Rich Ugandan Arabica coffee, brewed fresh.",                                       price: 5000,  image: "", categoryId: "cat-drinks", available: true,  featured: true,  createdAt: "2026-04-05" },
-  { id: "f15", name: "Tea",             description: "Classic English breakfast or spiced masala chai.",                                 price: 3000,  image: "", categoryId: "cat-drinks", available: true,  featured: false, createdAt: "2026-04-10" },
+  {
+    id: "f1",
+    name: "Matooke",
+    description: "Steamed green bananas served with rich groundnut sauce and beef stew.",
+    price: 10000,
+    image: "",
+    categoryId: "cat-local",
+    available: true,
+    featured: true,
+    createdAt: "2026-01-15",
+  },
+  {
+    id: "f2",
+    name: "Luwombo",
+    description: "Traditional steamed groundnut stew with chicken, cooked in banana leaves.",
+    price: 15000,
+    image: "",
+    categoryId: "cat-local",
+    available: true,
+    featured: true,
+    createdAt: "2026-01-20",
+  },
+  {
+    id: "f3",
+    name: "Posho & Beef",
+    description: "Smooth maize posho served with slow-cooked beef stew and vegetables.",
+    price: 8000,
+    image: "",
+    categoryId: "cat-local",
+    available: true,
+    featured: false,
+    createdAt: "2026-02-01",
+  },
+  {
+    id: "f4",
+    name: "Rolex",
+    description: "The iconic Kampala street food — eggs & vegetables rolled in a fresh chapati.",
+    price: 4000,
+    image: "",
+    categoryId: "cat-local",
+    available: true,
+    featured: true,
+    createdAt: "2026-02-10",
+  },
+  {
+    id: "f5",
+    name: "Groundnut Sauce",
+    description: "Rich peanut-butter based sauce, served with rice, posho or matooke.",
+    price: 6000,
+    image: "",
+    categoryId: "cat-local",
+    available: false,
+    featured: false,
+    createdAt: "2026-02-15",
+  },
+  {
+    id: "f6",
+    name: "Chicken Burger",
+    description: "Crispy chicken fillet with lettuce, tomato, and mayo on a toasted bun.",
+    price: 12000,
+    image: "",
+    categoryId: "cat-fast",
+    available: true,
+    featured: true,
+    createdAt: "2026-02-20",
+  },
+  {
+    id: "f7",
+    name: "Beef Burger",
+    description: "Juicy beef patty with cheddar, bacon, and special sauce.",
+    price: 10000,
+    image: "",
+    categoryId: "cat-fast",
+    available: true,
+    featured: false,
+    createdAt: "2026-03-01",
+  },
+  {
+    id: "f8",
+    name: "Pizza",
+    description: "Wood-fired pizza with mozzarella, pepperoni, and fresh basil.",
+    price: 25000,
+    image: "",
+    categoryId: "cat-fast",
+    available: true,
+    featured: true,
+    createdAt: "2026-03-05",
+  },
+  {
+    id: "f9",
+    name: "Chips",
+    description: "Golden crispy French fries served with ketchup and mayo.",
+    price: 5000,
+    image: "",
+    categoryId: "cat-fast",
+    available: true,
+    featured: false,
+    createdAt: "2026-03-10",
+  },
+  {
+    id: "f10",
+    name: "Hot Dog",
+    description: "Grilled sausage in a soft bun with onions, mustard, and relish.",
+    price: 7000,
+    image: "",
+    categoryId: "cat-fast",
+    available: false,
+    featured: false,
+    createdAt: "2026-03-15",
+  },
+  {
+    id: "f11",
+    name: "Passion Juice",
+    description: "Freshly blended passion fruit juice — sweet, tangy, and chilled.",
+    price: 4000,
+    image: "",
+    categoryId: "cat-drinks",
+    available: true,
+    featured: true,
+    createdAt: "2026-03-20",
+  },
+  {
+    id: "f12",
+    name: "Mango Juice",
+    description: "Sweet ripe mango juice, freshly blended and served over ice.",
+    price: 4000,
+    image: "",
+    categoryId: "cat-drinks",
+    available: true,
+    featured: false,
+    createdAt: "2026-03-25",
+  },
+  {
+    id: "f13",
+    name: "Soda",
+    description: "Coke, Fanta Orange, Sprite, or Mineral Water — ice cold.",
+    price: 2500,
+    image: "",
+    categoryId: "cat-drinks",
+    available: true,
+    featured: false,
+    createdAt: "2026-04-01",
+  },
+  {
+    id: "f14",
+    name: "Coffee",
+    description: "Rich Ugandan Arabica coffee, brewed fresh.",
+    price: 5000,
+    image: "",
+    categoryId: "cat-drinks",
+    available: true,
+    featured: true,
+    createdAt: "2026-04-05",
+  },
+  {
+    id: "f15",
+    name: "Tea",
+    description: "Classic English breakfast or spiced masala chai.",
+    price: 3000,
+    image: "",
+    categoryId: "cat-drinks",
+    available: true,
+    featured: false,
+    createdAt: "2026-04-10",
+  },
 ];
 
 /* ── Helpers to convert between UI model and Supabase columns ── */
 
 function catToSupabase(cat) {
-  return { category_code: cat.slug || cat.name.toLowerCase().replace(/\s+/g, "-"), name: cat.name, icon: "utensils", sort_order: 0, is_active: true };
+  return {
+    category_code: cat.slug || cat.name.toLowerCase().replace(/\s+/g, "-"),
+    name: cat.name,
+    icon: "utensils",
+    sort_order: 0,
+    is_active: true,
+  };
 }
 
 function catFromSupabase(row) {
@@ -120,7 +276,9 @@ export default function MenuManagement() {
 
         // Build category map for food item conversion
         const catMap = {};
-        supCats.forEach((c) => { catMap[c.category_id] = c; });
+        supCats.forEach((c) => {
+          catMap[c.category_id] = c;
+        });
 
         // Try fetching food items from Supabase
         let { data: supItems, error: itemErr } = await supabase
@@ -128,9 +286,10 @@ export default function MenuManagement() {
           .select("*")
           .order("item_id", { ascending: true });
 
-        const items = supItems && supItems.length > 0
-          ? supItems.map((r) => foodFromSupabase(r, catMap))
-          : FALLBACK_FOOD_ITEMS;
+        const items =
+          supItems && supItems.length > 0
+            ? supItems.map((r) => foodFromSupabase(r, catMap))
+            : FALLBACK_FOOD_ITEMS;
 
         if (!cancelled) {
           setCategories(supCats.map(catFromSupabase));
@@ -155,7 +314,9 @@ export default function MenuManagement() {
     }
 
     load();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // ── Persist to localStorage when using fallback ──
@@ -173,98 +334,175 @@ export default function MenuManagement() {
   // ── Derived: filtered food items based on selected category ──
   const filteredItems = useMemo(() => {
     if (!selectedCategory) return foodItems;
-    return foodItems.filter((i) => i.categoryId === String(selectedCategory.id) || i.categoryId === selectedCategory.id);
+    return foodItems.filter(
+      (i) => i.categoryId === String(selectedCategory.id) || i.categoryId === selectedCategory.id
+    );
   }, [foodItems, selectedCategory]);
 
   // ── Category CRUD ──
-  const handleAddCategory = useCallback(async (cat) => {
-    if (!usingFallback) {
-      const { data, error } = await supabase.from("categories").insert(catToSupabase(cat)).select().single();
-      if (error) { toast({ title: "Error", description: error.message }); return; }
-      const newCat = catFromSupabase(data);
-      setCategories((prev) => [...prev, newCat]);
-      toast({ title: "Category added", description: `"${cat.name}" has been created.` });
-    } else {
-      const newCat = { ...cat, id: "cat-" + Date.now(), itemCount: 0 };
-      setCategories((prev) => [...prev, newCat]);
-      toast({ title: "Category added", description: `"${cat.name}" has been created (offline).` });
-    }
-  }, [usingFallback, toast]);
+  const handleAddCategory = useCallback(
+    async (cat) => {
+      if (!usingFallback) {
+        const { data, error } = await supabase
+          .from("categories")
+          .insert(catToSupabase(cat))
+          .select()
+          .single();
+        if (error) {
+          toast({ title: "Error", description: error.message });
+          return;
+        }
+        const newCat = catFromSupabase(data);
+        setCategories((prev) => [...prev, newCat]);
+        toast({ title: "Category added", description: `"${cat.name}" has been created.` });
+      } else {
+        const newCat = { ...cat, id: "cat-" + Date.now(), itemCount: 0 };
+        setCategories((prev) => [...prev, newCat]);
+        toast({
+          title: "Category added",
+          description: `"${cat.name}" has been created (offline).`,
+        });
+      }
+    },
+    [usingFallback, toast]
+  );
 
-  const handleEditCategory = useCallback(async (id, updates) => {
-    if (!usingFallback) {
-      const { error } = await supabase.from("categories").update({ name: updates.name, category_code: updates.slug }).eq("category_id", Number(id));
-      if (error) { toast({ title: "Error", description: error.message }); return; }
-    }
-    setCategories((prev) => prev.map((c) => (c.id === id ? { ...c, name: updates.name, slug: updates.slug } : c)));
-    toast({ title: "Category updated", description: `"${updates.name}" has been updated.` });
-  }, [usingFallback, toast]);
+  const handleEditCategory = useCallback(
+    async (id, updates) => {
+      if (!usingFallback) {
+        const { error } = await supabase
+          .from("categories")
+          .update({ name: updates.name, category_code: updates.slug })
+          .eq("category_id", Number(id));
+        if (error) {
+          toast({ title: "Error", description: error.message });
+          return;
+        }
+      }
+      setCategories((prev) =>
+        prev.map((c) => (c.id === id ? { ...c, name: updates.name, slug: updates.slug } : c))
+      );
+      toast({ title: "Category updated", description: `"${updates.name}" has been updated.` });
+    },
+    [usingFallback, toast]
+  );
 
-  const handleDeleteCategory = useCallback(async (id) => {
-    if (!usingFallback) {
-      const { error } = await supabase.from("categories").delete().eq("category_id", Number(id));
-      if (error) { toast({ title: "Error", description: error.message }); return; }
-    }
-    setCategories((prev) => prev.filter((c) => c.id !== id));
-    if (selectedCategory?.id === id) setSelectedCategory(null);
-  }, [usingFallback, selectedCategory, toast]);
+  const handleDeleteCategory = useCallback(
+    async (id) => {
+      if (!usingFallback) {
+        const { error } = await supabase.from("categories").delete().eq("category_id", Number(id));
+        if (error) {
+          toast({ title: "Error", description: error.message });
+          return;
+        }
+      }
+      setCategories((prev) => prev.filter((c) => c.id !== id));
+      if (selectedCategory?.id === id) setSelectedCategory(null);
+    },
+    [usingFallback, selectedCategory, toast]
+  );
 
   // ── Food Item CRUD ──
-  const handleSaveFood = useCallback(async (formData) => {
-    if (editItem) {
-      // Update
-      if (!usingFallback) {
-        const { error } = await supabase.from("food_items").update(foodToSupabase(formData)).eq("item_id", Number(editItem.id));
-        if (error) { toast({ title: "Error", description: error.message }); return; }
-      }
-      setFoodItems((prev) =>
-        prev.map((i) => (i.id === editItem.id ? { ...i, ...formData, id: editItem.id, createdAt: editItem.createdAt } : i))
-      );
-      toast({ title: "Updated", description: `"${formData.name}" has been updated.` });
-    } else {
-      // Create
-      if (!usingFallback) {
-        const { data, error } = await supabase.from("food_items").insert(foodToSupabase(formData)).select().single();
-        if (error) { toast({ title: "Error", description: error.message }); return; }
-        const catMap = {};
-        categories.forEach((c) => { catMap[String(c.id)] = c; });
-        const newItem = foodFromSupabase(data, catMap);
-        setFoodItems((prev) => [...prev, newItem]);
+  const handleSaveFood = useCallback(
+    async (formData) => {
+      if (editItem) {
+        // Update
+        if (!usingFallback) {
+          const { error } = await supabase
+            .from("food_items")
+            .update(foodToSupabase(formData))
+            .eq("item_id", Number(editItem.id));
+          if (error) {
+            toast({ title: "Error", description: error.message });
+            return;
+          }
+        }
+        setFoodItems((prev) =>
+          prev.map((i) =>
+            i.id === editItem.id
+              ? { ...i, ...formData, id: editItem.id, createdAt: editItem.createdAt }
+              : i
+          )
+        );
+        toast({ title: "Updated", description: `"${formData.name}" has been updated.` });
       } else {
-        const newItem = { ...formData, id: "f" + Date.now(), createdAt: new Date().toISOString().split("T")[0] };
-        setFoodItems((prev) => [...prev, newItem]);
+        // Create
+        if (!usingFallback) {
+          const { data, error } = await supabase
+            .from("food_items")
+            .insert(foodToSupabase(formData))
+            .select()
+            .single();
+          if (error) {
+            toast({ title: "Error", description: error.message });
+            return;
+          }
+          const catMap = {};
+          categories.forEach((c) => {
+            catMap[String(c.id)] = c;
+          });
+          const newItem = foodFromSupabase(data, catMap);
+          setFoodItems((prev) => [...prev, newItem]);
+        } else {
+          const newItem = {
+            ...formData,
+            id: "f" + Date.now(),
+            createdAt: new Date().toISOString().split("T")[0],
+          };
+          setFoodItems((prev) => [...prev, newItem]);
+        }
+        toast({ title: "Added", description: `"${formData.name}" has been added to the menu.` });
       }
-      toast({ title: "Added", description: `"${formData.name}" has been added to the menu.` });
-    }
-  }, [editItem, usingFallback, categories, toast]);
+    },
+    [editItem, usingFallback, categories, toast]
+  );
 
   const handleDeleteFood = useCallback(async () => {
     if (!deleteItem) return;
     if (!usingFallback) {
-      const { error } = await supabase.from("food_items").delete().eq("item_id", Number(deleteItem.id));
-      if (error) { toast({ title: "Error", description: error.message }); setDeleteItem(null); return; }
+      const { error } = await supabase
+        .from("food_items")
+        .delete()
+        .eq("item_id", Number(deleteItem.id));
+      if (error) {
+        toast({ title: "Error", description: error.message });
+        setDeleteItem(null);
+        return;
+      }
     }
     setFoodItems((prev) => prev.filter((i) => i.id !== deleteItem.id));
     toast({ title: "Deleted", description: `"${deleteItem.name}" has been removed.` });
     setDeleteItem(null);
   }, [deleteItem, usingFallback, toast]);
 
-  const handleToggleAvailable = useCallback(async (item) => {
-    const newAvailable = !item.available;
-    if (!usingFallback) {
-      await supabase.from("food_items").update({ is_available: newAvailable }).eq("item_id", Number(item.id));
-    }
-    setFoodItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, available: newAvailable } : i)));
-    toast({
-      title: newAvailable ? "Marked as Available" : "Marked as Unavailable",
-      description: `"${item.name}" is now ${newAvailable ? "available" : "out of stock"}.`,
-    });
-  }, [usingFallback, toast]);
+  const handleToggleAvailable = useCallback(
+    async (item) => {
+      const newAvailable = !item.available;
+      if (!usingFallback) {
+        await supabase
+          .from("food_items")
+          .update({ is_available: newAvailable })
+          .eq("item_id", Number(item.id));
+      }
+      setFoodItems((prev) =>
+        prev.map((i) => (i.id === item.id ? { ...i, available: newAvailable } : i))
+      );
+      toast({
+        title: newAvailable ? "Marked as Available" : "Marked as Unavailable",
+        description: `"${item.name}" is now ${newAvailable ? "available" : "out of stock"}.`,
+      });
+    },
+    [usingFallback, toast]
+  );
 
   // ── Re-count category item counts when foodItems changes ──
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- derived category counts keyed off foodItems
     setCategories((prev) =>
-      prev.map((cat) => ({ ...cat, itemCount: foodItems.filter((i) => String(i.categoryId) === String(cat.id)).length }))
+      prev.map((cat) => ({
+        ...cat,
+        itemCount: foodItems.filter((i) => String(i.categoryId) === String(cat.id)).length,
+      }))
     );
   }, [foodItems]);
 
@@ -331,7 +569,10 @@ export default function MenuManagement() {
           </p>
         </div>
         <button
-          onClick={() => { setEditItem(null); setShowAddDialog(true); }}
+          onClick={() => {
+            setEditItem(null);
+            setShowAddDialog(true);
+          }}
           className="inline-flex items-center gap-2 text-sm font-medium text-on-emerald bg-emerald hover:bg-emerald-deep transition-all duration-150 px-4 py-2 rounded-sm shrink-0"
         >
           <Plus size={16} />
@@ -361,7 +602,10 @@ export default function MenuManagement() {
           <FoodTable
             foodItems={filteredItems}
             categories={categories}
-            onEdit={(item) => { setEditItem(item); setShowAddDialog(true); }}
+            onEdit={(item) => {
+              setEditItem(item);
+              setShowAddDialog(true);
+            }}
             onDelete={(item) => setDeleteItem(item)}
             onView={(item) => setViewDetails(item)}
             onToggleAvailable={handleToggleAvailable}
@@ -373,7 +617,9 @@ export default function MenuManagement() {
               <div className="flex items-start justify-between">
                 <div>
                   <h3 className="text-base font-medium text-ink">{viewDetails.name}</h3>
-                  <p className="text-sm text-ink-mute mt-0.5">{viewDetails.description || "No description"}</p>
+                  <p className="text-sm text-ink-mute mt-0.5">
+                    {viewDetails.description || "No description"}
+                  </p>
                 </div>
                 <button
                   onClick={() => setViewDetails(null)}
@@ -384,22 +630,37 @@ export default function MenuManagement() {
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-4 pt-4 border-t border-hairline-cool">
                 <div>
-                  <p className="text-[11px] uppercase tracking-wider text-ink-faint font-medium">Price</p>
-                  <p className="text-sm font-medium text-ink mt-0.5">UGX {Number(viewDetails.price).toLocaleString()}</p>
-                </div>
-                <div>
-                  <p className="text-[11px] uppercase tracking-wider text-ink-faint font-medium">Category</p>
+                  <p className="text-[11px] uppercase tracking-wider text-ink-faint font-medium">
+                    Price
+                  </p>
                   <p className="text-sm font-medium text-ink mt-0.5">
-                    {categories.find((c) => String(c.id) === String(viewDetails.categoryId))?.name || "\u2014"}
+                    UGX {Number(viewDetails.price).toLocaleString()}
                   </p>
                 </div>
                 <div>
-                  <p className="text-[11px] uppercase tracking-wider text-ink-faint font-medium">Status</p>
-                  <p className="text-sm font-medium text-ink mt-0.5">{viewDetails.available ? "Available" : "Out of Stock"}</p>
+                  <p className="text-[11px] uppercase tracking-wider text-ink-faint font-medium">
+                    Category
+                  </p>
+                  <p className="text-sm font-medium text-ink mt-0.5">
+                    {categories.find((c) => String(c.id) === String(viewDetails.categoryId))
+                      ?.name || "\u2014"}
+                  </p>
                 </div>
                 <div>
-                  <p className="text-[11px] uppercase tracking-wider text-ink-faint font-medium">Featured</p>
-                  <p className="text-sm font-medium text-ink mt-0.5">{viewDetails.featured ? "Yes" : "No"}</p>
+                  <p className="text-[11px] uppercase tracking-wider text-ink-faint font-medium">
+                    Status
+                  </p>
+                  <p className="text-sm font-medium text-ink mt-0.5">
+                    {viewDetails.available ? "Available" : "Out of Stock"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-[11px] uppercase tracking-wider text-ink-faint font-medium">
+                    Featured
+                  </p>
+                  <p className="text-sm font-medium text-ink mt-0.5">
+                    {viewDetails.featured ? "Yes" : "No"}
+                  </p>
                 </div>
               </div>
             </div>
@@ -410,7 +671,10 @@ export default function MenuManagement() {
       {/* Add/Edit Dialog */}
       <AddFoodDialog
         open={showAddDialog}
-        onClose={() => { setShowAddDialog(false); setEditItem(null); }}
+        onClose={() => {
+          setShowAddDialog(false);
+          setEditItem(null);
+        }}
         onSave={handleSaveFood}
         editItem={editItem}
         categories={categories}

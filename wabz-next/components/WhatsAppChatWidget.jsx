@@ -5,8 +5,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 /* ── Configuration defaults ── */
 const DEFAULT_PROPS = {
   phoneNumber: "+256700123456",
-  message:
-    "Hello! I'm interested in your services and would like more information.",
+  message: "Hello! I'm interested in your services and would like more information.",
   tooltip: "Chat with us on WhatsApp",
   position: { bottom: 24, right: 24 },
   mobilePosition: { bottom: 16, right: 16 },
@@ -56,6 +55,7 @@ export default function WhatsAppChatWidget({
 
   /* ── Only render on client (hydration safe) ── */
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- hydration guard
     setMounted(true);
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
@@ -152,8 +152,14 @@ export default function WhatsAppChatWidget({
           />
           <div className="flex items-center gap-2 whitespace-nowrap">
             <svg width="14" height="14" viewBox="0 0 48 48" fill="none" aria-hidden="true">
-              <path d="M24 0C10.746 0 0 10.746 0 24c0 4.6 1.302 8.906 3.552 12.582L1.206 44.64a1.5 1.5 0 001.866 1.866l8.058-2.346A23.874 23.874 0 0024 48c13.254 0 24-10.746 24-24S37.254 0 24 0z" fill="#25D366" />
-              <path d="M35.604 28.362c-1.332-.666-2.664-.666-4.002 0-.822.42-1.494.96-2.328 1.398-.576.306-1.296.27-1.842-.048-1.254-.738-2.382-1.644-3.402-2.664a15.394 15.394 0 01-2.664-3.402c-.318-.546-.354-1.266-.048-1.842.438-.834.978-1.506 1.398-2.328.666-1.338.666-2.67 0-4.002-.48-.96-1.53-1.572-2.622-1.572h-1.434c-.822 0-1.608.342-2.172.906a7.144 7.144 0 00-2.016 4.512c-.114 1.38.21 2.76.876 3.978a24.878 24.878 0 005.472 6.882 24.878 24.878 0 006.882 5.472c1.218.666 2.598.99 3.978.876a7.144 7.144 0 004.512-2.016c.564-.564.906-1.35.906-2.172v-1.434c0-1.092-.612-2.142-1.572-2.622-.006-.006-.012-.006-.018-.006z" fill="#fff" />
+              <path
+                d="M24 0C10.746 0 0 10.746 0 24c0 4.6 1.302 8.906 3.552 12.582L1.206 44.64a1.5 1.5 0 001.866 1.866l8.058-2.346A23.874 23.874 0 0024 48c13.254 0 24-10.746 24-24S37.254 0 24 0z"
+                fill="#25D366"
+              />
+              <path
+                d="M35.604 28.362c-1.332-.666-2.664-.666-4.002 0-.822.42-1.494.96-2.328 1.398-.576.306-1.296.27-1.842-.048-1.254-.738-2.382-1.644-3.402-2.664a15.394 15.394 0 01-2.664-3.402c-.318-.546-.354-1.266-.048-1.842.438-.834.978-1.506 1.398-2.328.666-1.338.666-2.67 0-4.002-.48-.96-1.53-1.572-2.622-1.572h-1.434c-.822 0-1.608.342-2.172.906a7.144 7.144 0 00-2.016 4.512c-.114 1.38.21 2.76.876 3.978a24.878 24.878 0 005.472 6.882 24.878 24.878 0 006.882 5.472c1.218.666 2.598.99 3.978.876a7.144 7.144 0 004.512-2.016c.564-.564.906-1.35.906-2.172v-1.434c0-1.092-.612-2.142-1.572-2.622-.006-.006-.012-.006-.018-.006z"
+                fill="#fff"
+              />
             </svg>
             <span>{tooltip}</span>
           </div>
@@ -181,7 +187,10 @@ export default function WhatsAppChatWidget({
         title={isDesktop ? tooltip : undefined}
       >
         {/* Ripple ring */}
-        <span className="absolute inset-0 rounded-full animate-ping opacity-20" style={{ backgroundColor: color }} />
+        <span
+          className="absolute inset-0 rounded-full animate-ping opacity-20"
+          style={{ backgroundColor: color }}
+        />
 
         {/* Solid background behind icon */}
         <span className="absolute inset-0 rounded-full" style={{ backgroundColor: color }} />

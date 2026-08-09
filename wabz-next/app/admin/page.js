@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
-import { mapFoodProduct, mapOrder, DEFAULT_SETTINGS, MOCK_USERS, MOCK_REVIEWS } from "@/lib/supabase-data";
+import { mapFoodProduct, mapOrder } from "@/lib/supabase-data";
 import AdminMenu from "@/components/AdminMenu";
 import AdminDashboard from "@/components/AdminDashboard";
 import MenuManagement from "@/components/MenuManagement/MenuManagement";
@@ -16,21 +17,13 @@ import {
   Users,
   MessageSquareText,
   ArrowLeft,
-  Flame,
-  TrendingUp,
-  ShoppingBag,
-  Clock,
   Loader2,
   Save,
-  CheckCircle2,
   AlertCircle,
   Shield,
   UserPlus,
   Mail,
   UserCheck,
-  Star,
-  Trash2,
-  ChevronRight,
   ArrowUpRight,
   NotebookPen,
 } from "lucide-react";
@@ -47,7 +40,15 @@ const TABS = [
 
 /* ── Reusable component pieces ── */
 
-function GreenButton({ children, onClick, disabled, className = "", small = false, icon: Icon, type = "button" }) {
+function GreenButton({
+  children,
+  onClick,
+  disabled,
+  className = "",
+  small = false,
+  icon: Icon,
+  type = "button",
+}) {
   return (
     <button
       type={type}
@@ -63,32 +64,6 @@ function GreenButton({ children, onClick, disabled, className = "", small = fals
   );
 }
 
-function OutlineButton({ children, onClick, className = "", small = false, icon: Icon }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`inline-flex items-center justify-center gap-2 text-sm font-medium text-ink bg-canvas border border-hairline-strong hover:bg-canvas-soft transition-all duration-150 ${
-        small ? "text-xs px-3 py-1.5" : "text-sm px-4 py-2"
-      } rounded-sm ${className}`}
-    >
-      {Icon && <Icon size={small ? 13 : 15} />}
-      {children}
-    </button>
-  );
-}
-
-function StatCard({ icon: Icon, value, label }) {
-  return (
-    <div className="bg-canvas border border-hairline rounded-sm p-5 hover:shadow-level-1 transition-shadow">
-      <div className="w-9 h-9 rounded-[4px] bg-canvas-soft flex items-center justify-center mb-3 border border-hairline-cool">
-        <Icon size={17} className="text-ink-mute" />
-      </div>
-      <p className="text-2xl font-medium text-ink tracking-tight tabular-nums">{value}</p>
-      <p className="text-xs text-ink-mute mt-0.5">{label}</p>
-    </div>
-  );
-}
-
 function SectionHeader({ title, description }) {
   return (
     <div className="mb-6">
@@ -98,21 +73,14 @@ function SectionHeader({ title, description }) {
   );
 }
 
-function EmptyState({ message }) {
-  return (
-    <p className="text-sm text-ink-mute-2 py-12 text-center bg-canvas border border-hairline rounded-sm">
-      {message}
-    </p>
-  );
-}
-
 export default function AdminPage() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [users, setUsers] = useState([]);
-  const [reviews, setReviews] = useState([]);
+  const [authChecked, setAuthChecked] = useState(false);
   const [loading, setLoading] = useState(true);
+  const nameMapRef = useRef({});
 
   const [settings, setSettings] = useState({
     name: "",
@@ -131,6 +99,21 @@ export default function AdminPage() {
   const [settingsSaving, setSettingsSaving] = useState(false);
   const [settingsSaved, setSettingsSaved] = useState(false);
   const [settingsError, setSettingsError] = useState("");
+
+  // Guard the admin panel — only signed-in users may access it.
+  useEffect(() => {
+    supabase.auth
+      .getSession()
+      .then(({ data: { session } }) => {
+        if (session) {
+          setAuthChecked(true);
+        } else {
+          router.replace("/login");
+        }
+      })
+      .catch(() => router.replace("/login"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const playNotificationSound = useCallback(() => {
     try {
@@ -166,23 +149,38 @@ export default function AdminPage() {
   }, []);
 
   useEffect(() => {
+    const loadItemNames = () =>
+      supabase
+        .from("food_items")
+        .select("item_id, name")
+        .then(({ data }) => {
+          const m = {};
+          (data || []).forEach((f) => {
+            m[f.item_id] = f.name;
+          });
+          nameMapRef.current = m;
+        })
+        .catch(() => {});
+
     Promise.all([
+      loadItemNames(),
       supabase
         .from("food_items")
         .select("*, categories!inner(category_code)")
         .order("item_id", { ascending: true })
-        .then(({ data }) => { if (data) setProducts((data || []).map(mapFoodProduct)); })
+        .then(({ data }) => {
+          if (data) setProducts((data || []).map(mapFoodProduct));
+        })
         .catch(() => {}),
       supabase
         .from("orders")
         .select("*, order_items(*)")
         .order("created_at", { ascending: false })
         .limit(100)
-        .then(({ data }) => { if (data) setOrders((data || []).map(mapOrder)); })
+        .then(({ data }) => {
+          if (data) setOrders((data || []).map((o) => mapOrder(o, nameMapRef.current)));
+        })
         .catch(() => {}),
-      Promise.resolve({ data: MOCK_USERS }).then((r) => { if (r.data) setUsers(r.data); }).catch(() => {}),
-      Promise.resolve({ data: MOCK_REVIEWS }).then((r) => { if (r.data) setReviews(r.data); }).catch(() => {}),
-      Promise.resolve({ data: { ...DEFAULT_SETTINGS } }).then((r) => { if (r.data) setSettings((prev) => ({ ...prev, ...r.data })); }).catch(() => {}),
     ]).finally(() => {
       setLoading(false);
       setSettingsLoading(false);
@@ -200,7 +198,7 @@ export default function AdminPage() {
           .select("*, order_items(*)")
           .order("created_at", { ascending: false })
           .limit(100);
-        const allOrders = (data || []).map(mapOrder);
+        const allOrders = (data || []).map((o) => mapOrder(o, nameMapRef.current));
         const currentPending = allOrders.filter((o) => o.status === "pending").length;
         const prevPending = prevPendingRef.current;
         setOrders(allOrders);
@@ -217,7 +215,10 @@ export default function AdminPage() {
       }
     };
     const interval = setInterval(poll, 5000);
-    return () => { clearInterval(interval); updateBadge(0); };
+    return () => {
+      clearInterval(interval);
+      updateBadge(0);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -227,17 +228,24 @@ export default function AdminPage() {
     setSettingsSaved(false);
     setSettingsError("");
     try {
-      await Promise.resolve({ data: { ...DEFAULT_SETTINGS, ...settings } });
+      // There is no settings table yet — these values are compiled into the
+      // site (lib/supabase-data.js), so this form only edits local state.
       setSettingsSaved(true);
       setTimeout(() => setSettingsSaved(false), 3000);
-    } catch (err) {
-      setSettingsError(err?.message || "Failed to save settings.");
     } finally {
       setSettingsSaving(false);
     }
   };
 
   const setSetting = (k, v) => setSettings((f) => ({ ...f, [k]: v }));
+
+  if (!authChecked) {
+    return (
+      <div className="min-h-screen bg-canvas flex items-center justify-center">
+        <Loader2 size={20} className="animate-spin text-ink-mute" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-canvas">
@@ -277,9 +285,10 @@ export default function AdminPage() {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex items-center gap-2 px-4 py-2.5 text-xs font-medium whitespace-nowrap transition-all duration-150 border-b-[1.5px] ${
-                    isActive                    ? "border-emerald text-ink"
-                    : "border-transparent text-ink-mute hover:text-ink hover:border-hairline-strong"
-                }`}
+                    isActive
+                      ? "border-emerald text-ink"
+                      : "border-transparent text-ink-mute hover:text-ink hover:border-hairline-strong"
+                  }`}
                 >
                   <Icon size={15} className={isActive ? "text-emerald" : ""} />
                   {tab.label}
@@ -308,7 +317,10 @@ export default function AdminPage() {
         ════════════════════════════════════════ */}
         {activeTab === "menu" && (
           <div>
-            <SectionHeader title="Menu Items" description="Add, edit, or remove dishes from your menu." />
+            <SectionHeader
+              title="Menu Items"
+              description="Add, edit, or remove dishes from your menu."
+            />
             <AdminMenu />
           </div>
         )}
@@ -316,9 +328,7 @@ export default function AdminPage() {
         {/* ════════════════════════════════════════
             MENU MANAGEMENT
         ════════════════════════════════════════ */}
-        {activeTab === "menu-management" && (
-          <MenuManagement />
-        )}
+        {activeTab === "menu-management" && <MenuManagement />}
 
         {/* ════════════════════════════════════════
             ORDERS
@@ -335,39 +345,25 @@ export default function AdminPage() {
         ════════════════════════════════════════ */}
         {activeTab === "users" && (
           <div>
-            <SectionHeader title="Registered Users" description="View all registered customer accounts." />
-            {loading ? (
-              <div className="flex items-center justify-center py-16">
-                <Loader2 size={20} className="animate-spin text-ink-mute" />
-              </div>
-            ) : users.length === 0 ? (
-              <EmptyState message="No registered users yet." />
-            ) : (
-              <div className="bg-canvas border border-hairline rounded-sm overflow-hidden">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-hairline bg-canvas-soft">
-                      <th className="text-left px-5 py-3 text-[11px] font-medium uppercase tracking-wider text-ink-mute">ID</th>
-                      <th className="text-left px-5 py-3 text-[11px] font-medium uppercase tracking-wider text-ink-mute">Phone</th>
-                      <th className="text-left px-5 py-3 text-[11px] font-medium uppercase tracking-wider text-ink-mute">Email</th>
-                      <th className="text-left px-5 py-3 text-[11px] font-medium uppercase tracking-wider text-ink-mute">Registered</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {users.map((u) => (
-                      <tr key={u.id} className="border-b border-hairline-cool hover:bg-canvas-soft/30 transition-colors">
-                        <td className="px-5 py-3.5 text-sm font-medium text-ink">#{u.id}</td>
-                        <td className="px-5 py-3.5 text-sm text-ink-secondary">{u.phone_number || "—"}</td>
-                        <td className="px-5 py-3.5 text-sm text-ink-secondary">{u.email || "—"}</td>
-                        <td className="px-5 py-3.5 text-sm text-ink-mute">
-                          {u.created_at ? new Date(u.created_at).toLocaleDateString() : "—"}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
+            <SectionHeader
+              title="Registered Users"
+              description="View all registered customer accounts."
+            />
+            <div className="bg-canvas border border-hairline rounded-sm p-6">
+              <p className="text-sm text-ink-mute leading-relaxed">
+                Customer accounts live in Supabase Auth, which the anon key used by this site
+                cannot read. To view or manage users, sign in to the{" "}
+                <a
+                  href="https://supabase.com/dashboard/project/apnxvhjlpahiepwntpmn/auth/users"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-emerald-deep underline underline-offset-2 hover:text-ink transition-colors"
+                >
+                  Supabase dashboard
+                </a>{" "}
+                — users can&apos;t be listed from the admin panel with the current permissions.
+              </p>
+            </div>
           </div>
         )}
 
@@ -376,44 +372,16 @@ export default function AdminPage() {
         ════════════════════════════════════════ */}
         {activeTab === "feedback" && (
           <div>
-            <SectionHeader title="Customer Feedback" description="Reviews and ratings left by customers." />
-            {loading ? (
-              <div className="flex items-center justify-center py-16">
-                <Loader2 size={20} className="animate-spin text-ink-mute" />
-              </div>
-            ) : reviews.length === 0 ? (
-              <EmptyState message="No reviews yet." />
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                {reviews.map((r) => (
-                  <div key={r.id} className="bg-canvas border border-hairline rounded-sm p-5 hover:shadow-level-1 transition-shadow">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-[4px] bg-canvas-soft flex items-center justify-center text-xs font-medium text-ink-mute uppercase border border-hairline-cool">
-                          {r.author?.split(" ").map(n => n[0]).join("").slice(0, 2) || "??"}
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-ink">{r.author}</p>
-                          <p className="text-[11px] text-ink-mute">
-                            {r.date ? new Date(r.date).toLocaleDateString() : ""}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-0.5">
-                        {[1, 2, 3, 4, 5].map((s) => (
-                          <Star
-                            key={s}
-                            size={13}
-                            className={s <= (r.rating || 0) ? "text-accent-yellow fill-accent-yellow" : "text-hairline-strong"}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                    <p className="text-sm text-ink-secondary leading-relaxed">&ldquo;{r.text}&rdquo;</p>
-                  </div>
-                ))}
-              </div>
-            )}
+            <SectionHeader
+              title="Customer Feedback"
+              description="Reviews and ratings left by customers."
+            />
+            <div className="bg-canvas border border-hairline rounded-sm p-6">
+              <p className="text-sm text-ink-mute leading-relaxed">
+                Reviews aren&apos;t collected on the site yet, so there&apos;s nothing to display
+                here. Once a feedback table is added, this tab will show real submissions.
+              </p>
+            </div>
           </div>
         )}
 
@@ -422,7 +390,10 @@ export default function AdminPage() {
         ════════════════════════════════════════ */}
         {activeTab === "settings" && (
           <div className="max-w-2xl">
-            <SectionHeader title="Restaurant Settings" description="Manage your restaurant's contact info, hours, and delivery details." />
+            <SectionHeader
+              title="Restaurant Settings"
+              description="Manage your restaurant's contact info, hours, and delivery details."
+            />
 
             {settingsLoading ? (
               <div className="flex items-center justify-center py-16">
@@ -430,44 +401,119 @@ export default function AdminPage() {
               </div>
             ) : (
               <form onSubmit={saveSettings} className="space-y-5">
-                <InputField label="Restaurant Name" value={settings.name} onChange={(v) => setSetting("name", v)} placeholder="Wabz Foods" />
+                <InputField
+                  label="Restaurant Name"
+                  value={settings.name}
+                  onChange={(v) => setSetting("name", v)}
+                  placeholder="Wabz Foods"
+                />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <InputField label="Phone Number" value={settings.phone} onChange={(v) => setSetting("phone", v)} placeholder="+256 700 000 000" />
-                  <InputField label="Delivery Fee (UGX)" value={settings.delivery_fee} onChange={(v) => setSetting("delivery_fee", v)} type="number" placeholder="5000" />
+                  <InputField
+                    label="Phone Number"
+                    value={settings.phone}
+                    onChange={(v) => setSetting("phone", v)}
+                    placeholder="+256 700 000 000"
+                  />
+                  <InputField
+                    label="Delivery Fee (UGX)"
+                    value={settings.delivery_fee}
+                    onChange={(v) => setSetting("delivery_fee", v)}
+                    type="number"
+                    placeholder="5000"
+                  />
                 </div>
-                <TextareaField label="Address" value={settings.address} onChange={(v) => setSetting("address", v)} placeholder="123 Kampala Road, Kampala, Uganda" />
-                <InputField label="Delivery Radius (km)" value={settings.delivery_radius} onChange={(v) => setSetting("delivery_radius", v)} type="number" placeholder="10" />
+                <TextareaField
+                  label="Address"
+                  value={settings.address}
+                  onChange={(v) => setSetting("address", v)}
+                  placeholder="123 Kampala Road, Kampala, Uganda"
+                />
+                <InputField
+                  label="Delivery Radius (km)"
+                  value={settings.delivery_radius}
+                  onChange={(v) => setSetting("delivery_radius", v)}
+                  type="number"
+                  placeholder="10"
+                />
 
                 <div>
-                  <label className="text-xs font-medium uppercase tracking-wider text-ink-mute mb-2 block">Operating Hours</label>
+                  <label className="text-xs font-medium uppercase tracking-wider text-ink-mute mb-2 block">
+                    Operating Hours
+                  </label>
                   <div className="grid grid-cols-2 gap-5">
-                    <InputField label="Opening" value={settings.opening_time} onChange={(v) => setSetting("opening_time", v)} type="time" />
-                    <InputField label="Closing" value={settings.closing_time} onChange={(v) => setSetting("closing_time", v)} type="time" />
+                    <InputField
+                      label="Opening"
+                      value={settings.opening_time}
+                      onChange={(v) => setSetting("opening_time", v)}
+                      type="time"
+                    />
+                    <InputField
+                      label="Closing"
+                      value={settings.closing_time}
+                      onChange={(v) => setSetting("closing_time", v)}
+                      type="time"
+                    />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-xs font-medium uppercase tracking-wider text-ink-mute mb-3 block">Home Page Statistics</label>
+                  <label className="text-xs font-medium uppercase tracking-wider text-ink-mute mb-3 block">
+                    Home Page Statistics
+                  </label>
                   <p className="text-xs text-ink-mute mb-4 leading-relaxed">
                     Customize the numbers shown in the stats bar on the home page.
                   </p>
                   <div className="grid grid-cols-2 gap-5">
-                    <InputField label="Menu Items" value={settings.stat_menu_items} onChange={(v) => setSetting("stat_menu_items", v)} placeholder="150+" />
-                    <InputField label="Orders Delivered" value={settings.stat_orders_delivered} onChange={(v) => setSetting("stat_orders_delivered", v)} placeholder="12K+" />
-                    <InputField label="Avg. Delivery Time" value={settings.stat_avg_delivery_time} onChange={(v) => setSetting("stat_avg_delivery_time", v)} placeholder="30m" />
-                    <InputField label="Expert Chefs" value={settings.stat_expert_chefs} onChange={(v) => setSetting("stat_expert_chefs", v)} placeholder="15+" />
+                    <InputField
+                      label="Menu Items"
+                      value={settings.stat_menu_items}
+                      onChange={(v) => setSetting("stat_menu_items", v)}
+                      placeholder="150+"
+                    />
+                    <InputField
+                      label="Orders Delivered"
+                      value={settings.stat_orders_delivered}
+                      onChange={(v) => setSetting("stat_orders_delivered", v)}
+                      placeholder="12K+"
+                    />
+                    <InputField
+                      label="Avg. Delivery Time"
+                      value={settings.stat_avg_delivery_time}
+                      onChange={(v) => setSetting("stat_avg_delivery_time", v)}
+                      placeholder="30m"
+                    />
+                    <InputField
+                      label="Expert Chefs"
+                      value={settings.stat_expert_chefs}
+                      onChange={(v) => setSetting("stat_expert_chefs", v)}
+                      placeholder="15+"
+                    />
                   </div>
                 </div>
 
                 <div className="flex items-center justify-end gap-3 pt-2 border-t border-hairline">
                   {settingsError && (
-                    <span className="text-xs text-accent-tomato flex items-center gap-1"><AlertCircle size={12} />{settingsError}</span>
+                    <span className="text-xs text-accent-tomato flex items-center gap-1">
+                      <AlertCircle size={12} />
+                      {settingsError}
+                    </span>
                   )}
                   {settingsSaved && (
-                    <span className="text-xs text-emerald-deep flex items-center gap-1"><CheckCircle2 size={12} /> Settings saved!</span>
+                    <span className="text-xs text-accent-yellow flex items-center gap-1">
+                      <AlertCircle size={12} /> Preview only — defaults are compiled in
+                      lib/supabase-data.js until a settings table is added.
+                    </span>
                   )}
-                  <GreenButton type="submit" disabled={settingsSaving} icon={settingsSaving ? null : Save}>
-                    {settingsSaving ? <Loader2 size={14} className="animate-spin" /> : "Save Settings"}
+                  <GreenButton
+                    type="submit"
+                    disabled={settingsSaving}
+                    icon={settingsSaving ? null : Save}
+                  >
+                    {settingsSaving ? (
+                      <Loader2 size={14} className="animate-spin" />
+                    ) : (
+                      "Save Settings"
+                    )}
                   </GreenButton>
                 </div>
               </form>
@@ -496,12 +542,17 @@ export default function AdminPage() {
 function InputField({ label, value, onChange, placeholder, type = "text" }) {
   return (
     <div>
-      {label && <label className="text-xs font-medium uppercase tracking-wider text-ink-mute mb-1.5 block">{label}</label>}
+      {label && (
+        <label className="text-xs font-medium uppercase tracking-wider text-ink-mute mb-1.5 block">
+          {label}
+        </label>
+      )}
       <input
         value={value}
         onChange={(e) => onChange(e.target.value)}
         type={type}
-        placeholder={placeholder}          className="w-full px-3 py-2 bg-canvas border border-hairline-strong rounded-sm text-sm text-ink placeholder:text-ink-faint focus:outline-none focus:border-emerald focus:ring-1 focus:ring-emerald/20 transition-all"
+        placeholder={placeholder}
+        className="w-full px-3 py-2 bg-canvas border border-hairline-strong rounded-sm text-sm text-ink placeholder:text-ink-faint focus:outline-none focus:border-emerald focus:ring-1 focus:ring-emerald/20 transition-all"
       />
     </div>
   );
@@ -510,7 +561,11 @@ function InputField({ label, value, onChange, placeholder, type = "text" }) {
 function TextareaField({ label, value, onChange, placeholder }) {
   return (
     <div>
-      {label && <label className="text-xs font-medium uppercase tracking-wider text-ink-mute mb-1.5 block">{label}</label>}
+      {label && (
+        <label className="text-xs font-medium uppercase tracking-wider text-ink-mute mb-1.5 block">
+          {label}
+        </label>
+      )}
       <textarea
         value={value}
         onChange={(e) => onChange(e.target.value)}
@@ -532,13 +587,12 @@ function MakeAdminForm() {
     setPromoting(true);
     setResult(null);
     try {
-      const res = await Promise.resolve({ data: { success: true, user: { name: email.trim() } } });
-      if (res?.data?.success) {
-        setResult({ type: "success", message: `${res.data.user?.name || email.trim()} is now an admin!` });
-        setEmail("");
-      }
-    } catch (err) {
-      setResult({ type: "error", message: err?.message || "Failed to promote user." });
+      // No admin-role table exists yet, so promotion can't be persisted.
+      setResult({
+        type: "error",
+        message:
+          "Admin promotion isn't available yet — there's no roles table to write to. Manage admins directly in Supabase.",
+      });
     } finally {
       setPromoting(false);
     }
@@ -552,21 +606,33 @@ function MakeAdminForm() {
           <input
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handlePromote(); } }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                handlePromote();
+              }
+            }}
             placeholder="user@example.com"
             type="email"
             className="w-full pl-9 pr-3 py-2 bg-canvas border border-hairline-strong rounded-sm text-sm text-ink placeholder:text-ink-faint focus:outline-none focus:border-emerald focus:ring-1 focus:ring-emerald/20 transition-all"
           />
         </div>
-        <GreenButton onClick={handlePromote} disabled={promoting || !email.trim()} icon={promoting ? null : UserPlus}>
+        <GreenButton
+          onClick={handlePromote}
+          disabled={promoting || !email.trim()}
+          icon={promoting ? null : UserPlus}
+        >
           {promoting ? <Loader2 size={14} className="animate-spin" /> : "Make Admin"}
         </GreenButton>
       </div>
       {result && (
-        <div className={`mt-3 flex items-center gap-2 text-sm rounded-sm px-4 py-2.5 border ${
-          result.type === "success"                    ? "bg-emerald/5 text-emerald-deep border-emerald/20"
-                    : "bg-accent-tomato/5 text-accent-tomato border-accent-tomato/20"
-        }`}>
+        <div
+          className={`mt-3 flex items-center gap-2 text-sm rounded-sm px-4 py-2.5 border ${
+            result.type === "success"
+              ? "bg-emerald/5 text-emerald-deep border-emerald/20"
+              : "bg-accent-tomato/5 text-accent-tomato border-accent-tomato/20"
+          }`}
+        >
           {result.type === "success" ? <UserCheck size={14} /> : <AlertCircle size={14} />}
           {result.message}
         </div>

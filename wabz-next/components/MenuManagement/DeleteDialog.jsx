@@ -26,7 +26,8 @@ export default function DeleteDialog({ open, onClose, onConfirm, title, descript
         </div>
         <div className="px-6 py-5">
           <p className="text-sm text-ink-secondary leading-relaxed">
-            {description || "Are you sure you want to delete this item? This action cannot be undone."}
+            {description ||
+              "Are you sure you want to delete this item? This action cannot be undone."}
           </p>
         </div>
         <div className="flex gap-3 px-6 py-4 border-t border-hairline-cool bg-canvas-soft/50">

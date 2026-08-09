@@ -1,0 +1,17 @@
+# Dependencies / build output
+node_modules/
+.next/
+out/
+build/
+coverage/
+dist/
+
+# Generated / platform
+next-env.d.ts
+*.tsbuildinfo
+.netlify/
+.kilo/
+
+# Lockfiles and secrets
+package-lock.json
+.env*

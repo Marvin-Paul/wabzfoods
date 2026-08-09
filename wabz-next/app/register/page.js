@@ -6,7 +6,20 @@ import { supabase } from "@/lib/supabaseClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { UserPlus, User, Mail, Lock, Loader2, Eye, EyeOff, ShieldCheck, ShieldAlert, ShieldMinus, ShieldX, Sparkles } from "lucide-react";
+import {
+  UserPlus,
+  User,
+  Mail,
+  Lock,
+  Loader2,
+  Eye,
+  EyeOff,
+  ShieldCheck,
+  ShieldAlert,
+  ShieldMinus,
+  ShieldX,
+  Sparkles,
+} from "lucide-react";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import AuthLayout from "@/components/AuthLayout";
 import GoogleIcon from "@/components/GoogleIcon";
@@ -35,11 +48,46 @@ export default function Register() {
     if (/[^a-zA-Z0-9]/.test(pw)) score += 1;
     if (pw.length >= 14) score += 1;
     const levels = [
-      { min: 5, level: "Strong", color: "bg-emerald-500", textColor: "text-emerald-500", width: "100%", icon: ShieldCheck },
-      { min: 4, level: "Good", color: "bg-emerald-400", textColor: "text-emerald-400", width: "80%", icon: ShieldCheck },
-      { min: 3, level: "Fair", color: "bg-amber-400", textColor: "text-amber-500", width: "60%", icon: ShieldAlert },
-      { min: 2, level: "Weak", color: "bg-orange-400", textColor: "text-orange-500", width: "40%", icon: ShieldMinus },
-      { min: 1, level: "Weak", color: "bg-red-500", textColor: "text-red-500", width: "20%", icon: ShieldX },
+      {
+        min: 5,
+        level: "Strong",
+        color: "bg-emerald-500",
+        textColor: "text-emerald-500",
+        width: "100%",
+        icon: ShieldCheck,
+      },
+      {
+        min: 4,
+        level: "Good",
+        color: "bg-emerald-400",
+        textColor: "text-emerald-400",
+        width: "80%",
+        icon: ShieldCheck,
+      },
+      {
+        min: 3,
+        level: "Fair",
+        color: "bg-amber-400",
+        textColor: "text-amber-500",
+        width: "60%",
+        icon: ShieldAlert,
+      },
+      {
+        min: 2,
+        level: "Weak",
+        color: "bg-orange-400",
+        textColor: "text-orange-500",
+        width: "40%",
+        icon: ShieldMinus,
+      },
+      {
+        min: 1,
+        level: "Weak",
+        color: "bg-red-500",
+        textColor: "text-red-500",
+        width: "20%",
+        icon: ShieldX,
+      },
       { min: 0, level: "", color: "", textColor: "", width: "0%", icon: null },
     ];
     return levels.find((l) => score >= l.min) || levels[levels.length - 1];
@@ -66,38 +114,53 @@ export default function Register() {
       pw += all[Math.floor(Math.random() * all.length)];
     }
     // Shuffle
-    return pw.split('').sort(() => Math.random() - 0.5).join('');
+    return pw
+      .split("")
+      .sort(() => Math.random() - 0.5)
+      .join("");
   };
 
   const handleGenerate = () => {
     const pw = generatePassword();
     setPassword(pw);
     setConfirmPassword(pw);
-    toast({ title: "Password generated", description: "A strong password has been created and filled in." });
+    toast({
+      title: "Password generated",
+      description: "A strong password has been created and filled in.",
+    });
   };
 
   /* ── Friendly Supabase auth error messages ── */
   const friendlyAuthError = (msg) => {
     if (!msg) return "An unexpected error occurred. Please try again.";
     const lower = msg.toLowerCase();
-    if (lower.includes("rate limit")) return "Too many attempts. Please wait a moment and try again.";
-    if (lower.includes("email not confirmed")) return "Please verify your email address before signing in. Check your inbox for the confirmation link.";
-    if (lower.includes("user already registered")) return "An account with this email already exists. Try logging in instead.";
-    if (lower.includes("invalid login credentials")) return "Invalid email or password. Please check your credentials and try again.";
-    if (lower.includes("password should be at least")) return "Password must be at least 6 characters long.";
-    if (lower.includes("unable to validate email")) return "That email address appears to be invalid. Please check and try again.";
-    if (lower.includes("email rate limit")) return "Too many sign-up attempts. Please wait a moment and try again.";
-    if (lower.includes("invalid verification code")) return "The verification code you entered is incorrect. Please check and try again.";
-    if (lower.includes("otp has expired")) return "The verification code has expired. Request a new one and try again.";
-    if (lower.includes("network error")) return "A network error occurred. Please check your internet connection and try again.";
+    if (lower.includes("rate limit"))
+      return "Too many attempts. Please wait a moment and try again.";
+    if (lower.includes("email not confirmed"))
+      return "Please verify your email address before signing in. Check your inbox for the confirmation link.";
+    if (lower.includes("user already registered"))
+      return "An account with this email already exists. Try logging in instead.";
+    if (lower.includes("invalid login credentials"))
+      return "Invalid email or password. Please check your credentials and try again.";
+    if (lower.includes("password should be at least"))
+      return "Password must be at least 6 characters long.";
+    if (lower.includes("unable to validate email"))
+      return "That email address appears to be invalid. Please check and try again.";
+    if (lower.includes("email rate limit"))
+      return "Too many sign-up attempts. Please wait a moment and try again.";
+    if (lower.includes("invalid verification code"))
+      return "The verification code you entered is incorrect. Please check and try again.";
+    if (lower.includes("otp has expired"))
+      return "The verification code has expired. Request a new one and try again.";
+    if (lower.includes("network error"))
+      return "A network error occurred. Please check your internet connection and try again.";
     if (lower.includes("email")) return msg; // Show raw email-related errors as-is
     return msg;
   };
 
   const isLocal =
     typeof window !== "undefined" &&
-    (window.location.hostname === "localhost" ||
-      window.location.hostname === "127.0.0.1");
+    (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -181,16 +244,15 @@ export default function Register() {
   };
 
   const handleGoogle = () => {
-    supabase.auth.signInWithOAuth({ provider: "google", options: { redirectTo: window.location.origin + "/" } });
+    supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: { redirectTo: window.location.origin + "/" },
+    });
   };
 
   if (showOtp) {
     return (
-      <AuthLayout
-        icon={Mail}
-        title="Verify your email"
-        subtitle={`We sent a code to ${email}`}
-      >
+      <AuthLayout icon={Mail} title="Verify your email" subtitle={`We sent a code to ${email}`}>
         {error && (
           <div className="mb-4 p-3 rounded-lg bg-destructive/10 text-destructive text-sm">
             {error}
@@ -280,7 +342,10 @@ export default function Register() {
         <div className="space-y-2">
           <Label htmlFor="name">Full Name</Label>
           <div className="relative">
-            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
+            <User
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+              aria-hidden="true"
+            />
             <Input
               id="name"
               type="text"
@@ -296,7 +361,10 @@ export default function Register() {
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <div className="relative">
-            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
+            <Mail
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+              aria-hidden="true"
+            />
             <Input
               id="email"
               type="email"
@@ -313,7 +381,10 @@ export default function Register() {
         <div className="space-y-2">
           <Label htmlFor="password">Password</Label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
+            <Lock
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+              aria-hidden="true"
+            />
             <Input
               id="password"
               type={showPassword ? "text" : "password"}
@@ -360,7 +431,9 @@ export default function Register() {
                 </div>
                 {/* Label + icon */}
                 {StrengthIcon && (
-                  <span className={`flex items-center gap-1 text-[11px] font-medium ${strength.textColor}`}>
+                  <span
+                    className={`flex items-center gap-1 text-[11px] font-medium ${strength.textColor}`}
+                  >
                     <StrengthIcon size={12} />
                     {strength.level}
                   </span>
@@ -371,7 +444,11 @@ export default function Register() {
                 <span className={password.length >= 6 ? "text-emerald-500" : ""}>
                   {password.length >= 6 ? "✓" : "•"} 6+ characters
                 </span>
-                <span className={/[a-z]/.test(password) && /[A-Z]/.test(password) ? "text-emerald-500" : ""}>
+                <span
+                  className={
+                    /[a-z]/.test(password) && /[A-Z]/.test(password) ? "text-emerald-500" : ""
+                  }
+                >
                   {/[a-z]/.test(password) && /[A-Z]/.test(password) ? "✓" : "•"} Upper & lower
                 </span>
                 <span className={/\d/.test(password) ? "text-emerald-500" : ""}>
@@ -387,7 +464,10 @@ export default function Register() {
         <div className="space-y-2">
           <Label htmlFor="confirm">Confirm Password</Label>
           <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" aria-hidden="true" />
+            <Lock
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground"
+              aria-hidden="true"
+            />
             <Input
               id="confirm"
               type={showConfirm ? "text" : "password"}
